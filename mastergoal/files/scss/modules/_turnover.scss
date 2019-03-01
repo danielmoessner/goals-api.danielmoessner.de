@@ -1,0 +1,36 @@
+.turnover{
+	height: 100%;
+	perspective: 1000px;
+	&--card{
+		transition: 0.9s;
+		transform-style: preserve-3d;
+		position: relative;
+		height: 100%;
+	}
+	&:hover &--card{
+		transform: rotateY(180deg);
+	}
+	&--front, &--back{
+		backface-visibility: hidden;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+	&--front {
+		z-index: 2;
+	}
+	&--back {
+		transform: rotateY(180deg);
+	}
+
+	&--special1{
+		background-color: rgba(0,0,0,0); 
+		border: 0;
+	}
+	&--special2{
+		border: 0;
+	}
+	&--special3{
+		height: 320px;
+	}
+}

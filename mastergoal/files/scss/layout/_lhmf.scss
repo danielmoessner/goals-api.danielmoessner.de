@@ -1,0 +1,32 @@
+.lhmf{	
+	&--page-container{
+		@extend .page-container;
+	}
+	&--header{}
+	&--left{}
+	&--main{
+		@extend .main-content;
+		@extend .bgc-grey-100;
+	}
+	&--footer{
+		@extend .bdT; 
+		@extend .ta-c;
+		@extend .p-30;
+		@extend .lh-0;
+		@extend .fsz-sm; 
+		@extend .c-grey-600;
+		background-color: #fff!important;
+	}
+	&--html{
+		background-color: #f9fafb!important;
+	}
+	background-color: transparent!important;
+}
+
+// reset
+.gap-20{
+	margin: 0!important;
+}
+* { 
+	max-width: 100%;
+}

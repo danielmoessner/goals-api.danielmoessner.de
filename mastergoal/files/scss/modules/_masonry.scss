@@ -1,0 +1,9 @@
+.masonry{
+	@extend .gap-20;
+	&--sizer{
+		@extend .col-md-6;
+	}
+	&--item{
+		@extend .col-md-6;
+	}
+}
