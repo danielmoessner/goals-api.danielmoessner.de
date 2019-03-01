@@ -1,0 +1,104 @@
+{% extends "layout/lhmf.j2" %}
+
+
+{% set title=link.get_name() + " | Link | Goals" %}
+
+
+{% block main %}
+
+
+{% import "modules/button.j2" as bg %}
+{% import "modules/form.j2" as fg %}
+{% import "modules/item.j2" as ig %}
+{% import "modules/card.j2" as cg %}
+
+
+<div class="masonry-item w-100">
+	<div class="row gap-20">
+
+		<div class='col-md-3'>
+			<div class="adminator-box">
+				<div class="adminator-box--top">
+					<h5 class="adminator-box--heading">{{ link }}</h5>
+				</div>							
+			</div>
+		</div>
+
+		<div class='col-md-3'>
+			<div class="adminator-box">
+				<h6 class="adminator-box--heading">Weight</h6>
+				<div class="adminator-box--content">
+					<p class="adminator-box-p">{{ link.weight }}</p>
+				</div>
+			</div>
+		</div>
+
+		<div class='col-md-3'>
+			<div class="adminator-box">
+				<h6 class="adminator-box--heading">Proportion</h6>
+				<div class="adminator-box--content">
+					<p class="adminator-box-p">{{ link.proportion }}</p>
+				</div>
+			</div>
+		</div>
+
+		<div class='col-md-3'>
+			<div class="adminator-box">
+				<h6 class="adminator-box--heading">Deadlines</h6>
+				<div class="adminator-box--content">
+					<p class="adminator-box-p">
+						Master Goal: {{ link.master_goal.get_deadline() }}<br>
+						Sub Goal: {{ link.sub_goal.get_deadline() }}
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="masonry--item">
+	<div class="adminator-box">
+		<h6 class="adminator-box--heading">Master Goal</h6>
+		<div class="adminator-box--content">
+			{{ ig.goal(link.master_goal, csrf_token) }} 
+		</div>
+	</div>
+</div>
+
+
+<div class="masonry--item">
+	<div class="adminator-box">
+		<h6 class="adminator-box--heading">Sub Goal</h6>
+		<div class="adminator-box--content">
+			{{ ig.goal(link.sub_goal, csrf_token) }} 
+		</div>
+	</div>
+</div>
+
+
+<div class="masonry--item">
+	<div class="adminator-box">
+		<div class="adminator-box--heading">
+			<a class="adminator-box--toggle" id="edit-link-toggle" href="#edit-link-target" data-toggle="collapse">Edit</a>
+		</div>
+		<div class="adminator-box--content collapse" id="edit-link-target">
+			{{ fg.onClickAjaxForm("edit-link", url("goals:link_edit", args=[link.pk])) }}
+		</div>
+	</div>
+</div>
+
+
+<div class="masonry--item">
+	<div class="adminator-box">
+		<div class="adminator-box--heading">
+			<a class="adminator-box--toggle" id="delete-link-toggle" href="#delete-link-target" data-toggle="collapse">Delete</a>
+		</div>
+		<div class="adminator-box--content collapse" id="delete-link-target">
+			{{ fg.onClickForm("delete-link", url("goals:link_delete", args=[link.pk])) }}
+		</div>
+	</div>
+</div>
+
+
+{% endblock main %}

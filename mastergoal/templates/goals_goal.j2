@@ -1,0 +1,120 @@
+{% extends "layout/lhmf.j2" %}
+
+
+{% set title=goal.name + " | Goal | Goals" %}
+
+
+{% block main %}
+
+
+{% import "modules/button.j2" as bg %}
+{% import "modules/form.j2" as fg %}
+{% import "modules/item.j2" as ig %}
+{% import "modules/card.j2" as cg %}
+
+
+<div class="masonry--item">
+	<div class="row m-0">
+
+		<div class='col-md-3 p-0'>
+			<div class="adminator-box">
+				<div class="adminator-box--top">
+					<h5 class="adminator-box--heading">{{ goal.name }}</h5>
+					<a class="star--link" href="{{ url('goals:goal_star', args=[goal.pk]) }}">
+						{% if goal.is_starred %}
+							<span class="star--black"></span>
+						{% else %}
+							<span class="star--white"></span>
+						{% endif %}
+					</a>
+				</div>							
+				<div class="adminator-box--content">
+	                <div class="small-progress">
+		                <span class="small-progress--number">{{ goal.get_progress() }}</span>
+						<div class="small-progress--bar-wrapper">
+							<div class="small-progress--bar" style="width: {{ goal.progress }}%"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class='col-md-3 p-0'>
+			<div class="adminator-box">
+				<h6 class="adminator-box--heading">Why</h6>
+				<div class="adminator-box--content">
+					<p class="adminator-box-p">{{ goal.why }}</p>
+				</div>
+			</div>
+		</div>
+
+		<div class='col-md-3 p-0'>
+			<div class="adminator-box">
+				<h6 class="adminator-box--heading">Impact</h6>
+				<div class="adminator-box--content">
+					<p class="adminator-box-p">{{ goal.impact }}</p>
+				</div>
+			</div>
+		</div>
+
+		<div class='col-md-3 p-0'>
+			<div class="adminator-box">
+				<h6 class="adminator-box--heading">Deadline</h6>
+				<div class="adminator-box--content">
+					<p class="adminator-box-p">{{ goal.get_deadline() }}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+{% include 'snippets/progress_monitors.j2' %}
+
+
+{% include 'snippets/master_goals.j2' %}
+
+
+{% include 'snippets/sub_goals.j2' %}
+
+
+{% include 'snippets/strategies.j2' %}
+
+
+<div class="masonry--item">
+	<div class="adminator-box">
+		<div class="adminator-box--heading">
+			<a class="adminator-box--toggle" id="edit-goal-toggle" href="#edit-goal-target" data-toggle="collapse">Edit</a>
+		</div>
+		<div class="adminator-box--content collapse" id="edit-goal-target">
+			{{ fg.onClickAjaxForm("edit-goal", url("goals:goal_edit", args=[goal.pk])) }}
+		</div>
+	</div>
+</div>
+
+
+<div class="masonry--item">
+	<div class="adminator-box">
+		<div class="adminator-box--heading">
+			<a class="adminator-box--toggle" id="delete-goal-toggle" href="#delete-goal-target" data-toggle="collapse">Delete</a>
+		</div>
+		<div class="adminator-box--content collapse" id="delete-goal-target">
+			{{ fg.onClickForm("delete-goal", url("goals:goal_delete", args=[goal.pk])) }}
+		</div>
+	</div>
+</div>
+
+
+{% include 'snippets/add_goal.j2' %}
+
+
+{% include 'snippets/add_strategy.j2' %}
+
+
+{% include 'snippets/add_progress_monitor.j2' %}
+
+
+{% include 'snippets/add_link.j2' %}
+
+
+{% endblock main %}

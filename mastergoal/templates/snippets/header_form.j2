@@ -1,0 +1,42 @@
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+
+{% for hidden_field in form.hidden_fields() %}
+	{{ hidden_field }}
+{% endfor %}
+
+
+{% with errors=form.non_field_errors() %}
+	{% if errors %}
+		<div class="adminator-box">
+			<h6 class="adminator-box--heading">Errors</h6>
+				<div class="adminator-box--content">
+				<p>
+					{% for error in errors %}
+						<span class="form-child--errors">
+							{{ error }}
+						</span>
+					{% endfor %}
+				</p>
+			</div>
+		</div>
+	{% endif %}
+{% endwith %}
+
+
+{% for field in form.visible_fields() %}
+<div class="adminator-box">
+	<h6 class="adminator-box--heading">{{ field.label }}</h6>
+		<div class="adminator-box--content">
+		<p>{{ field }}</p>
+		<p>
+			<span class="form-child--errors">
+				{{ field.errors|striptags|replace(".", ". ")|replace(".  ", ". ") }}
+			</span>
+			<span class="form-child--helptext">
+				{{ field.help_text|striptags|replace(".", ". ")|replace(".  ", ". ") }}
+			</span>
+		</p>
+	</div>
+</div>
+{% endfor %}

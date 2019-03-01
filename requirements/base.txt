@@ -1,0 +1,11 @@
+Django==2.1.5
+django-debug-toolbar==1.11
+django-filebrowser-no-grappelli==3.7.5
+django-tinymce4-lite==1.7.3
+djangorestframework==3.9.0
+Jinja2==2.10
+jsmin==2.2.2
+MarkupSafe==1.1.0
+Pillow==5.4.1
+pytz==2018.7
+sqlparse==0.2.4

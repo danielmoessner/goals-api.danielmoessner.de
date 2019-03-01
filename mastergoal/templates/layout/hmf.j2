@@ -1,0 +1,31 @@
+{% extends "layout/base.njk" %}
+
+
+{% set html="hmf" %}
+
+
+{% import "modules/header.njk" as hg %}
+{% import "modules/footer.njk" as fg %}
+
+
+{% block special %}
+    <!-- font -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab|Permanent+Marker" rel="stylesheet">
+    <!-- script -->
+    <script src="{{ static('js/hmf_main.js') }}"></script>
+{% endblock %}
+
+
+{% block body %}
+    <body class="hmf">
+        <header class="hmf--header">
+            {{ hg.header() }}
+        </header>
+        <main class="hmf--main">
+            {% block main %}{% endblock %}
+        </main>
+        <footer class="hmf--footer">
+            {{ fg.footer() }}
+        </footer>
+    </body>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends "layout/lhmf.j2" %}
+
+
+{% set title=progress_monitor.monitor + " | Progress Monitor | Goals" %}
+
+
+{% block main %}
+
+
+{% import "modules/button.j2" as bg %}
+{% import "modules/form.j2" as fg %}
+{% import "modules/item.j2" as ig %}
+{% import "modules/card.j2" as cg %}
+
+
+<div class="masonry--item">
+	<div class="row m-0">
+
+		<div class='col-md-3 p-0'>
+			<div class="adminator-box">
+				<div class="adminator-box--top">
+					<h5 class="adminator-box--heading">{{ progress_monitor.monitor }}</h5>
+				</div>							
+				<div class="adminator-box--content">
+	                <div class="small-progress">
+		                <span class="small-progress--number">{{ progress_monitor.step }}/{{ progress_monitor.steps }}</span>
+						<div class="small-progress--bar-wrapper">
+							<div class="small-progress--bar" style="width: {{ progress_monitor.progress }}%"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class='col-md-3 p-0'>
+			<div class="adminator-box">
+				<h6 class="adminator-box--heading">Weight</h6>
+				<div class="adminator-box--content">
+					<p class="adminator-box-p">{{ progress_monitor.weight }}</p>
+				</div>
+			</div>
+		</div>
+
+		<div class='col-md-3 p-0'>
+			<div class="adminator-box">
+				<h6 class="adminator-box--heading">Deadline</h6>
+				<div class="adminator-box--content">
+					<p class="adminator-box-p">Goal: {{ progress_monitor.goal.get_deadline() }}</p>
+				</div>
+			</div>
+		</div>
+
+		<div class='col-md-3 p-0'>
+			<div class="adminator-box">
+				<h6 class="adminator-box--heading">Commercial</h6>
+				<div class="adminator-box--content">
+					<p class="adminator-box-p">
+						Nike <br>
+						Carhartt
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="masonry--item">
+	<div class="adminator-box">
+		<h6 class="adminator-box--heading">Goal</h6>
+		<div class="adminator-box--content">
+			{{ ig.goal(progress_monitor.goal, csrf_token) }} 
+		</div>
+	</div>
+</div>
+
+
+<div class="masonry--item">
+	<div class="adminator-box">
+		<div class="adminator-box--heading">
+			<a class="adminator-box--toggle" id="edit-progress-monitor-toggle" href="#edit-progress-monitor-target" data-toggle="collapse">Edit</a>
+		</div>
+		<div class="adminator-box--content collapse" id="edit-progress-monitor-target">
+			{{ fg.onClickAjaxForm("edit-progress-monitor", url("goals:progress_monitor_edit", args=[progress_monitor.pk])) }}
+		</div>
+	</div>
+</div>
+
+
+<div class="masonry--item">
+	<div class="adminator-box">
+		<div class="adminator-box--heading">
+			<a class="adminator-box--toggle" id="delete-progress-monitor-toggle" href="#delete-progress-monitor-target" data-toggle="collapse">Delete</a>
+		</div>
+		<div class="adminator-box--content collapse" id="delete-progress-monitor-target">
+			{{ fg.onClickForm("delete-progress-monitor", url("goals:progress_monitor_delete", args=[progress_monitor.pk])) }}
+		</div>
+	</div>
+</div>
+
+
+{% endblock main %}

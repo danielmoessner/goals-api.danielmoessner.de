@@ -1,0 +1,33 @@
+{
+  "name": "files",
+  "version": "1.0.0",
+  "description": "The static files of my structure project.",
+  "main": "gulpfile.js",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "^4.2.1",
+    "chart.js": "^2.7.2",
+    "gulp-shell": "^0.6.5",
+    "jquery": "^3.3.1",
+    "jquery-bridget": "^2.0.1",
+    "masonry-layout": "^4.2.2",
+    "perfect-scrollbar": "^1.4.0",
+    "popper.js": "^1.14.3",
+    "rater-js": "^0.5.8",
+    "skycons": "^1.0.0"
+  },
+  "devDependencies": {
+    "browserify": "^16.2.3",
+    "gulp": "^4.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Daniel Moessner",
+  "license": "",
+  "repository": {
+    "type": "git",
+    "url": ""
+  }
+}

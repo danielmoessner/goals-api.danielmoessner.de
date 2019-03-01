@@ -1,0 +1,17 @@
+{% if links %}
+<div class="masonry--item">
+  <div class="adminator-box">
+    <h6 class="adminator-box--heading">Links</h6>
+    <div class="adminator-box--content">
+      <table class="table">
+      <thead><tr><th class="bdwT-0">Name</th><th class="bdwT-0">Weight</th><th class="bdwT-0">Proportion</th><th class="bdwT-0">Action</th></tr></thead>
+      <tbody>
+        {% for link in links %}
+          {{ ig.link(link) }}
+        {% endfor %}
+      </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endif %}

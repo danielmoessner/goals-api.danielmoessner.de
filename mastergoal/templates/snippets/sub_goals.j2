@@ -1,0 +1,12 @@
+{% if sub_goals %}
+<div class="masonry--item">
+	<div class="adminator-box">
+		<h6 class="adminator-box--heading">Sub Goals</h6>
+		<div class="adminator-box--content">
+			{% for goal in sub_goals %}
+			{{ ig.goal(goal, csrf_token) }} 
+			{% endfor %}
+		</div>
+	</div>
+</div>
+{% endif %}

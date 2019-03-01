@@ -1,0 +1,37 @@
+{% extends "layout/base.njk" %}
+
+
+{% set html="lm" %}
+
+
+{% block special %}
+    <!-- font -->
+    <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet">
+    <!-- script -->
+    <script src="{{ static('js/lm_main.js') }}"></script>
+{% endblock %}
+
+
+{% import "modules/heading.njk" as hg %}
+{% import "modules/left.njk" as lg %}
+{% import "modules/messages.njk" as messages %}
+
+
+{% block body %}
+    <body class="lm">
+        <aside class="lm--left">
+            {{ lg.left(activePage, user) }}
+        </aside>
+        <main class="lm--main">
+            {{ hg.bigLmHeading(headingCategory, headingHeading) }}
+            <div class="wrapper">
+                {% block chart %}{% endblock %}
+            </div>
+            {{ messages.lmMessages(request) }}
+            {% block main %}{% endblock %}
+        </main>
+        <div class="wrapper">
+            {% block modals %}{% endblock %}
+        </div>
+    </body>
+{% endblock body %}

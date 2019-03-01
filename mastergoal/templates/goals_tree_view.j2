@@ -1,0 +1,73 @@
+{% extends "layout/lhmf.j2" %}
+
+
+{% set title="Tree View | Goals" %}
+
+
+{% block special %}
+<style type="text/css">
+
+</style>
+{% endblock %}
+
+
+{% block main %}
+
+
+{% import "modules/button.j2" as bg %}
+{% import "modules/form.j2" as fg %}
+{% import "modules/item.j2" as ig %}
+{% import "modules/card.j2" as cg %}
+
+
+<div class="masonry--item">
+	<div class="adminator-box" {# style="height: 2000px" #}>
+		<h6 class="adminator-box--heading">Tree</h6>
+		<div class="adminator-box--content">
+			<div class="tree">
+				<ul class="tree--ul">
+					{% for goal in master_goals %}
+						{{ goal.get_tree_html()|safe }}
+					{% endfor %}
+				</ul>
+				<div class="tree--script">
+					<script type="text/javascript">
+						$(".tree--caret").dblclick(function(){
+							if ($(this).attr("href")) {
+								window.location = $(this).attr("href");
+							}
+						})
+						$(".tree--caret").on("click", function(){
+							$(this).siblings(".tree--nested").toggleClass("tree--active")
+							$(this).toggleClass("tree--caret-down")
+							$(".masonry").masonry()
+						})
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="masonry--item">
+	<div class="adminator-box">
+		<h6 class="adminator-box--heading">Tree Legend</h6>
+		<div class="adminator-box--content">
+			<div class="tree">
+				<div class="tree--legend">
+					<span class="tree--caret tree--caret-black">Goal</span><br>
+					<span class="tree--caret tree--caret-red tree--caret-round">Progress Monitor</span><br>
+					<span class="tree--caret tree--caret-blue">Strategy</span><br>
+					<span class="tree--caret tree--caret-green tree--caret-round">To Do</span>
+				</div>
+				<div class="tree--legend">
+					<span class="tree-caret tree--caret-fake">Double click a goal, progress monitor or strategy to open it.</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}

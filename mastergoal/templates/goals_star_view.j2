@@ -1,0 +1,48 @@
+{% extends "layout/lhmf.j2" %}
+
+
+{% set title="Star View | Goals" %}
+
+
+{% block main %}
+
+
+{% import "modules/button.j2" as bg %}
+{% import "modules/form.j2" as fg %}
+{% import "modules/item.j2" as ig %}
+{% import "modules/card.j2" as cg %}
+
+
+<div class="masonry--item">
+	{{ fg.headerAdminatorForm("edit-user-choices", url("users:user_star_choices_header", args=[user.pk])) }}
+</div>
+
+
+{% include "snippets/goals.j2" %}
+
+
+{% include 'snippets/strategies.j2' %}
+
+
+{% include 'snippets/links.j2' %}
+
+
+{% include 'snippets/progress_monitors.j2' %}
+
+
+{% include 'snippets/add_to_dos.j2' %}
+
+
+{% include 'snippets/add_goal.j2' %}
+
+
+{% include 'snippets/add_link.j2' %}
+
+
+{% include 'snippets/add_strategy.j2' %}
+
+
+{% include 'snippets/add_progress_monitor.j2' %}
+
+
+{% endblock main %}

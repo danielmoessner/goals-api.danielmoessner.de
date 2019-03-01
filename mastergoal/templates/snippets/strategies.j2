@@ -1,0 +1,12 @@
+{% if strategies %}
+<div class="masonry--item">
+	<div class="adminator-box">
+		<h6 class="adminator-box--heading">Strategies</h6>
+		<div class="adminator-box--content">
+			{% for strategy in strategies %}
+			{{ ig.strategy(strategy, csrf_token) }}
+			{% endfor %}
+		</div>
+	</div>
+</div>
+{% endif %}
