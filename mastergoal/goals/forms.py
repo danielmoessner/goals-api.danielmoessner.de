@@ -235,6 +235,9 @@ class RepetitiveToDoFailedForm(forms.ModelForm):
 
 # NeverEndingToDo
 class NeverEndingToDoForm(forms.ModelForm):
+    activate = forms.DateTimeField(widget=forms.DateTimeInput(
+        attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
+        input_formats=["%Y-%m-%dT%H:%M"], label="Activate")
     duration = forms.DurationField(initial='0 days 00:00:00')
 
     class Meta:
