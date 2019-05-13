@@ -42,7 +42,7 @@ class ProgressMonitorForm(forms.ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super(ProgressMonitorForm, self).__init__(*args, **kwargs)
-        self.fields["goal"].queryset = user.goals.all().order_by('name')
+        self.fields["goal"].queryset = user.goals.exclude(progress=100).order_by('name')
 
     def save(self, commit=True):
         super(ProgressMonitorForm, self).save(commit=commit)
@@ -74,8 +74,8 @@ class LinkForm(forms.ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super(LinkForm, self).__init__(*args, **kwargs)
-        self.fields["master_goal"].queryset = user.goals.all().order_by('name')
-        self.fields["sub_goal"].queryset = user.goals.all().order_by('name')
+        self.fields["master_goal"].queryset = user.goals.exclude(progress=100).order_by('name')
+        self.fields["sub_goal"].queryset = user.goals.exclude(progress=100).order_by('name')
 
     def save(self, commit=True):
         super(LinkForm, self).save(commit=commit)
@@ -97,7 +97,7 @@ class StrategyForm(forms.ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super(StrategyForm, self).__init__(*args, **kwargs)
-        self.fields["goal"].queryset = user.goals.all().order_by('name')
+        self.fields["goal"].queryset = user.goals.exclude(progress=100).order_by('name')
         self.fields["deadline"].initial = timezone.now()
 
     def save(self, commit=True):
@@ -122,7 +122,8 @@ class ToDoForm(forms.ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super(ToDoForm, self).__init__(*args, **kwargs)
-        self.fields["strategy"].queryset = Strategy.objects.filter(goal__in=user.goals.all()).order_by('name')
+        self.fields["strategy"].queryset = Strategy.objects.filter(goal__in=user.goals.exclude(progress=100))\
+            .order_by('name')
         self.fields["deadline"].initial = timezone.now()
         self.fields["activate"].initial = timezone.now()
 
