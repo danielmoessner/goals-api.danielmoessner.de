@@ -220,6 +220,7 @@ class GoalView(LoginRequiredMixin, UserPassesGoalTestMixin, DetailView):
                                                                                   'master_goals')
         context['sub_goals'] = self.object.sub_goals.all().prefetch_related('strategies', 'sub_goals', 'master_goals')
         context['progress_monitors'] = self.object.progress_monitors.all()
+        context['links'] = self.object.sub_links.all()
         return context
 
 

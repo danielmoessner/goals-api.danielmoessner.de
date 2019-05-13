@@ -89,7 +89,7 @@ class StrategyForm(forms.ModelForm):
     deadline = forms.DateTimeField(widget=forms.DateTimeInput(
         attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
         input_formats=["%Y-%m-%dT%H:%M"], label="Deadline (not required)", required=False)
-    rolling = forms.DurationField(initial='7 days 00:00:00')
+    rolling = forms.DurationField(initial='7 days 00:00:00', required=False, label='Rolling (not required)')
 
     class Meta:
         model = Strategy

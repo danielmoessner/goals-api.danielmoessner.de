@@ -238,13 +238,14 @@ class Strategy(models.Model):
         progress = 0
         if self.rolling:
             date = timezone.now() - self.rolling
-            to_dos = self.to_dos.filter(deadline__gte=date)
+            to_dos = self.to_dos.filter(deadline__gte=date, deadline__lte=timezone.now())
         else:
             to_dos = self.to_dos.all()
         for todo in to_dos:
             if todo.is_done:
                 progress += 1
-        return progress / to_dos.count() * 100 if to_dos.count() != 0 else 0
+        to_dos_count = to_dos.count()
+        return progress / to_dos_count * 100 if to_dos_count != 0 else 0
 
 
 class ToDo(models.Model):
