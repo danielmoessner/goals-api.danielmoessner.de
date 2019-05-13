@@ -120,6 +120,7 @@ class ProgressMonitor(models.Model):
     weight = models.PositiveSmallIntegerField(default=1)
     steps = models.PositiveSmallIntegerField()
     step = models.PositiveSmallIntegerField(default=0, blank=True)
+    notes = models.TextField(default='', blank=True)
     # speed
     progress = models.PositiveSmallIntegerField(default=0, blank=True)
 

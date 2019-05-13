@@ -38,7 +38,7 @@ class GoalForm(forms.ModelForm):
 class ProgressMonitorForm(forms.ModelForm):
     class Meta:
         model = ProgressMonitor
-        fields = ('goal', 'monitor', 'weight', 'steps')
+        fields = ('goal', 'monitor', 'weight', 'steps', 'notes')
 
     def __init__(self, user, *args, **kwargs):
         super(ProgressMonitorForm, self).__init__(*args, **kwargs)
