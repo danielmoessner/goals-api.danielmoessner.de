@@ -28,19 +28,19 @@ $(window).ready(function () {
 })
 
 /* custom pulldown refresh */
-var eTop = $('#pulldown').offset().top;
-$(window).scroll(function() {
-	var pos = eTop - $(window).scrollTop()
-	console.log(pos)
-	if (pos > 100) {
-		$("#pulldown").css("color", "#03a9f4");
-	} else {
-		$("#pulldown").css("color", "inherit");
-	}
-	if (pos > 120) {
-		location.reload();
-	}
-});
+// var eTop = $('#pulldown').offset().top;
+// $(window).scroll(function() {
+// 	var pos = eTop - $(window).scrollTop()
+// 	console.log(pos)
+// 	if (pos > 100) {
+// 		$("#pulldown").css("color", "#03a9f4");
+// 	} else {
+// 		$("#pulldown").css("color", "inherit");
+// 	}
+// 	if (pos > 120) {
+// 		location.reload();
+// 	}
+// });
 
 },{"./modules/charts":2,"./modules/masonry":3,"./modules/perfect-scrollbar":4,"./modules/search":5,"./modules/sidebar":6,"./modules/skycons":7}],2:[function(require,module,exports){
 var Chart = require ('chart.js');
@@ -463,6 +463,7 @@ module.exports = function () {
 	$('.masonry').masonry({
 		itemSelector: '.masonry--item',
 		columnWidth: '.masonry--sizer',
+		gutter: '.masonry--gutter',
 		percentPosition: true
 	});
 }();

@@ -13,11 +13,6 @@
 {% import "modules/card.j2" as cg %}
 
 
-<div class="masonry--item">
-	{{ fg.headerAdminatorForm("edit-user-choices", url("users:user_star_choices_header", args=[user.pk])) }}
-</div>
-
-
 {% include "snippets/goals.j2" %}
 
 
@@ -30,19 +25,108 @@
 {% include 'snippets/progress_monitors.j2' %}
 
 
-{% include 'snippets/add_to_dos.j2' %}
+{% if to_dos %}
+<div class="masonry--item masonry--item-4">
+	<div class="adminator-box">
+		<h6 class="adminator-box--heading">Normal To Do's</h6>
+		<div class="adminator-box--content">
+			<ul class="to-do-list">
+				{% for to_do in to_dos %}
+					{{ ig.to_do(to_do, "", csrf_token) }}
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+</div>
+{% endif %}
 
 
-{% include 'snippets/add_goal.j2' %}
+{% if repetitive_to_dos %}
+<div class="masonry--item masonry--item-4">
+	<div class="adminator-box">
+		<h6 class="adminator-box--heading">Repetitive To Do's</h6>
+		<div class="adminator-box--content">
+			<ul class="to-do-list">
+				{% for to_do in repetitive_to_dos %}
+				{{ ig.to_do(to_do, "repetitive_", csrf_token) }}
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+</div>
+{% endif %}
 
 
-{% include 'snippets/add_link.j2' %}
+{% if never_ending_to_dos %}
+<div class="masonry--item masonry--item-4">
+	<div class="adminator-box">
+		<h6 class="adminator-box--heading">Never Ending To Do's</h6>
+		<div class="adminator-box--content">
+			<ul class="to-do-list">
+				{% for to_do in never_ending_to_dos %}
+				{{ ig.to_do(to_do, "never_ending_", csrf_token) }}
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+</div>
+{% endif %}
 
 
-{% include 'snippets/add_strategy.j2' %}
+{% if multiple_to_dos %}
+<div class="masonry--item masonry--item-4">
+	<div class="adminator-box">
+		<h6 class="adminator-box--heading">Multiple To Do's</h6>
+		<div class="adminator-box--content">
+			<ul class="to-do-list">
+				{% for to_do in multiple_to_dos %}
+				{{ ig.to_do(to_do, "multiple_", csrf_token) }}
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+</div>
+{% endif %}
 
 
-{% include 'snippets/add_progress_monitor.j2' %}
+{% if pipeline_to_dos %}
+<div class="masonry--item masonry--item-4">
+	<div class="adminator-box">
+		<h6 class="adminator-box--heading">Pipeline To Do's</h6>
+		<div class="adminator-box--content">
+			<ul class="to-do-list">
+				{% for to_do in pipeline_to_dos %}
+				{{ ig.to_do(to_do, "pipeline_", csrf_token) }}
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+</div>
+{% endif %}
+
+
+<div class="masonry--item masonry--item-4">
+	<div class="adminator-box">
+		<div class="adminator-box--heading">
+			<a class="adminator-box--toggle" id="edit-user-star-choices-toggle" href="#edit-user-star-choices-target" data-toggle="collapse">Settings</a>
+		</div>
+		<div class="adminator-box--content collapse" id="edit-user-star-choices-target">
+			{{ fg.onClickAjaxForm("edit-user-star-choices", url("users:user_star_choices", args=[user.pk])) }}
+		</div>
+	</div>
+</div>
+
+
+<div class="masonry--item masonry--item-4">
+	<div class="adminator-box">
+		<div class="adminator-box--heading">
+			<a class="adminator-box--toggle" id="info-toggle" href="#info-target" data-toggle="collapse">Info</a>
+		</div>
+		<div class="adminator-box--content collapse" id="info-target">
+			This view only takes those todos into account which are in the shown strategies or in the strategies of the shown goals and not shown subgoals of the shown goals.
+		</div>
+	</div>
+</div>
 
 
 {% endblock main %}

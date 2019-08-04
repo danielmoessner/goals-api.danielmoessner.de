@@ -141,6 +141,8 @@
 .progress-item{
 	@extend .w-100; 
 	@extend .mT-15;
+	display: flex;
+	flex-direction: column;
 	&--top{
 		@extend .mB-5;
 		align-items: center;
@@ -159,9 +161,10 @@
 		@extend .c-grey-700;
 	}
 	&--progress-number{
-		@extend .pull-right; 
+		// @extend .pull-right; 
 		@extend .c-grey-600; 
 		@extend .fsz-sm;
+		align-self: flex-end;
 	}
 	&--progress{
 		@extend .progress; 

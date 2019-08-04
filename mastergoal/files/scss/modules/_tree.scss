@@ -1,60 +1,31 @@
 .tree{
+	.blue-badge{
+		margin-right: 2px;
+	}
+
 	ul {
 	  	list-style-type: none;
-	}
+	} 
 	&--ul {
 	  	margin: 0;
 	  	padding: 0;
 	}
-
-	/* Style the caret/arrow */
-	&--caret {
+	&--li {
+		margin: 4px 0;
+	}
+	&--caret--name {
 	  cursor: pointer; 
 	  user-select: none; /* Prevent text selection */
-	}
-
-	/* Create the caret/arrow with a unicode, and style it */
-	&--caret::before {
-	  content: "\25B6";
-	  color: black;
 	  display: inline-block;
-	  margin-right: 6px;
+	  max-width: calc(100% - 60px);
+	  &--active{
+	  	color: black;
+	  }
 	}
-
-	&--caret-red::before{
-		color: red;
+	&--caret--arrow {
+		font-weight: bold;
 	}
-
-	&--caret-blue::before{
-		color: blue;
-	}
-
-	&--caret-green::before{
-		color: green;
-	}
-
-	&--caret-round::before{
-		content: "\2022";
-		transform: scale(2.5) translateY(-1.5px)!important;
-	}
-
-	&--caret-fake::before{
-		content: "- ";
-		color: black;
-	}
-
-	/* Rotate the caret/arrow icon when clicked on (using JavaScript) */
-	&--caret-down::before {
-	  transform: rotate(90deg); 
-	}
-
-	/* Hide the nested list */
 	&--nested {
 	  display: none;
-	}
-
-	/* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
-	&--active {
-	  display: block;
 	}
 }

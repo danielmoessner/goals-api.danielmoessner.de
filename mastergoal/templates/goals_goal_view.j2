@@ -1,0 +1,34 @@
+{% extends "layout/lhmf.j2" %}
+
+
+{% set title="Dashboard | Goals" %}
+
+
+{% block main %}
+
+
+{% import "modules/button.j2" as bg %}
+{% import "modules/form.j2" as fg %}
+{% import "modules/item.j2" as ig %}
+{% import "modules/card.j2" as cg %}
+
+
+{% for goal in goals %}
+  <div class='masonry--item masonry--item-{{ goal.get_class() }}'>
+    <div class="small-adminator-box">
+      <h6 class="adminator-box--heading">{{ goal.name }}</h6>
+      <div class="adminator-box--content">
+        <div class="peers ai-sb fxw-nw">
+          <div class="peer peer-greed">
+            <span id="sparklinedash"></span>
+          </div>
+          <span class="blue-badge">{{ goal.progress }}%</span>
+          <a class="adminator-href-button" href="{{ url('goals:goal', args=[goal.pk]) }}">Open</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+ 
+
+{% endblock main %}

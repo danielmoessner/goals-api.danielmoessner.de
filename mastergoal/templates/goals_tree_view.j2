@@ -20,8 +20,8 @@
 {% import "modules/card.j2" as cg %}
 
 
-<div class="masonry--item">
-	<div class="adminator-box" {# style="height: 2000px" #}>
+<div class="masonry--item masonry--item-5">
+	<div class="adminator-box">
 		<h6 class="adminator-box--heading">Tree</h6>
 		<div class="adminator-box--content">
 			<div class="tree">
@@ -32,14 +32,11 @@
 				</ul>
 				<div class="tree--script">
 					<script type="text/javascript">
-						$(".tree--caret").dblclick(function(){
-							if ($(this).attr("href")) {
-								window.location = $(this).attr("href");
+						$(".tree--caret--name").on("click", function(){
+							$(this).parent().siblings().toggleClass("tree--nested")
+							if ($(this).parent().siblings().length > 0) { 
+								$(this).toggleClass("tree--caret--name--active")
 							}
-						})
-						$(".tree--caret").on("click", function(){
-							$(this).siblings(".tree--nested").toggleClass("tree--active")
-							$(this).toggleClass("tree--caret-down")
 							$(".masonry").masonry()
 						})
 					</script>
@@ -50,19 +47,101 @@
 </div>
 
 
-<div class="masonry--item">
+{#
+<div class="masonry--item masonry--item-4">
+	<div class="adminator-box">
+		<h6 class="adminator-box--heading">Example Tree</h6>
+		<div class="adminator-box--content">
+			<div class="tree">
+				<ul class="tree--ul">
+					<li class="tree--li">
+						<div class="tree--caret">
+							<span class="tree--caret--name"><span class="tree--caret--arrow">&#8611;</span> 1 sdfjlsad</span>
+							<a class="adminator-href-button" href="#">Open</a>
+							<span class="blue-badge">99 %</span>
+						</div>
+						<ul class="tree--nested">
+							<li class="tree--li">
+								<div class="tree--caret">
+									<span class="tree--caret--name"><span class="tree--caret--arrow">&#8611;</span> 11 sdfjlsad</span>
+									<a class="adminator-href-button" href="#">Open</a>
+									<span class="blue-badge">80 %</span>
+								</div>
+								<ul class="tree--nested">
+									<li class="tree--li">
+										<div class="tree--caret">
+											<span class="tree--caret--name"><span class="tree--caret--arrow">&#8623;</span> 111 sdfjlsad</span>
+											<a class="adminator-href-button" href="#">Open</a>
+											<span class="blue-badge">77 %</span>
+										</div>
+									</li>
+								</ul>
+							</li>
+							<li class="tree--li">
+								<div class="tree--caret">
+									<span class="tree--caret--name"><span class="tree--caret--arrow">&#8613;</span> 12 sdfjlsad</span> 
+									<a class="adminator-href-button" href="#">Open</a>
+									<span class="blue-badge">13 %</span>
+								</div>
+							</li>
+							<li class="tree--li">
+								<span class="tree--caret">
+									<span class="tree--caret--name"><span class="tree--caret--arrow">&#8618;</span> 13 sdfjlsad</span> 
+									<a class="adminator-href-button" href="#">Open</a>
+									<span class="blue-badge">95 %</span>
+								</span>
+								<ul class="tree--nested">
+									<li class="tree--li">
+										<span class="tree--caret">
+											<span class="tree--caret--name"><span class="tree--caret--arrow">&#8623;</span> 131 sdfjlsad</span> 
+											<a class="adminator-href-button" href="#">Open</a>
+										</span>
+									</li>
+									<li class="tree--li">
+										<span class="tree--caret">
+											<span class="tree--caret--name"><span class="tree--caret--arrow">&#8623;</span> 132 sdfjlsad</span> 
+											<a class="adminator-href-button" href="#">Open</a>
+										</span>
+									</li>
+								</ul>
+							</li>
+							<li class="tree--li">
+								<span class="tree--caret">
+									<span class="tree--caret--name"><span class="tree--caret--arrow">&#8618;</span> 13 sdfjlsad</span>
+									<a class="adminator-href-button" href="#">Open</a>
+								</span>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<div class="tree--script">
+					<script type="text/javascript">
+						$(".tree--caret--name").on("click", function(){
+							$(this).parent().siblings().toggleClass("tree--nested")
+							if ($(this).parent().siblings().length > 0) { 
+								$(this).toggleClass("tree--caret--name--active")
+							}
+							$(".masonry").masonry()
+						})
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+#}
+
+
+<div class="masonry--item masonry--item-3">
 	<div class="adminator-box">
 		<h6 class="adminator-box--heading">Tree Legend</h6>
 		<div class="adminator-box--content">
 			<div class="tree">
 				<div class="tree--legend">
-					<span class="tree--caret tree--caret-black">Goal</span><br>
-					<span class="tree--caret tree--caret-red tree--caret-round">Progress Monitor</span><br>
-					<span class="tree--caret tree--caret-blue">Strategy</span><br>
-					<span class="tree--caret tree--caret-green tree--caret-round">To Do</span>
-				</div>
-				<div class="tree--legend">
-					<span class="tree-caret tree--caret-fake">Double click a goal, progress monitor or strategy to open it.</span>
+					<span class="tree--caret"><span class="tree--caret--arrow">&#8611;</span> Goal</span><br>
+					<span class="tree--caret"><span class="tree--caret--arrow">&#8613;</span> Monitor</span><br>
+					<span class="tree--caret"><span class="tree--caret--arrow">&#8618;</span> Strategy</span><br>
+					<span class="tree--caret"><span class="tree--caret--arrow">&#8623;</span> To Do</span>
 				</div>
 			</div>
 		</div>

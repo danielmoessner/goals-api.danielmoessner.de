@@ -2,7 +2,8 @@ var gulp = require("gulp"),
 	shell = require("gulp-shell");
 
 
-	gulp.task("sass", shell.task("sassc -t compressed scss/main.scss app/css/main.css"));
+	// gulp.task("sass", shell.task("sassc -t compressed scss/main.scss app/css/main.css"));
+	gulp.task("sass", shell.task("sassc scss/main.scss app/css/main.css"));
 
 
 	gulp.task("watch-sass", function(){

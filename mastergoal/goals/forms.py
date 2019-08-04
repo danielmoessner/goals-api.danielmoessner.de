@@ -188,7 +188,7 @@ class RepetitiveToDoForm(forms.ModelForm):
 
     class Meta:
         model = RepetitiveToDo
-        fields = ('name', 'strategy', 'activate', 'deadline', 'end_day', 'duration', 'notes')
+        fields = ('name', 'strategy', 'activate', 'deadline', 'duration', 'end_day', 'notes')
 
     def __init__(self, user, *args, **kwargs):
         super(RepetitiveToDoForm, self).__init__(*args, **kwargs)

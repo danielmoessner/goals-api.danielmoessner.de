@@ -1,6 +1,6 @@
 from django.db.models import signals
 from django.shortcuts import reverse
-from django.db.models import Q
+from django.db.models import Q, F
 from django.utils import timezone
 from django.db import models
 
@@ -8,6 +8,114 @@ from mastergoal.users.models import CustomUser
 from mastergoal.core.utils import strfdelta
 
 from datetime import timedelta
+
+
+def td_all_filter():
+    return Q()
+
+
+def td_unfinished_filter():
+    return Q(Q(activate__lte=timezone.now()) | Q(activate=None), is_done=False, has_failed=False)
+
+
+def td_active_filter():
+    return Q(activate__lte=timezone.now(), is_done=False, has_failed=False)
+
+
+def td_overdue_filter():
+    return Q(deadline__lte=timezone.now(), is_done=False, has_failed=False)
+
+
+def td_related_filter(strategies):
+    return Q(strategy__in=strategies, is_done=False, has_failed=False)
+
+
+def td_delta_filter(delta):
+    return Q(deadline__lte=timezone.now() + delta, activate__lte=timezone.now(), is_done=False, has_failed=False)
+
+
+def td_orange_filter():
+    return Q(activate__lte=timezone.now(), is_done=False, has_failed=False)
+
+
+def td_none_filter():
+    return Q(pk=None)
+
+
+def g_all_filter():
+    return Q()
+
+
+def g_star_filter():
+    return Q(is_starred=True)
+
+
+def g_unreached_filter():
+    return Q(progress__lt=100)
+
+
+def g_achieved_filter():
+    return Q(progress_gte=100)
+
+
+def g_depth_filter():
+    return Q(False)
+
+
+def g_none_filter():
+    return Q(pk=None)
+
+
+def m_all_filter():
+    return Q()
+
+
+def m_unreached_filter():
+    return Q(progress_lt=100)
+
+
+def m_loaded_filter():
+    return Q(progress_gte=100)
+
+
+def m_related_filter(goals):
+    return Q(goal__in=goals)
+
+
+def m_none_filter():
+    return Q(pk=None)
+
+
+def l_all_filter():
+    return Q()
+
+
+def l_related_filter(goals):
+    return Q(Q(master_goal__in=goals) | Q(sub_goal__in=goals))
+
+
+def l_xrelated_filter(goals):
+    return Q(master_goal__in=goals, sub_goal__in=goals)
+
+
+def l_none_filter():
+    return Q(pk=None)
+
+
+def s_all_filter():
+    return Q()
+
+
+def s_star_filter():
+    return Q(is_starred=True)
+
+
+def s_related_filter(goals):
+    return Q(goal__in=goals)
+
+
+def s_none_filter():
+    return Q(pk=None)
 
 
 class Goal(models.Model):
@@ -23,6 +131,9 @@ class Goal(models.Model):
     is_starred = models.BooleanField(default=False)
 
     # whatever
+    class Meta:
+        ordering = ('progress', 'deadline', 'name')
+
     def __str__(self):
         return self.name
 
@@ -32,6 +143,22 @@ class Goal(models.Model):
         [master_goal.calc() for master_goal in master_goals]
 
     # get
+    @staticmethod
+    def get_goals(goals, choice):
+        if choice == "ALL":
+            goals = goals.filter(g_all_filter())
+        elif choice == "STAR":
+            goals = goals.filter(g_star_filter())
+        elif choice == "UNREACHED":
+            goals = goals.exclude(g_unreached_filter())
+        elif choice == "ACHIEVED":
+            goals = goals.filter(g_achieved_filter())
+        elif choice == "DEPTH" and False:
+            goals = goals.filter(g_depth_filter())
+        else:
+            goals = goals.filter(g_none_filter())
+        return goals
+
     def get_progress(self):
         if self.progress == 100:
             return 'achieved'
@@ -53,22 +180,45 @@ class Goal(models.Model):
             if accuracy is 's':
                 return timezone.localtime(self.deadline).strftime("%d.%m.%Y %H:%M:%S")
             return timezone.localtime(self.deadline).strftime("%d.%m.%Y")
-        return 'no-deadline'
+        return 'no deadline'
 
     def get_tree_html(self):
         sub_goals = ''.join([goal.get_tree_html() for goal in self.sub_goals.exclude(progress=100)])
         sub_goals_tree = '<ul class="tree--nested">{}</ul>'.format(sub_goals)
-        sub_strategies = ''.join([strategy.get_tree_html() for strategy in self.strategies.all()])
+        sub_strategies = ''.join([strategy.get_tree_html() for strategy in self.strategies.exclude(progress=100)])
         sub_strategies_tree = '<ul class="tree--nested">{}</ul>'.format(sub_strategies)
-        sub_progress_monitors = ''.join([pm.get_tree_html() for pm in self.progress_monitors.all()])
+        sub_progress_monitors = ''.join([pm.get_tree_html() for pm in self.progress_monitors.exclude(progress=100)])
         sub_progress_monitors_tree = '<ul class="tree--nested">{}</ul>'.format(sub_progress_monitors)
-        item = '<li><span class="tree--caret" href="{}">{}</span>{}{}{}</li>'\
-            .format(reverse('goals:goal', args=[self.pk]),
-                    self.name,
-                    sub_progress_monitors_tree,
-                    sub_strategies_tree,
-                    sub_goals_tree)
+        html = '<li class="tree--li">' \
+               '<span class="tree--caret">' \
+               '<span class="tree--caret--name">' \
+               '<span class="tree--caret--arrow">&#8611;</span>' \
+               ' {}</span>' \
+               '<a class="adminator-href-button" href="{}">Open</a>' \
+               '<span class="blue-badge">{} %</span>' \
+               '</span>' \
+               '{}{}{}</li>'
+        item = html.format(self.name, reverse('goals:goal', args=[self.pk]), self.progress, sub_progress_monitors_tree,
+                           sub_goals_tree, sub_strategies_tree)
         return item
+
+    def get_class(self):
+        result = min(8, max(1, int(8 * (self.progress + 10) / 100)))
+        return result
+
+    def get_all_subgoals(self):
+        query = self.sub_goals.all()
+        for goal in self.sub_goals.all():
+            query = query | goal.get_all_subgoals()
+        return query
+
+    def get_sub_to_dos(self):
+        to_dos = []
+        for strategy in self.strategies.all():
+            to_dos += strategy.get_unfinished_to_dos()
+        for goal in self.sub_goals.all():
+            to_dos += goal.get_sub_to_dos()
+        return to_dos
 
     # set
     def set_starred(self):
@@ -124,6 +274,9 @@ class ProgressMonitor(models.Model):
     # speed
     progress = models.PositiveSmallIntegerField(default=0, blank=True)
 
+    class Meta:
+        ordering = ('progress', 'goal')
+
     def __str__(self):
         return self.monitor
 
@@ -133,9 +286,31 @@ class ProgressMonitor(models.Model):
         goal.calc()
 
     # get
+    @staticmethod
+    def get_monitors(monitors, choice, goals=None):
+        if choice == "ALL":
+            monitors = monitors.filter(m_all_filter())
+        elif choice == "UNREACHED":
+            monitors = monitors.filter(m_unreached_filter())
+        elif choice == "LOADED":
+            monitors = monitors.filter(m_loaded_filter())
+        elif choice == "RELATED":
+            monitors = monitors.filter(m_related_filter(goals))
+        else:
+            monitors = monitors.filter(m_none_filter())
+        return monitors
+
     def get_tree_html(self):
-        item = '<li><span class="tree--caret tree--caret-red tree--caret-round" href="{}">{}</span>{}</li>'\
-            .format(reverse('goals:progress_monitor', args=[self.pk]), self.monitor, '')
+        html = '<li class="tree--li">' \
+               '<div class="tree--caret">' \
+               '<span class="tree--caret--name">' \
+               '<span class="tree--caret--arrow">&#8613;</span>' \
+               ' {}</span>' \
+               '<a class="adminator-href-button" href="{}">Open</a>' \
+               '<span class="blue-badge">{} %</span>' \
+               '</div>' \
+               '</li>'
+        item = html.format(self.monitor, reverse('goals:progress_monitor', args=[self.pk]), self.progress)
         return item
 
     def get_progress(self):
@@ -160,6 +335,9 @@ class Link(models.Model):
     progress = models.PositiveSmallIntegerField(default=0, blank=True)
 
     # whatever
+    class Meta:
+        ordering = ('progress', 'master_goal')
+
     def __str__(self):
         return str(self.master_goal) + " --> " + str(self.sub_goal)
 
@@ -169,6 +347,18 @@ class Link(models.Model):
         master_goal.calc()
 
     # get
+    @staticmethod
+    def get_links(links, choice, goals=None):
+        if choice == "ALL":
+            links = links.filter(l_all_filter())
+        elif choice == "RELATED":
+            links = links.filter(l_related_filter(goals))
+        elif choice == "XRELATED":
+            links = links.filter(l_xrelated_filter(goals))
+        else:
+            links = links.filter(l_none_filter())
+        return links
+
     def get_name(self):
         return self.master_goal.name + ' --> ' + self.sub_goal.name
 
@@ -197,6 +387,9 @@ class Strategy(models.Model):
     is_starred = models.BooleanField(default=False)
 
     # whatever
+    class Meta:
+        ordering = ('progress', 'name')
+
     def __str__(self):
         return str(self.name)
 
@@ -206,14 +399,32 @@ class Strategy(models.Model):
         goal.calc()
 
     # get
+    @staticmethod
+    def get_strategies(strategies, choice, goals=None):
+        if choice == "ALL":
+            strategies = strategies.filter(s_all_filter())
+        elif choice == "STAR":
+            strategies = strategies.filter(s_star_filter())
+        elif choice == "RELATED":
+            strategies = strategies.filter(s_related_filter(goals))
+        else:
+            strategies = strategies.filter(s_none_filter())
+        return strategies
+
     def get_tree_html(self):
         to_dos_filter = Q(is_done=False, has_failed=False)
         to_dos = ''.join([to_do.get_tree_html() for to_do in self.to_dos.filter(to_dos_filter)])
         to_dos_tree = '<ul class="tree--nested">{}</ul>'.format(to_dos)
-        item = '<li><span class="tree--caret tree--caret-blue" href="{}">{}</span>{}</li>'\
-            .format(reverse('goals:strategy', args=[self.pk]),
-                    self.name,
-                    to_dos_tree)
+        html = '<li class="tree--li">' \
+               '<span class="tree--caret">' \
+               '<span class="tree--caret--name">' \
+               '<span class="tree--caret--arrow">&#8618;</span>' \
+               ' {}</span>' \
+               '<a class="adminator-href-button" href="{}">Open</a>' \
+               '<span class="blue-badge">{} %</span>' \
+               '</span>' \
+               '{}</li>'
+        item = html.format(self.name, reverse('goals:strategy', args=[self.pk]), self.progress, to_dos_tree)
         return item
 
     def get_goal(self):
@@ -224,6 +435,10 @@ class Strategy(models.Model):
 
     def get_progress(self):
         return self.progress
+
+    def get_unfinished_to_dos(self):
+        to_dos = list(self.to_dos.filter(td_unfinished_filter()))
+        return to_dos
 
     # set
     def set_starred(self):
@@ -259,6 +474,9 @@ class ToDo(models.Model):
     notes = models.TextField(null=True, blank=True)
 
     # whatever
+    class Meta:
+        ordering = ('is_done', 'has_failed', 'deadline', 'activate', 'name')
+
     def __str__(self):
         return str(self.name) + ": " + self.get_activate(accuracy='medium') + " - " + self.get_deadline(accuracy='medium')
 
@@ -268,8 +486,47 @@ class ToDo(models.Model):
         strategy.calc()
 
     # getters
+    @staticmethod
+    def get_to_dos(all_strategies, to_do_class, to_dos_filter, delta=None, strategies=None):
+        all_to_dos = to_do_class.objects.filter(strategy__in=all_strategies)
+
+        if to_do_class is ToDo:
+            all_to_dos = to_do_class.objects.filter(strategy__in=all_strategies) \
+                .exclude(pk__in=RepetitiveToDo.objects.filter(strategy__in=all_strategies)) \
+                .exclude(pk__in=NeverEndingToDo.objects.filter(strategy__in=all_strategies)) \
+                .exclude(pk__in=MultipleToDo.objects.filter(strategy__in=all_strategies)) \
+                .exclude(pk__in=PipelineToDo.objects.filter(strategy__in=all_strategies))
+
+        if to_dos_filter == "ALL":
+            to_dos = all_to_dos
+        elif to_dos_filter == "ACTIVE":
+            to_dos = all_to_dos.filter(td_active_filter())
+        elif to_dos_filter == "DELTA":
+            to_dos = all_to_dos.filter(td_delta_filter(delta))
+        elif to_dos_filter == "OVERDUE":
+            to_dos = all_to_dos.filter(td_overdue_filter())
+        elif to_dos_filter == "UNFINISHED":
+            to_dos = all_to_dos.filter(td_unfinished_filter())
+        elif to_dos_filter == "RELATED":
+            to_dos = all_to_dos.filter(td_related_filter(strategies))
+        elif to_dos_filter == "ORANGE":
+            to_dos = all_to_dos.filter(deadline__lt=(F('deadline') - F('activate')) * .2 + timezone.now())
+        else:
+            to_dos = to_do_class.objects.none()
+        to_dos = to_dos.order_by('deadline')
+
+        return to_dos
+
     def get_tree_html(self):
-        item = '<li><span class="tree--caret tree--caret-green tree--caret-round">{}</span></li>'.format(self.name)
+        html = '<li class="tree--li">' \
+               '<span class="tree--caret">' \
+               '<span class="tree--caret--name">' \
+               '<span class="tree--caret--arrow">&#8623;</span>' \
+               ' {}</span>' \
+               '<a class="adminator-href-button" href="{}">Open</a>' \
+               '</span>' \
+               '</li>'
+        item = html.format(self.name, reverse('goals:to_do', args=[self.pk]))
         return item
 
     def get_deadline(self, accuracy='high'):

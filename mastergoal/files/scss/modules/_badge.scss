@@ -1,0 +1,11 @@
+.blue-badge{
+	@extend .badge;
+	@extend .badge-pill;
+	@extend .fl-r;
+	@extend .lh-0;
+	@extend .p-10;
+	// @extend .ml-1;
+	@extend .badge-info;
+	display: block!important;
+	border: none;
+}

@@ -1,9 +1,46 @@
 .masonry{
-	@extend .gap-20;
-	&--sizer{
-		@extend .col-md-6;
+	&--item-1{
+		width: calc(12.5% - 11.375px);
+		margin-bottom: 13px;
 	}
+	&--item-2{
+		width: calc(25% - 9.75px);
+		margin-bottom: 13px;
+	}
+	&--item-3{
+		width: calc(37.5% - 8.125px);
+		margin-bottom: 13px;
+	}
+	&--item-4{
+		width: calc(50% - 6.5px);
+		margin-bottom: 13px;
+	}
+	&--item-5{
+		width: calc(62.5% - 4.875px);
+		margin-bottom: 13px;
+	}
+	&--item-6{
+		width: calc(75% - 3.25px);
+		margin-bottom: 13px;
+	}
+	&--item-7{
+		width: calc(87.5% - 1.625px);
+		margin-bottom: 13px;
+	}
+	&--item-8{
+		width: 100%;
+		margin-bottom: 13px;
+	}
+
+
 	&--item{
-		@extend .col-md-6;
+		// @extend .masonry--item-4;
+	}
+	&--sizer{
+		@extend .masonry--item-1;
+		margin-bottom: 0;
+	}
+	&--gutter{
+		width: 13px;
 	}
 }

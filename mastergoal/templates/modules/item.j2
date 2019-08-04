@@ -45,10 +45,10 @@
 		<h5 class="progress-item--title">{{ goal.name }}</h5>
 		<a class="adminator-href-button" href="{{ url('goals:goal', args=[goal.pk]) }}">Open</a>
 	</div>
-	<small class="progress-item--subtitle">Mastergoals: </small><small>{{ goal.get_mastergoals() }}</small><br>
-	<small class="progress-item--subtitle">Subgoals: </small><small>{{ goal.get_subgoals() }}</small><br>
-	<small class="progress-item--subtitle">Strategies: </small><small>{{ goal.get_strategies() }}</small>
-	<span class="progress-item--progress-number">{{ goal.get_deadline('d') }} - {{ goal.progress }}%</span>
+	<small><span class="progress-item--subtitle">Mastergoals: </span>{{ goal.get_mastergoals() }}</small>
+	<small><span class="progress-item--subtitle">Subgoals: </span>{{ goal.get_subgoals() }}</small>
+	<small><span class="progress-item--subtitle">Strategies: </span>{{ goal.get_strategies() }}</small>
+	<span class="progress-item--progress-number">{{ goal.get_deadline('d') }} - {{ goal.progress }} %</span>
 	<div class="progress-item--progress">
 		<div class="progress-item--progress-bar" style="width:{{ goal.progress }}%;"></div>
 	</div>
@@ -62,7 +62,7 @@
 		<h5 class="progress-item--title">{{ strategy.name }}</h5>
 		<a class="adminator-href-button" href="{{ url('goals:strategy', args=[strategy.pk]) }}">Open</a>
 	</div>
-	<small class="progress-item--subtitle">Goal: </small><small>{{ strategy.get_goal() }}</small>
+	<small><span class="progress-item--subtitle">Goal:</span> {{ strategy.get_goal() }}</small>
 	<span class="progress-item--progress-number">{{ strategy.progress }}%</span>
 	<div class="progress-item--progress">
 		<div class="progress-item--progress-bar" style="width:{{ strategy.progress }}%;"></div>
@@ -72,12 +72,16 @@
 
 
 {% macro link(link) %}
-<tr>
-	<td class="fw-600">{{ link.get_name() }}</td>
-	<td>{{ link.weight }}</td>
-	<td>{{ link.proportion }}</td>
-	<td><a class="adminator-href-button" href="{{ url('goals:link', args=[link.pk]) }}">Open</a></td>
-</tr>
+<div class="progress-item">
+	<div class="progress-item--top">
+		<h5 class="progress-item--title">{{ link.master_goal }} <==> {{ link.sub_goal }}</h5>
+		<a class="adminator-href-button" href="{{ url('goals:link', args=[link.pk]) }}">Open</a>
+	</div>
+	<span class="progress-item--progress-number">{{ link.progress }} %</span>
+	<div class="progress-item--progress">
+		<div class="progress-item--progress-bar" style="width:{{ link.progress }}%;"></div>
+	</div>
+</div>
 {% endmacro %}
 
 
@@ -92,7 +96,7 @@
 		<div class="hs-1"></div>
 		<a class="adminator-href-button" href="{{ url('goals:progress_monitor', args=[progress_monitor.pk]) }}">Open</a>
 	</div>
-	<small class="progress-item--subtitle">Goal: </small><small>{{ progress_monitor.goal }}</small>
+	<small><span class="progress-item--subtitle">Goal:</span> {{ progress_monitor.goal }}</small>
 	<span class="progress-item--progress-number">{{ progress_monitor.step }}/{{ progress_monitor.steps }}</span>
 	<div class="progress-item--progress">
 		<div class="progress-item--progress-bar" style="width:{{ progress_monitor.progress }}%;"></div>

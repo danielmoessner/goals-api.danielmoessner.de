@@ -27,16 +27,16 @@ $(window).ready(function () {
 })
 
 /* custom pulldown refresh */
-var eTop = $('#pulldown').offset().top;
-$(window).scroll(function() {
-	var pos = eTop - $(window).scrollTop()
-	console.log(pos)
-	if (pos > 100) {
-		$("#pulldown").css("color", "#03a9f4");
-	} else {
-		$("#pulldown").css("color", "inherit");
-	}
-	if (pos > 120) {
-		location.reload();
-	}
-});
+// var eTop = $('#pulldown').offset().top;
+// $(window).scroll(function() {
+// 	var pos = eTop - $(window).scrollTop()
+// 	console.log(pos)
+// 	if (pos > 100) {
+// 		$("#pulldown").css("color", "#03a9f4");
+// 	} else {
+// 		$("#pulldown").css("color", "inherit");
+// 	}
+// 	if (pos > 120) {
+// 		location.reload();
+// 	}
+// });

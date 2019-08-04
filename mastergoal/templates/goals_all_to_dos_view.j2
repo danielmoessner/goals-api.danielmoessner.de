@@ -1,7 +1,7 @@
 {% extends "layout/lhmf.j2" %}
 
 
-{% set title="To Do's | Goals" %}
+{% set title="All To Do's View | Goals" %}
 
 
 {% block main %}
@@ -11,11 +11,6 @@
 {% import "modules/form.j2" as fg %}
 {% import "modules/item.j2" as ig %}
 {% import "modules/card.j2" as cg %}
-
-
-{# <div class="pulldown" id="pulldown">
-	Reload
-</div> #}
 
 
 {% if to_dos %}
@@ -98,16 +93,4 @@
 {% endif %}
 
 
-<div class="masonry--item masonry--item-4">
-	<div class="adminator-box">
-		<div class="adminator-box--heading">
-			<a class="adminator-box--toggle" id="to-dos-choices-toggle" href="#to-dos-choices-target" data-toggle="collapse">Settings</a>
-		</div>
-		<div class="adminator-box--content collapse" id="to-dos-choices-target">
-			{{ fg.onClickAjaxForm("to-dos-choices", url("users:user_to_dos_choices", args=[user.pk])) }}
-		</div>
-	</div>
-</div>
-
-
-{% endblock main %}
+{% endblock %}

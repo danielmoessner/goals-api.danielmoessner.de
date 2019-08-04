@@ -62,3 +62,14 @@
 		margin: 0;
 	}
 }
+
+.small-adminator-box{
+	.blue-badge{
+		@extend .mr-1;
+	}
+
+	@extend .bd;
+	@extend .bgc-white;
+	@extend .p-10;
+	height: 100%;
+}

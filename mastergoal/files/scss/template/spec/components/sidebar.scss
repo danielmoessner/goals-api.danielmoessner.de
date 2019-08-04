@@ -189,15 +189,15 @@
 
   .sidebar-link {
     &.active::before {
-      background: $md-blue-500;
-      border-radius: 50%;
-      content: '';
-      display: block;
-      height: 8px;
-      left: -4px;
-      position: absolute;
-      top: calc(50% - 4px);
-      width: 8px;
+      // background: $md-blue-500;
+      // border-radius: 50%;
+      // content: '';
+      // display: block;
+      // height: 8px;
+      // left: -4px;
+      // position: absolute;
+      // top: calc(50% - 4px);
+      // width: 8px;
     }
   }
 

@@ -30,42 +30,70 @@
         <li class="nav-item mT-30 active">
           <a class="sidebar-link" href="{{ url('goals:index') }}">
             <span class="icon-holder">
-              <i class="c-blue-500 ti-home"></i>
+              <i class="c-blue-500 ti-view-grid"></i>
             </span>
-            <span class="title">Dashboard</span>
+            <span class="title">Goal</span>
           </a>
         </li>
         <li class="nav-item">
           <a class='sidebar-link' href="{{ url('goals:to_dos_view') }}">
             <span class="icon-holder">
-              <i class="c-light-blue-500 ti-pencil"></i>
+              <i class="c-light-blue-500 ti-layout-list-thumb"></i>
             </span>
-            <span class="title">To Do's View</span>
+            <span class="title">To Do</span>
           </a>
         </li>
         <li class="nav-item">
           <a class='sidebar-link' href="{{ url('goals:tree_view') }}">
             <span class="icon-holder">
-              <i class="c-light-blue-500 ti-view-list-alt"></i>
+              <i class="c-light-blue-500 ti-server"></i>
             </span>
-            <span class="title">Tree View</span>
+            <span class="title">Tree</span>
           </a>
         </li>
         <li class="nav-item">
           <a class='sidebar-link' href="{{ url('goals:star_view') }}">
             <span class="icon-holder">
-              <i class="c-light-blue-500 ti-palette"></i>
+              <i class="c-light-blue-500 ti-star"></i>
             </span>
-            <span class="title">Star View</span>
+            <span class="title">Star</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class='sidebar-link' href="{{ url('goals:all_to_dos_view') }}">
+          <a class='sidebar-link' href="{{ url('goals:add_view') }}">
             <span class="icon-holder">
               <i class="c-light-blue-500 ti-pencil"></i>
             </span>
-            <span class="title">All To Do's View</span>
+            <span class="title">Add</span>
           </a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="dropdown-toggle" href="javascript:void(0);">
+            <span class="icon-holder">
+              <i class="c-light-blue-500 ti-archive"></i>
+            </span>
+            <span class="title">All</span>
+            <span class="arrow">
+              <i class="ti-angle-right"></i>
+            </span>
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <a class='sidebar-link' href="{{ url('goals:all_goals_view') }}">Goals</a>
+            </li>
+            <li>
+              <a class='sidebar-link' href="{{ url('goals:all_progress_monitors_view') }}">Progress Monitors</a>
+            </li>
+            <li>
+              <a class='sidebar-link' href="{{ url('goals:all_links_view') }}">Links</a>
+            </li>
+            <li>
+              <a class='sidebar-link' href="{{ url('goals:all_strategies_view') }}">Strategies</a>
+            </li>
+            <li>
+              <a class='sidebar-link' href="{{ url('goals:all_to_dos_view') }}">To Dos</a>
+            </li>
+          </ul>
         </li>
         <li class="nav-item">
           <a class='sidebar-link' href="{{ url('notes:index') }}">
@@ -76,14 +104,6 @@
           </a>
         </li>
         {# <li class="nav-item">
-          <a class='sidebar-link' href="email.html">
-            <span class="icon-holder">
-              <i class="c-brown-500 ti-email"></i>
-            </span>
-            <span class="title">Email</span>
-          </a>
-        </li>
-        <li class="nav-item">
           <a class='sidebar-link' href="compose.html">
             <span class="icon-holder">
               <i class="c-blue-500 ti-share"></i>

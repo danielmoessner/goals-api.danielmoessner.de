@@ -37,7 +37,9 @@ class CustomUserStarForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ('goal_depth', 'goal_choice', 'progress_monitor_choice', 'link_choice', 'strategy_choice')
+        fields = ('goal_depth', 'goal_choice', 'progress_monitor_choice', 'link_choice', 'strategy_choice',
+                  'starview_normaltodos_choice', 'starview_neverendingtodos_choice', 'starview_repetitivetodos_choice',
+                  'starview_multipletodos_choice', 'starview_pipelinetodos_choice')
 
 
 class CustomUserToDosForm(forms.ModelForm):
