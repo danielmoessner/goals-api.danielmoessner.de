@@ -35,6 +35,8 @@ urlpatterns = [
     path('repetitivetodo/add', form_views.RepetitiveToDoAdd.as_view(), name='repetitive_to_do_add'),
     path('repetitivetodo/<pk>/edit', form_views.RepetitiveToDoEdit.as_view(), name='repetitive_to_do_edit'),
     path('repetitivetodo/<pk>/delete', form_views.RepetitiveToDoDelete.as_view(), name='repetitive_to_do_delete'),
+    path('repetitivetodo/<pk>/delete-list', form_views.RepetitiveToDoListDelete.as_view(),
+         name='repetitive_to_do_list_delete'),
     path('repetitivetodo/<pk>/done', form_views.RepetitiveToDoDone.as_view(), name='repetitive_to_do_done'),
     path('repetitivetodo/<pk>/failed', form_views.RepetitiveToDoFailed.as_view(), name='repetitive_to_do_failed'),
     path('neverendingtodo/add', form_views.NeverEndingToDoAdd.as_view(), name='never_ending_to_do_add'),

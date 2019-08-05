@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views import generic
 from django.urls import reverse_lazy
@@ -214,6 +215,33 @@ class RepetitiveToDoEdit(ToDoEdit):
 class RepetitiveToDoDelete(ToDoDelete):
     model = RepetitiveToDo
     template_name = "snippets/delete.j2"
+
+
+class RepetitiveToDoListDelete(LoginRequiredMixin, UserPassesToDoTestMixin, generic.DeleteView):
+    model = RepetitiveToDo
+    template_name = 'snippets/delete_list.j2'
+    success_url = reverse_lazy("goals:index")
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.objects = self.get_objects()
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['objects'] = self.objects
+        return context
+
+    def get_objects(self):
+        return self.object.get_all_after()
+
+    def delete(self, request, *args, **kwargs):
+        self.objects = self.get_objects()
+        self.object.get_all_before().update(end_day=self.object.activate)
+        success_url = self.get_success_url()
+        self.objects.delete()
+        return HttpResponseRedirect(success_url)
 
 
 class RepetitiveToDoDone(ToDoDone):

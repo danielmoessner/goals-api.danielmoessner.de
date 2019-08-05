@@ -194,11 +194,11 @@ class Goal(models.Model):
                '<span class="tree--caret--name">' \
                '<span class="tree--caret--arrow">&#8611;</span>' \
                ' {}</span>' \
-               '<a class="adminator-href-button" href="{}">Open</a>' \
                '<span class="blue-badge">{} %</span>' \
+               '<a class="adminator-href-button" href="{}">Open</a>' \
                '</span>' \
                '{}{}{}</li>'
-        item = html.format(self.name, reverse('goals:goal', args=[self.pk]), self.progress, sub_progress_monitors_tree,
+        item = html.format(self.name, self.progress, reverse('goals:goal', args=[self.pk]), sub_progress_monitors_tree,
                            sub_goals_tree, sub_strategies_tree)
         return item
 
@@ -306,11 +306,11 @@ class ProgressMonitor(models.Model):
                '<span class="tree--caret--name">' \
                '<span class="tree--caret--arrow">&#8613;</span>' \
                ' {}</span>' \
-               '<a class="adminator-href-button" href="{}">Open</a>' \
                '<span class="blue-badge">{} %</span>' \
+               '<a class="adminator-href-button" href="{}">Open</a>' \
                '</div>' \
                '</li>'
-        item = html.format(self.monitor, reverse('goals:progress_monitor', args=[self.pk]), self.progress)
+        item = html.format(self.monitor, self.progress, reverse('goals:progress_monitor', args=[self.pk]))
         return item
 
     def get_progress(self):
@@ -420,11 +420,11 @@ class Strategy(models.Model):
                '<span class="tree--caret--name">' \
                '<span class="tree--caret--arrow">&#8618;</span>' \
                ' {}</span>' \
-               '<a class="adminator-href-button" href="{}">Open</a>' \
                '<span class="blue-badge">{} %</span>' \
+               '<a class="adminator-href-button" href="{}">Open</a>' \
                '</span>' \
                '{}</li>'
-        item = html.format(self.name, reverse('goals:strategy', args=[self.pk]), self.progress, to_dos_tree)
+        item = html.format(self.name, self.progress, reverse('goals:strategy', args=[self.pk]), to_dos_tree)
         return item
 
     def get_goal(self):
@@ -507,8 +507,6 @@ class ToDo(models.Model):
             to_dos = all_to_dos.filter(td_overdue_filter())
         elif to_dos_filter == "UNFINISHED":
             to_dos = all_to_dos.filter(td_unfinished_filter())
-        elif to_dos_filter == "RELATED":
-            to_dos = all_to_dos.filter(td_related_filter(strategies))
         elif to_dos_filter == "ORANGE":
             to_dos = all_to_dos.filter(deadline__lt=(F('deadline') - F('activate')) * .2 + timezone.now())
         else:
@@ -535,15 +533,15 @@ class ToDo(models.Model):
                 return timezone.localtime(self.deadline).strftime("%d.%m.%Y")
             else:
                 return timezone.localtime(self.deadline).strftime("%d.%m.%Y %H:%M")
-        return 'no-deadline'
+        return 'none'
 
     def get_activate(self, accuracy='high'):
-        if self.deadline:
+        if self.activate:
             if accuracy == 'medium':
                 return timezone.localtime(self.activate).strftime("%d.%m.%Y")
             else:
                 return timezone.localtime(self.activate).strftime("%d.%m.%Y %H:%M")
-        return 'no-deadline'
+        return 'none'
 
     def get_to_deadline_time(self):
         color = self.get_color()
@@ -581,6 +579,11 @@ class ToDo(models.Model):
                 color = 'green'
         return color
 
+    def get_notes(self):
+        if self.notes:
+            return self.notes
+        return ''
+
     def get_next(self):
         return 'None'
 
@@ -611,6 +614,18 @@ class RepetitiveToDo(ToDo):
 
     def get_previous(self):
         return self.previous
+
+    def get_all_after(self):
+        q = RepetitiveToDo.objects.filter(pk=self.pk)
+        for rtd in self.next.all():
+            q = q | rtd.get_all_after()
+        return q
+
+    def get_all_before(self):
+        q = RepetitiveToDo.objects.filter(pk=self.pk)
+        if self.previous:
+            q = q | self.previous.get_all_before()
+        return q
 
     # generate
     def generate_next(self):

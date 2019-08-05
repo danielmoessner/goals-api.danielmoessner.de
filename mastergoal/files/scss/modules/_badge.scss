@@ -5,7 +5,9 @@
 	@extend .lh-0;
 	@extend .p-10;
 	// @extend .ml-1;
-	@extend .badge-info;
+	// @extend .badge-info;
+	@extend .bgc-blue-50;
+	@extend .c-blue-500;
 	display: block!important;
 	border: none;
 }

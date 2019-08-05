@@ -4587,10 +4587,10 @@ input[type="button"].btn-block {
     color: #fff;
     background-color: #1e7e34; }
 
-.badge-info, .adminator-update-button, .blue-badge {
+.badge-info, .adminator-update-button {
   color: #fff;
   background-color: #17a2b8; }
-  a.badge-info:hover, a.adminator-update-button:hover, a.blue-badge:hover, a.badge-info:focus, a.adminator-update-button:focus, a.blue-badge:focus {
+  a.badge-info:hover, a.adminator-update-button:hover, a.badge-info:focus, a.adminator-update-button:focus {
     color: #fff;
     background-color: #117a8b; }
 
@@ -17406,7 +17406,7 @@ footer {
 .fl-l {
   float: left !important; }
 
-.fl-r, .to-do-item--button, .to-do-item--edit-button, .progress-item--edit-button, .to-do-item--failed-button, .adminator-href-button, .adminator-update-button, .blue-badge {
+.fl-r, .to-do-item--button, .to-do-item--edit-button, .progress-item--edit-button, .to-do-item--failed-button, .adminator-update-button, .blue-badge {
   float: right !important; }
 
 .fl-n {
@@ -42368,7 +42368,7 @@ footer {
 .c-blue-50, .cH-blue-50:hover {
   color: #e3f2fd !important; }
 
-.bgc-blue-50, .to-do-item--badge-label--blue, .bgcH-blue-50:hover {
+.bgc-blue-50, .to-do-item--badge-label--blue, .blue-badge, .bgcH-blue-50:hover {
   background-color: #e3f2fd !important; }
 
 .bdc-blue-50, .bdcH-blue-50:hover {
@@ -42440,7 +42440,7 @@ footer {
 .str-blue-400, .strH-blue-400:hover {
   stroke: #42a5f5 !important; }
 
-.c-blue-500, .to-do-item--badge-label--blue, .cH-blue-500:hover {
+.c-blue-500, .to-do-item--badge-label--blue, .blue-badge, .cH-blue-500:hover {
   color: #2196f3 !important; }
 
 .bgc-blue-500, .bgcH-blue-500:hover {
@@ -49211,6 +49211,8 @@ table.dataTable.no-footer {
     margin-top: 0; }
   .adminator-box--p {
     margin: 0; }
+  .adminator-box--middle-p {
+    margin-bottom: .3rem; }
 
 .small-adminator-box {
   height: 100%; }
@@ -49253,7 +49255,10 @@ table.dataTable.no-footer {
   padding-right: 100px; }
 
 .tree .blue-badge {
-  margin-right: 2px; }
+  margin-left: auto; }
+
+.tree .adminator-href-button {
+  margin-left: 2px; }
 
 .tree ul {
   list-style-type: none; }
@@ -49265,12 +49270,18 @@ table.dataTable.no-footer {
 .tree--li {
   margin: 4px 0; }
 
+.tree--caret {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start; }
+
 .tree--caret--name {
   cursor: pointer;
   user-select: none;
   /* Prevent text selection */
   display: inline-block;
-  max-width: calc(100% - 60px); }
+  max-width: calc(100% - 60px);
+  margin-right: auto; }
   .tree--caret--name--active {
     color: black; }
 

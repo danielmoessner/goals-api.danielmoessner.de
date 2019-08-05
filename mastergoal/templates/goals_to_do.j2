@@ -16,7 +16,7 @@
 <div class="masonry--item masonry--item-4">
 	<div class="row m-0">
 
-		<div class='col-md-3 p-0'>
+		<div class='col-md-6 p-0'>
 			<div class="adminator-box">
 				<div class="adminator-box--top">
 					<h6 class="adminator-box--heading">{{ to_do.name }}</h6>
@@ -89,36 +89,50 @@
 				</div>
 			</div>
 		</div>
-
-		<div class='col-md-3 p-0'>
+		<div class='col-md-6 p-0'>
 			<div class="adminator-box">
 				<h6 class="adminator-box--heading">Properties</h6>
 				<div class="adminator-box--content">
 					<p class="adminator-box--p">
-						Activate: {{ to_do.get_activate() }}<br>
-						Deadline: {{ to_do.get_deadline() }}
+						{% if to_do.activate %}
+							Activate: {{ to_do.get_activate() }}<br>
+						{% endif %}
+						{% if to_do.deadline %}
+							Deadline: {{ to_do.get_deadline() }}
+						{% endif %}
 					</p>
 				</div>
 			</div>
 		</div>
-
-		<div class='col-md-3 p-0'>
+		{% if to_do.__class__.__name__ == 'RepetitiveToDo' %}
+		<div class='col-md-6 p-0'>
 			<div class="adminator-box">
 				<h6 class="adminator-box--heading">Siblings</h6>
 				<div class="adminator-box--content">
+					<p class="adminator-box--middle-p">
+						{% with prev = to_do.get_previous() %}
+							Previous: {{ prev }} <a class="adminator-href-button" href="{{ url('goals:repetitive_to_do', args=[prev.pk]) }}">Open</a>
+						{% endwith %}
+					</p>
 					<p class="adminator-box--p">
-						Previous: {{ to_do.get_previous() }}<br>
-						Next: {{ to_do.get_next() }}
+						{% with next = to_do.get_next() %}
+							Next: {{ next }} <a class="adminator-href-button" href="{{ url('goals:repetitive_to_do', args=[next.pk]) }}">Open</a>
+						{% endwith %}
 					</p>
 				</div>
 			</div>
 		</div>
-
-		<div class='col-md-3 p-0'>
+		{% else %}
+		<div class='col-md-6 p-0'>
+			<div class="adminator-box">
+			</div>
+		</div>
+		{% endif %}
+		<div class='col-md-6 p-0'>
 			<div class="adminator-box">
 				<h6 class="adminator-box--heading">Notes</h6>
 				<div class="adminator-box--content">
-					<p class="adminator-box--p">{{ to_do.notes }}</p>
+					<p class="adminator-box--p">{{ to_do.get_notes() }}</p>
 				</div>
 			</div>
 		</div>
@@ -180,6 +194,20 @@
         </div>
     </div>
 </div>
+
+
+{% if to_do.__class__.__name__ == 'RepetitiveToDo' %}
+	<div class="masonry--item masonry--item-4">
+	    <div class="adminator-box">
+	        <div class="adminator-box--heading">
+	          <a class="adminator-box--toggle" id="delete-to-do-list-toggle" href="#delete-to-do-list-target" data-toggle="collapse">Delete All</a>
+	        </div>
+	        <div class="adminator-box--content collapse" id="delete-to-do-list-target">
+	          {{ fg.onClickForm("delete-to-do-list", url("goals:repetitive_to_do_list_delete", args=[to_do.pk])) }}
+	        </div>
+	    </div>
+	</div>
+{% endif %}
 
 
 {% endblock main %}		
