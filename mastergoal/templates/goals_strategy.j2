@@ -15,11 +15,10 @@
 
 <div class="masonry--item masonry--item-4">
 	<div class="row m-0">
-
-		<div class='col-md-4 p-0'>
+		<div class='col-md-6 p-0'>
 			<div class="adminator-box">
-				<h6 class="adminator-box--heading">{{ strategy.name }}</h6>
-				<div class="adminator-box--content">
+				<div class="adminator-box--top">
+					<h6 class="adminator-box--heading">{{ strategy.name }}</h6>
 					<a class="star--link" href="{{ url('goals:strategy_star', args=[strategy.pk]) }}">
 						{% if strategy.is_starred %}
 							<span class="star--black"></span>
@@ -27,35 +26,32 @@
 							<span class="star--white"></span>
 						{% endif %}
 					</a>
-					<div class="peers ai-sb fxw-nw">
-						<div class="peer peer-greed">
-							<span id="sparklinedash"></span>
-						</div>
-						<div class="peer">
-							<span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-blue-50 c-blue-500">{{ strategy.progress }}%</span>
-						</div>
-					</div>
 				</div>
-			</div>
-		</div>
-
-		<div class='col-md-4 p-0'>
-			<div class="adminator-box">
-				<h6 class="adminator-box--heading">Description</h6>
 				<div class="adminator-box--content">
-					<p class="adminator-box-p">{{ strategy.description }}</p>
+					<span class="blue-badge">{{ strategy.progress }}%</span>
 				</div>
 			</div>
 		</div>
-
-		<div class='col-md-4 p-0'>
+		<div class='col-md-6 p-0'>
 			<div class="adminator-box">
 				<h6 class="adminator-box--heading">Properties</h6>
 				<div class="adminator-box--content">
-					<p class="adminator-box-p">
-						Weight: {{ strategy.weight }}<br>
-						Rolling: {{ strategy.rolling }}
+					<p class="adminator-box--p">
+						Weight: {{ strategy.weight }}
+						{% if strategy.rolling %}
+							<br>Rolling: {{ strategy.get_rolling() }}
+						{% endif %}
 					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row m-0">
+		<div class='col-md-12 p-0'>
+			<div class="adminator-box">
+				<h6 class="adminator-box--heading">Description</h6>
+				<div class="adminator-box--content">
+					<p class="adminator-box--p">{{ strategy.description }}</p>
 				</div>
 			</div>
 		</div>
@@ -98,9 +94,6 @@
         </div>
     </div>
 </div>
-
-
-{% include 'snippets/add_to_dos.j2' %}
 
 
 {% endblock main %}

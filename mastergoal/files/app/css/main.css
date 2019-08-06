@@ -17406,7 +17406,7 @@ footer {
 .fl-l {
   float: left !important; }
 
-.fl-r, .to-do-item--button, .to-do-item--edit-button, .progress-item--edit-button, .to-do-item--failed-button, .adminator-update-button, .blue-badge {
+.fl-r, .to-do-item--button, .to-do-item--edit-button, .progress-item--edit-button, .to-do-item--failed-button, .adminator-update-button {
   float: right !important; }
 
 .fl-n {
@@ -49198,6 +49198,8 @@ table.dataTable.no-footer {
 
 .adminator-box {
   height: 100%; }
+  .adminator-box .adminator-update-button, .adminator-box .adminator-href-button {
+    margin-left: 2px; }
   .adminator-box--top {
     display: flex;
     flex-direction: row;
@@ -49395,7 +49397,6 @@ table.dataTable.no-footer {
   font-size: .875rem; }
 
 .blue-badge {
-  display: block !important;
   border: none; }
 
 .is-hidden {

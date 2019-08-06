@@ -48,7 +48,7 @@
 	<small><span class="progress-item--subtitle">Mastergoals: </span>{{ goal.get_mastergoals() }}</small>
 	<small><span class="progress-item--subtitle">Subgoals: </span>{{ goal.get_subgoals() }}</small>
 	<small><span class="progress-item--subtitle">Strategies: </span>{{ goal.get_strategies() }}</small>
-	<span class="progress-item--progress-number">{{ goal.get_deadline('d') }} - {{ goal.progress }} %</span>
+	<span class="progress-item--progress-number">{% if goal.deadline %}{{ goal.get_deadline('d') }} - {% endif %}{{ goal.progress }} %</span>
 	<div class="progress-item--progress">
 		<div class="progress-item--progress-bar" style="width:{{ goal.progress }}%;"></div>
 	</div>
@@ -91,9 +91,7 @@
 	<div class="progress-item--top">
 		<h5 class="progress-item--title">{{ progress_monitor.monitor }}</h5>
 		<button class="adminator-update-button" id="progress-monitor-{{ progress_monitor.pk }}-up">Up</button>
-		<div class="hs-1"></div>
 		<button class="adminator-update-button" id="progress-monitor-{{ progress_monitor.pk }}-down">Down</button>
-		<div class="hs-1"></div>
 		<a class="adminator-href-button" href="{{ url('goals:progress_monitor', args=[progress_monitor.pk]) }}">Open</a>
 	</div>
 	<small><span class="progress-item--subtitle">Goal:</span> {{ progress_monitor.goal }}</small>

@@ -46,7 +46,7 @@ def errors_to_view(view, errors_heading="Something went wrong.", errors=()):
     return view.render_to_response(context)
 
 
-def strfdelta(tdelta, fmt):
+def strfdelta(tdelta, fmt="{days} days {hours}h {minutes}min"):
     d = {"days": tdelta.days}
     d["hours"], rem = divmod(tdelta.seconds, 3600)
     d["minutes"], d["seconds"] = divmod(rem, 60)

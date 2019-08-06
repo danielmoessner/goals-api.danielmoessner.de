@@ -15,11 +15,12 @@
 
 <div class="masonry--item masonry--item-4">
 	<div class="row m-0">
-
-		<div class='col-md-3 p-0'>
+		<div class='col-md-6 p-0'>
 			<div class="adminator-box">
 				<div class="adminator-box--top">
-					<h5 class="adminator-box--heading">{{ progress_monitor.monitor }}</h5>
+					<h6 class="adminator-box--heading">{{ progress_monitor.monitor }}</h6>
+					<button class="adminator-update-button" id="progress-monitor-{{ progress_monitor.pk }}-up">Up</button>
+					<button class="adminator-update-button" id="progress-monitor-{{ progress_monitor.pk }}-down">Down</button>
 				</div>							
 				<div class="adminator-box--content">
 	                <div class="small-progress">
@@ -29,34 +30,46 @@
 						</div>
 					</div>
 				</div>
+				<div class="adminator-box--script">
+					<script type="text/javascript">
+						jQuery(function(){
+							$("#progress-monitor-{{ progress_monitor.pk }}-up").on("click", function(event){
+								$.ajax({
+									url : "{{ url('goals:progress_monitor_step', args=[progress_monitor.pk]) }}",
+									type : "POST",
+									data : "csrfmiddlewaretoken={{ csrf_token }}&step={{ progress_monitor.step + 1 }}",
+									success : function(data) {
+										window.location.reload()
+									},
+									error : function(data) {
+										$("#progress-monitor-up").html("Ajax Error");
+									}
+								})
+							})
+							$("#progress-monitor-{{ progress_monitor.pk }}-down").on("click", function(event){
+								$.ajax({
+									url : "{{ url('goals:progress_monitor_step', args=[progress_monitor.pk]) }}",
+									type : "POST",
+									data : "csrfmiddlewaretoken={{ csrf_token }}&step={{ progress_monitor.step - 1 }}",
+									success : function(data) {
+										window.location.reload()
+									},
+									error : function(data) {
+										$("#progress-monitor-down").html("Ajax Error");
+									}
+								})
+							})
+						});
+					</script>
+				</div>		
 			</div>
 		</div>
-
-		<div class='col-md-3 p-0'>
+		<div class='col-md-6 p-0'>
 			<div class="adminator-box">
-				<h6 class="adminator-box--heading">Weight</h6>
+				<h6 class="adminator-box--heading">Properties</h6>
 				<div class="adminator-box--content">
-					<p class="adminator-box-p">{{ progress_monitor.weight }}</p>
-				</div>
-			</div>
-		</div>
-
-		<div class='col-md-3 p-0'>
-			<div class="adminator-box">
-				<h6 class="adminator-box--heading">Deadline</h6>
-				<div class="adminator-box--content">
-					<p class="adminator-box-p">Goal: {{ progress_monitor.goal.get_deadline() }}</p>
-				</div>
-			</div>
-		</div>
-
-		<div class='col-md-3 p-0'>
-			<div class="adminator-box">
-				<h6 class="adminator-box--heading">Commercial</h6>
-				<div class="adminator-box--content">
-					<p class="adminator-box-p">
-						Nike <br>
-						Carhartt
+					<p class="adminator-box--p">
+						Weight: {{ progress_monitor.weight }}
 					</p>
 				</div>
 			</div>

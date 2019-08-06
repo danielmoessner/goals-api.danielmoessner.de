@@ -38,6 +38,10 @@
 }
 
 .adminator-box{
+	.adminator-update-button, .adminator-href-button{
+		margin-left: 2px;
+	}
+
 	@extend .bd;
 	@extend .bgc-white;
 	@extend .p-20;

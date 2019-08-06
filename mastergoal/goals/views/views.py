@@ -217,13 +217,13 @@ class StrategyView(LoginRequiredMixin, UserPassesStrategyTestMixin, DetailView):
         context = super(StrategyView, self).get_context_data(**kwargs)
         context['goal'] = self.object.goal
         to_do_filter = Q(strategy=self.object)
-        context["repetitive_to_dos"] = RepetitiveToDo.objects.filter(to_do_filter).order_by('deadline')
-        context["never_ending_to_dos"] = NeverEndingToDo.objects.filter(to_do_filter).order_by('deadline')
-        context["multiple_to_dos"] = MultipleToDo.objects.filter(to_do_filter).order_by('deadline')
-        context["pipeline_to_dos"] = PipelineToDo.objects.filter(to_do_filter).order_by('deadline')
+        context["repetitive_to_dos"] = RepetitiveToDo.objects.filter(to_do_filter)
+        context["never_ending_to_dos"] = NeverEndingToDo.objects.filter(to_do_filter)
+        context["multiple_to_dos"] = MultipleToDo.objects.filter(to_do_filter)
+        context["pipeline_to_dos"] = PipelineToDo.objects.filter(to_do_filter)
         context["to_dos"] = ToDo.objects.filter(to_do_filter).exclude(Q(pk__in=context["repetitive_to_dos"]) | Q(
             pk__in=context["never_ending_to_dos"]) | Q(pk__in=context["multiple_to_dos"]) | Q(
-            pk__in=context['pipeline_to_dos'])).order_by('deadline')
+            pk__in=context['pipeline_to_dos']))
         return context
 
 

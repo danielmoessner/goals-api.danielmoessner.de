@@ -1,4 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import ModelFormMixin
+from django.views.generic import View
 from django.shortcuts import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views import generic
@@ -146,7 +148,7 @@ class StrategyDelete(LoginRequiredMixin, UserPassesStrategyTestMixin, generic.De
         return context
 
 
-class StrategyStar(LoginRequiredMixin, UserPassesStrategyTestMixin, generic.DetailView):
+class StrategyStar(LoginRequiredMixin, UserPassesStrategyTestMixin, ModelFormMixin, View):
     model = Strategy
 
     def get(self, request, *args, **kwargs):
@@ -220,7 +222,6 @@ class RepetitiveToDoDelete(ToDoDelete):
 class RepetitiveToDoListDelete(LoginRequiredMixin, UserPassesToDoTestMixin, generic.DeleteView):
     model = RepetitiveToDo
     template_name = 'snippets/delete_list.j2'
-    success_url = reverse_lazy("goals:index")
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -237,9 +238,10 @@ class RepetitiveToDoListDelete(LoginRequiredMixin, UserPassesToDoTestMixin, gene
         return self.object.get_all_after()
 
     def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
         self.objects = self.get_objects()
         self.object.get_all_before().update(end_day=self.object.activate)
-        success_url = self.get_success_url()
+        success_url = reverse_lazy("goals:strategy", args=[self.object.strategy.pk])
         self.objects.delete()
         return HttpResponseRedirect(success_url)
 

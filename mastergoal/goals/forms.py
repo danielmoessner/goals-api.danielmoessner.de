@@ -59,6 +59,12 @@ class ProgressMonitorStepForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(ProgressMonitorStepForm, self).__init__(*args, **kwargs)
 
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data['step'] > self.instance.steps:
+            cleaned_data['step'] = self.instance.steps
+        return cleaned_data
+
     def save(self, commit=True):
         super(ProgressMonitorStepForm, self).save(commit=commit)
         if commit:

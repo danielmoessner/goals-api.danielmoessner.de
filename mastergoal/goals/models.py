@@ -180,7 +180,7 @@ class Goal(models.Model):
             if accuracy is 's':
                 return timezone.localtime(self.deadline).strftime("%d.%m.%Y %H:%M:%S")
             return timezone.localtime(self.deadline).strftime("%d.%m.%Y")
-        return 'no deadline'
+        return ''
 
     def get_tree_html(self):
         sub_goals = ''.join([goal.get_tree_html() for goal in self.sub_goals.exclude(progress=100)])
@@ -424,14 +424,23 @@ class Strategy(models.Model):
                '<a class="adminator-href-button" href="{}">Open</a>' \
                '</span>' \
                '{}</li>'
-        item = html.format(self.name, self.progress, reverse('goals:strategy', args=[self.pk]), to_dos_tree)
+        item = html.format(self.name, self.progress, reverse('goals:strategy', args=[self.pk]),
+                           to_dos_tree)
         return item
 
     def get_goal(self):
         return self.goal.name if self.goal else ''
 
-    def get_deadline(self):
-        return 'no-deadline'
+    def get_rolling(self):
+        if self.rolling is None:
+            return ''
+        if abs(self.rolling).days == 0:
+            rolling = strfdelta(self.rolling, "{hours}h {minutes}min")
+        elif abs(self.rolling).days == 1:
+            rolling = strfdelta(self.rolling, "{days} day {hours}h {minutes}min")
+        else:
+            rolling = strfdelta(self.rolling, "{days} days {hours}h {minutes}min")
+        return rolling
 
     def get_progress(self):
         return self.progress
@@ -558,6 +567,8 @@ class ToDo(models.Model):
             time_delta = self.deadline - timezone.now()
             if abs(time_delta).days == 0:
                 delta = strfdelta(abs(time_delta), "{hours}h {minutes}min")
+            elif abs(time_delta).days == 1:
+                delta = strfdelta(abs(time_delta), "{days} day {hours}h {minutes}min")
             else:
                 delta = strfdelta(abs(time_delta), "{days} days {hours}h {minutes}min")
             if time_delta < timedelta():
@@ -609,6 +620,15 @@ class RepetitiveToDo(ToDo):
         super(RepetitiveToDo, self).delete(using, keep_parents)
 
     # getters
+    def get_duration(self):
+        if abs(self.duration).days == 0:
+            duration = strfdelta(self.duration, "{hours}h {minutes}min")
+        elif abs(self.duration).days == 1:
+            duration = strfdelta(self.duration, "{days} day {hours}h {minutes}min")
+        else:
+            duration = strfdelta(self.duration, "{days} days {hours}h {minutes}min")
+        return duration
+
     def get_next(self):
         return self.next.first()
 

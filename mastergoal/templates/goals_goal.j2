@@ -15,11 +15,10 @@
 
 <div class="masonry--item masonry--item-4">
 	<div class="row m-0">
-
-		<div class='col-md-3 p-0'>
+		<div class='col-md-6 p-0'>
 			<div class="adminator-box">
 				<div class="adminator-box--top">
-					<h5 class="adminator-box--heading">{{ goal.name }}</h5>
+					<h6 class="adminator-box--heading">{{ goal.name }}</h6>
 					<a class="star--link" href="{{ url('goals:goal_star', args=[goal.pk]) }}">
 						{% if goal.is_starred %}
 							<span class="star--black"></span>
@@ -29,42 +28,38 @@
 					</a>
 				</div>							
 				<div class="adminator-box--content">
-	                <div class="small-progress">
-		                <span class="small-progress--number">{{ goal.get_progress() }}</span>
-						<div class="small-progress--bar-wrapper">
-							<div class="small-progress--bar" style="width: {{ goal.progress }}%"></div>
-						</div>
-					</div>
+	                <span class="blue-badge">{{ goal.progress }}%</span>
 				</div>
 			</div>
 		</div>
-
-		<div class='col-md-3 p-0'>
+		<div class='col-md-6 p-0'>
+			<div class="adminator-box">
+				<h6 class="adminator-box--heading">Properties</h6>
+				<div class="adminator-box--content">
+					{% if goal.deadline %}
+						<p class="adminator-box--p">Deadline: {{ goal.get_deadline() }}</p>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row m-0">
+		<div class='col-md-6 p-0'>
 			<div class="adminator-box">
 				<h6 class="adminator-box--heading">Why</h6>
 				<div class="adminator-box--content">
-					<p class="adminator-box-p">{{ goal.why }}</p>
+					<p class="adminator-box--p">{{ goal.why }}</p>
 				</div>
 			</div>
 		</div>
-
-		<div class='col-md-3 p-0'>
+		<div class='col-md-6 p-0'>
 			<div class="adminator-box">
 				<h6 class="adminator-box--heading">Impact</h6>
 				<div class="adminator-box--content">
-					<p class="adminator-box-p">{{ goal.impact }}</p>
+					<p class="adminator-box--p">{{ goal.impact }}</p>
 				</div>
 			</div>
-		</div>
-
-		<div class='col-md-3 p-0'>
-			<div class="adminator-box">
-				<h6 class="adminator-box--heading">Deadline</h6>
-				<div class="adminator-box--content">
-					<p class="adminator-box-p">{{ goal.get_deadline() }}</p>
-				</div>
-			</div>
-		</div>
+		</div>	
 	</div>
 </div>
 
@@ -106,18 +101,6 @@
 		</div>
 	</div>
 </div>
-
-
-{% include 'snippets/add_goal.j2' %}
-
-
-{% include 'snippets/add_strategy.j2' %}
-
-
-{% include 'snippets/add_progress_monitor.j2' %}
-
-
-{% include 'snippets/add_link.j2' %}
 
 
 {% endblock main %}
