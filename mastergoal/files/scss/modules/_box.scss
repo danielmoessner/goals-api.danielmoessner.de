@@ -55,6 +55,7 @@
 		@extend .lh-1; 
 		margin-right: auto;
 		margin-bottom: 0;
+		word-break: break-word;
 	}
 	&--content{
 		margin-top: .5rem;

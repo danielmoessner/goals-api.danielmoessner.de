@@ -108,9 +108,12 @@ class TreeView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(TreeView, self).get_context_data(**kwargs)
-        no_master_goals = [link.sub_goal.pk for link in Link.objects.select_related('sub_goal')]
-        context["master_goals"] = self.request.user.goals.all().exclude(pk__in=no_master_goals).prefetch_related(
-            'sub_goals', 'strategies')
+        all_goals = self.request.user.goals.all()
+        all_links = Link.objects.filter(sub_goal__in=all_goals, master_goal__in=all_goals)\
+            .select_related('master_goal', 'sub_goal')
+        no_master_goals = [link.sub_goal.pk for link in all_links]
+        context["master_goals"] = all_goals.exclude(pk__in=no_master_goals).prefetch_related('sub_goals', 'strategies',
+                                                                                             'sub_links')
         return context
 
 
@@ -120,23 +123,19 @@ class StarView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(StarView, self).get_context_data(**kwargs)
         user = self.request.user
-
         all_goals = user.goals.all()
         context['goals'] = Goal.get_goals(all_goals, user.goal_choice).prefetch_related('master_goals', 'sub_goals',
-                                                                                        'strategies')
-
+                                                                                        'strategies', 'master_links',
+                                                                                        'sub_links')
         all_monitors = ProgressMonitor.objects.filter(goal__in=all_goals)
         context['progress_monitors'] = ProgressMonitor.get_monitors(all_monitors, user.progress_monitor_choice,
                                                                     context['goals']).select_related('goal')
-
         all_links = Link.objects.filter(master_goal__in=all_goals, sub_goal__in=all_goals)
         context['links'] = Link.get_links(all_links, user.link_choice, context['goals']).select_related('sub_goal',
                                                                                                         'master_goal')
-
         all_strategies = Strategy.objects.filter(goal__in=all_goals)
         context['strategies'] = Strategy.get_strategies(all_strategies, user.strategy_choice,
                                                         context['goals']).select_related('goal')
-
         all_goals = context['goals']
         for goal in context['goals']:
             all_goals = all_goals | goal.get_all_subgoals()
@@ -187,10 +186,12 @@ class GoalView(LoginRequiredMixin, UserPassesGoalTestMixin, DetailView):
         context = super(GoalView, self).get_context_data(**kwargs)
         context['strategies'] = self.object.strategies.all().select_related('goal')
         context['master_goals'] = self.object.master_goals.all().prefetch_related('strategies', 'sub_goals',
-                                                                                  'master_goals')
-        context['sub_goals'] = self.object.sub_goals.all().prefetch_related('strategies', 'sub_goals', 'master_goals')
+                                                                                  'master_goals', 'master_links',
+                                                                                  'sub_links')
+        context['sub_goals'] = self.object.sub_goals.all().prefetch_related('strategies', 'sub_goals', 'master_goals',
+                                                                            'master_links', 'sub_links')
         context['progress_monitors'] = self.object.progress_monitors.all()
-        context['links'] = self.object.sub_links.all()
+        context['links'] = self.object.sub_links.select_related('master_goal', 'sub_goal')
         return context
 
 

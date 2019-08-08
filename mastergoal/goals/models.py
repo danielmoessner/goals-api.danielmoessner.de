@@ -609,14 +609,16 @@ class ToDo(models.Model):
 class RepetitiveToDo(ToDo):
     end_day = models.DateTimeField()
     duration = models.DurationField()
-    previous = models.ForeignKey("self", blank=True, null=True, on_delete=models.SET_NULL, related_name="next")
+    previous = models.OneToOneField('self', blank=True, null=True, on_delete=models.SET_NULL, related_name='next')
+    # previousOld = models.ForeignKey('self', blank=True, null=True, on_delete=models.SET_NULL, related_name='nextOld')
+
+    # next = models.OneToOneField('self', blank=True, null=True, on_delete=models.SET_NULL)
 
     # whatever
     def delete(self, using=None, keep_parents=False):
-        next_to_do = self.next.first()
-        if next_to_do:
-            next_to_do.previous = self.previous
-            next_to_do.save()
+        if self.next and self.previous:
+            self.next.previous = self.previous
+            self.next.save()
         super(RepetitiveToDo, self).delete(using, keep_parents)
 
     # getters
@@ -630,21 +632,25 @@ class RepetitiveToDo(ToDo):
         return duration
 
     def get_next(self):
-        return self.next.first()
+        if self.next:
+            return self.next
+        return None
 
     def get_previous(self):
-        return self.previous
+        if self.previous:
+            return self.previous
+        return None
 
     def get_all_after(self):
         q = RepetitiveToDo.objects.filter(pk=self.pk)
-        for rtd in self.next.all():
-            q = q | rtd.get_all_after()
+        if self.next:
+            q = q | RepetitiveToDo.objects.filter(pk=self.next)
         return q
 
     def get_all_before(self):
         q = RepetitiveToDo.objects.filter(pk=self.pk)
         if self.previous:
-            q = q | self.previous.get_all_before()
+            q = q | RepetitiveToDo.objects.filter(pk=self.previous)
         return q
 
     # generate
@@ -699,7 +705,7 @@ def post_save_target(sender, instance, **kwargs):
             instance.pipeline_to_dos.update(activate=timezone.now())
 
     if sender is RepetitiveToDo:
-        if not instance.next.all().exists():
+        if not instance.next:
             instance.generate_next()
     elif sender is NeverEndingToDo:
         if (instance.is_done or instance.has_failed) and not instance.next.all().exists():

@@ -48,7 +48,7 @@
 		<div class="adminator-box--content">
 			<ul class="to-do-list">
 				{% for to_do in repetitive_to_dos %}
-				{{ ig.to_do(to_do, "repetitive_", csrf_token) }}
+					{{ ig.to_do(to_do, "repetitive_", csrf_token) }}
 				{% endfor %}
 			</ul>
 		</div>

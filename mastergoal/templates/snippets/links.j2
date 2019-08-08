@@ -5,6 +5,9 @@
         <div class="adminator-box--content">
             {% for link in links %}
                 {{ ig.link(link) }}
+                {% if not loop.last %}
+					<div class="vs-1"></div>
+				{% endif %}
             {% endfor %}
         </div>
     </div>

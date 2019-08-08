@@ -4,7 +4,10 @@
 		<h6 class="adminator-box--heading">Strategies</h6>
 		<div class="adminator-box--content">
 			{% for strategy in strategies %}
-			{{ ig.strategy(strategy, csrf_token) }}
+				{{ ig.strategy(strategy, csrf_token) }}
+				{% if not loop.last %}
+					<div class="vs-1"></div>
+				{% endif %}
 			{% endfor %}
 		</div>
 	</div>

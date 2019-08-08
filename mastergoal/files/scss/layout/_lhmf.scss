@@ -21,6 +21,19 @@
 		background-color: #f9fafb!important;
 	}
 	background-color: transparent!important;
+
+	@include media-breakpoint-down(md) {
+		&--main{
+			padding: 10px;
+			padding-top: 76px;
+		}
+	}
+	@include media-breakpoint-down(xs) {
+		&--main{
+			padding: 5px;
+			padding-top: 71px;
+		}
+	}
 }
 
 // reset

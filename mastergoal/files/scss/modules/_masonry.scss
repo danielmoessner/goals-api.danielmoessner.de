@@ -32,15 +32,76 @@
 		margin-bottom: 13px;
 	}
 
-
-	&--item{
-		// @extend .masonry--item-4;
-	}
+	&--item{}
 	&--sizer{
 		@extend .masonry--item-1;
-		margin-bottom: 0;
+		margin-bottom: 0!important;
 	}
 	&--gutter{
 		width: 13px;
+	}
+
+	@include media-breakpoint-down(md) {
+		&--item-1{
+			width: calc(25% - 6px);
+			margin-bottom: 8px;
+		}
+		&--item-2{
+			width: calc(25% - 6px);
+			margin-bottom: 8px;
+		}
+		&--item-3{
+			width: calc(37.5% - 5px);
+			margin-bottom: 8px;
+		}
+		&--item-4{
+			width: calc(50% - 4px);
+			margin-bottom: 8px;
+		}
+		&--item-5{
+			width: calc(62.5% - 3px);
+			margin-bottom: 8px;
+		}
+		&--item-6{
+			width: calc(75% - 2px);
+			margin-bottom: 8px;
+		}
+		&--item-7, &--item-8{
+			width: 100%;
+			margin-bottom: 8px;
+		}
+		&--gutter{
+			width: 8px;
+		}
+	}
+	@include media-breakpoint-down(sm) {
+		&--item-1{
+			width: calc(25% - 6px);
+			margin-bottom: 8px;
+		}
+		&--item-2, &--item-3{
+			width: calc(50% - 4px);
+			margin-bottom: 8px;
+		}
+		&--item-4, &--item-5, &--item-6, &--item-7{
+			width: 100%;
+			margin-bottom: 8px;
+		}
+		&--gutter{
+			width: 8px;
+		}
+	}
+	@include media-breakpoint-down(xs) {
+		&--item-1{
+			width: calc(50% - 2px);
+			margin-bottom: 4px;
+		}
+		&--item-2, &--item-3, &--item-4, &--item-5, &--item-6, &--item-7{
+			width: 100%;
+			margin-bottom: 4px;
+		}
+		&--gutter{
+			width: 4px;
+		}
 	}
 }

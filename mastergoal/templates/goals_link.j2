@@ -13,42 +13,25 @@
 {% import "modules/card.j2" as cg %}
 
 
-<div class="masonry-item w-100">
-	<div class="row gap-20">
-
-		<div class='col-md-3'>
+<div class="masonry--item masonry--item-4">
+	<div class="row m-0">
+		<div class='col-md-6 p-0'>
 			<div class="adminator-box">
 				<div class="adminator-box--top">
-					<h5 class="adminator-box--heading">{{ link }}</h5>
+					<h6 class="adminator-box--heading">{{ link }}</h6>
 				</div>							
+				<div class="adminator-box--content">
+	                <span class="blue-badge">{{ link.progress }}%</span>
+				</div>	
 			</div>
 		</div>
-
-		<div class='col-md-3'>
+		<div class='col-md-6 p-0'>
 			<div class="adminator-box">
-				<h6 class="adminator-box--heading">Weight</h6>
+				<h6 class="adminator-box--heading">Properties</h6>
 				<div class="adminator-box--content">
-					<p class="adminator-box-p">{{ link.weight }}</p>
-				</div>
-			</div>
-		</div>
-
-		<div class='col-md-3'>
-			<div class="adminator-box">
-				<h6 class="adminator-box--heading">Proportion</h6>
-				<div class="adminator-box--content">
-					<p class="adminator-box-p">{{ link.proportion }}</p>
-				</div>
-			</div>
-		</div>
-
-		<div class='col-md-3'>
-			<div class="adminator-box">
-				<h6 class="adminator-box--heading">Deadlines</h6>
-				<div class="adminator-box--content">
-					<p class="adminator-box-p">
-						Master Goal: {{ link.master_goal.get_deadline() }}<br>
-						Sub Goal: {{ link.sub_goal.get_deadline() }}
+					<p class="adminator-box--p">
+						Weight: {{ link.weight }}<br>
+						Proportion: {{ link.proportion }}
 					</p>
 				</div>
 			</div>

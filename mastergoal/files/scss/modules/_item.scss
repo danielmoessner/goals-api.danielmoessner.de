@@ -142,11 +142,16 @@
 	@extend .w-100; 
 	@extend .mT-15;
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
+	flex-wrap: wrap;
+	small{
+		width: 75%;
+	}
 	&--top{
 		@extend .mB-5;
 		align-items: center;
 		display: flex;
+		width: 100%;
 	}
 	&--title{
 		margin: 0;
@@ -165,11 +170,14 @@
 		@extend .c-grey-600; 
 		@extend .fsz-sm;
 		align-self: flex-end;
+		margin-left: auto;
 	}
 	&--progress{
 		@extend .progress; 
 		@extend .mT-10;
 		clear: both;
+		width: 100%;
+		margin-bottom: 2px;
 	}
 	&--progress-bar{
 		@extend .progress-bar; 

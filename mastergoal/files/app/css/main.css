@@ -48978,6 +48978,14 @@ table.dataTable.no-footer {
     background-color: #fff !important; }
   .lhmf--html {
     background-color: #f9fafb !important; }
+  @media (max-width: 991.98px) {
+    .lhmf--main {
+      padding: 10px;
+      padding-top: 76px; } }
+  @media (max-width: 575.98px) {
+    .lhmf--main {
+      padding: 5px;
+      padding-top: 71px; } }
 
 .gap-20 {
   margin: 0 !important; }
@@ -49070,19 +49078,26 @@ table.dataTable.no-footer {
 
 .progress-item {
   display: flex;
-  flex-direction: column; }
+  flex-direction: row;
+  flex-wrap: wrap; }
+  .progress-item small {
+    width: 75%; }
   .progress-item--top {
     align-items: center;
-    display: flex; }
+    display: flex;
+    width: 100%; }
   .progress-item--title {
     margin: 0;
     margin-right: auto; }
   .progress-item--edit-button {
     margin-left: auto !important; }
   .progress-item--progress-number {
-    align-self: flex-end; }
+    align-self: flex-end;
+    margin-left: auto; }
   .progress-item--progress {
-    clear: both; }
+    clear: both;
+    width: 100%;
+    margin-bottom: 2px; }
 
 .form-child--select, .django-form p select, .inline-form--select {
   display: block; }
@@ -49206,7 +49221,8 @@ table.dataTable.no-footer {
     align-items: center; }
   .adminator-box--heading {
     margin-right: auto;
-    margin-bottom: 0; }
+    margin-bottom: 0;
+    word-break: break-word; }
   .adminator-box--content {
     margin-top: .5rem; }
   .adminator-box--content:empty {
@@ -49382,10 +49398,58 @@ table.dataTable.no-footer {
   margin-bottom: 13px; }
 
 .masonry--sizer {
-  margin-bottom: 0; }
+  margin-bottom: 0 !important; }
 
 .masonry--gutter {
   width: 13px; }
+
+@media (max-width: 991.98px) {
+  .masonry--item-1, .masonry--sizer {
+    width: calc(25% - 6px);
+    margin-bottom: 8px; }
+  .masonry--item-2 {
+    width: calc(25% - 6px);
+    margin-bottom: 8px; }
+  .masonry--item-3 {
+    width: calc(37.5% - 5px);
+    margin-bottom: 8px; }
+  .masonry--item-4 {
+    width: calc(50% - 4px);
+    margin-bottom: 8px; }
+  .masonry--item-5 {
+    width: calc(62.5% - 3px);
+    margin-bottom: 8px; }
+  .masonry--item-6 {
+    width: calc(75% - 2px);
+    margin-bottom: 8px; }
+  .masonry--item-7, .masonry--item-8 {
+    width: 100%;
+    margin-bottom: 8px; }
+  .masonry--gutter {
+    width: 8px; } }
+
+@media (max-width: 767.98px) {
+  .masonry--item-1, .masonry--sizer {
+    width: calc(25% - 6px);
+    margin-bottom: 8px; }
+  .masonry--item-2, .masonry--item-3 {
+    width: calc(50% - 4px);
+    margin-bottom: 8px; }
+  .masonry--item-4, .masonry--item-5, .masonry--item-6, .masonry--item-7 {
+    width: 100%;
+    margin-bottom: 8px; }
+  .masonry--gutter {
+    width: 8px; } }
+
+@media (max-width: 575.98px) {
+  .masonry--item-1, .masonry--sizer {
+    width: calc(50% - 2px);
+    margin-bottom: 4px; }
+  .masonry--item-2, .masonry--item-3, .masonry--item-4, .masonry--item-5, .masonry--item-6, .masonry--item-7 {
+    width: 100%;
+    margin-bottom: 4px; }
+  .masonry--gutter {
+    width: 4px; } }
 
 .pulldown {
   text-align: center;
