@@ -41,6 +41,9 @@
 	.adminator-update-button, .adminator-href-button{
 		margin-left: 2px;
 	}
+	&--p .adminator-update-button, .adminator-href-button{
+		margin-left: 0;
+	}
 
 	@extend .bd;
 	@extend .bgc-white;

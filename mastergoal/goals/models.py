@@ -610,15 +610,17 @@ class RepetitiveToDo(ToDo):
     end_day = models.DateTimeField()
     duration = models.DurationField()
     previous = models.OneToOneField('self', blank=True, null=True, on_delete=models.SET_NULL, related_name='next')
-    # previousOld = models.ForeignKey('self', blank=True, null=True, on_delete=models.SET_NULL, related_name='nextOld')
-
-    # next = models.OneToOneField('self', blank=True, null=True, on_delete=models.SET_NULL)
+    trash = models.BooleanField(default=False, editable=False)
 
     # whatever
     def delete(self, using=None, keep_parents=False):
-        if self.next and self.previous:
-            self.next.previous = self.previous
-            self.next.save()
+        next_rtd = self.get_next()
+        if next_rtd and self.previous:
+            next_rtd.previous = self.previous
+            self.previous = None
+            self.trash = True
+            self.save()
+            next_rtd.save()
         super(RepetitiveToDo, self).delete(using, keep_parents)
 
     # getters
@@ -632,9 +634,11 @@ class RepetitiveToDo(ToDo):
         return duration
 
     def get_next(self):
-        if self.next:
-            return self.next
-        return None
+        try:
+            next_rtd = self.next
+        except RepetitiveToDo.next.RelatedObjectDoesNotExist:
+            next_rtd = None
+        return next_rtd
 
     def get_previous(self):
         if self.previous:
@@ -643,14 +647,15 @@ class RepetitiveToDo(ToDo):
 
     def get_all_after(self):
         q = RepetitiveToDo.objects.filter(pk=self.pk)
-        if self.next:
-            q = q | RepetitiveToDo.objects.filter(pk=self.next)
+        next_rtd = self.get_next()
+        if next_rtd:
+            q = q | next_rtd.get_all_after()
         return q
 
     def get_all_before(self):
         q = RepetitiveToDo.objects.filter(pk=self.pk)
         if self.previous:
-            q = q | RepetitiveToDo.objects.filter(pk=self.previous)
+            q = q | self.previous.get_all_before()
         return q
 
     # generate
@@ -703,10 +708,10 @@ def post_save_target(sender, instance, **kwargs):
     if sender is ToDo:
         if instance.pipeline_to_dos.exists() and instance.is_done:
             instance.pipeline_to_dos.update(activate=timezone.now())
-
     if sender is RepetitiveToDo:
-        if not instance.next:
-            instance.generate_next()
+        if not instance.trash:
+            if not instance.get_next():
+                instance.generate_next()
     elif sender is NeverEndingToDo:
         if (instance.is_done or instance.has_failed) and not instance.next.all().exists():
             instance.generate_next()

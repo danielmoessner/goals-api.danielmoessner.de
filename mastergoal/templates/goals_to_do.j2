@@ -112,14 +112,16 @@
 				<div class="adminator-box">
 					<h6 class="adminator-box--heading">Siblings</h6>
 					<div class="adminator-box--content">
-						<p class="adminator-box--middle-p">
-							{% with prev = to_do.get_previous() %}
-								Previous: {{ prev }} <a class="adminator-href-button" href="{{ url('goals:repetitive_to_do', args=[prev.pk]) }}">Open</a>
-							{% endwith %}
-						</p>
 						<p class="adminator-box--p">
+							{% with prev = to_do.get_previous() %}
+								{% if prev %}
+									Previous: {{ prev }} <a class="adminator-href-button" href="{{ url('goals:repetitive_to_do', args=[prev.pk]) }}">Open</a>
+								{% endif %}
+							{% endwith %}
 							{% with next = to_do.get_next() %}
-								Next: {{ next }} <a class="adminator-href-button" href="{{ url('goals:repetitive_to_do', args=[next.pk]) }}">Open</a>
+								{% if next %}
+									<br>Next: {{ next }} <a class="adminator-href-button" href="{{ url('goals:repetitive_to_do', args=[next.pk]) }}">Open</a>
+								{% endif %}
 							{% endwith %}
 						</p>
 					</div>

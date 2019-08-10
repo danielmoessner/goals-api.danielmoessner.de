@@ -49142,7 +49142,7 @@ table.dataTable.no-footer {
   opacity: .8; }
 
 .adminator-href-button {
-  display: block !important;
+  display: inline-block !important;
   border: none; }
 
 .adminator-href-button:hover {
@@ -49215,6 +49215,8 @@ table.dataTable.no-footer {
   height: 100%; }
   .adminator-box .adminator-update-button, .adminator-box .adminator-href-button {
     margin-left: 2px; }
+  .adminator-box--p .adminator-update-button, .adminator-box .adminator-href-button {
+    margin-left: 0; }
   .adminator-box--top {
     display: flex;
     flex-direction: row;
