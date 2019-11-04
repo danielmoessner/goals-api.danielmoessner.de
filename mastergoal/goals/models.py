@@ -125,6 +125,7 @@ class Goal(models.Model):
     impact = models.TextField(blank=True, null=True)
     deadline = models.DateTimeField(null=True, blank=True)
     sub_goals = models.ManyToManyField(to='self', through='Link', symmetrical=False, related_name='master_goals')
+    archived = models.BooleanField(default=False)
     # speed
     progress = models.PositiveSmallIntegerField(default=0, blank=True)
     # user
@@ -418,7 +419,7 @@ class Strategy(models.Model):
         html = '<li class="tree--li">' \
                '<span class="tree--caret">' \
                '<span class="tree--caret--name">' \
-               '<span class="tree--caret--arrow">&#8618;</span>' \
+               '<span class="tree--caret--arrow">&#8605;</span>' \
                ' {}</span>' \
                '<span class="blue-badge">{} %</span>' \
                '<a class="adminator-href-button" href="{}">Open</a>' \
@@ -673,6 +674,15 @@ class NeverEndingToDo(ToDo):
     previous = models.ForeignKey("self", blank=True, null=True, on_delete=models.SET_NULL, related_name="next")
 
     # getters
+    def get_duration(self):
+        if abs(self.duration).days == 0:
+            duration = strfdelta(self.duration, "{hours}h {minutes}min")
+        elif abs(self.duration).days == 1:
+            duration = strfdelta(self.duration, "{days} day {hours}h {minutes}min")
+        else:
+            duration = strfdelta(self.duration, "{days} days {hours}h {minutes}min")
+        return duration
+
     def get_next(self):
         return self.next.first()
 

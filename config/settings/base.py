@@ -164,6 +164,7 @@ MEDIA_ROOT = os.path.join(APPS_DIR, 'media')
 
 
 # tinymce config
+
 TINYMCE_DEFAULT_CONFIG = {
     'height': 360,
     'cleanup_on_startup': True,
@@ -197,5 +198,15 @@ TINYMCE_DEFAULT_CONFIG = {
 
 
 # filebrowser config
+
 FILEBROWSER_DIRECTORY = 'user_content/'
 DIRECTORY = ''
+
+
+# E-Mail
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.strato.de'
+EMAIL_HOST_USER = 'projekte@tortuga-webdesign.de'
+EMAIL_HOST_PASSWORD = get_secret('EMAIL_PWD')
+EMAIL_PORT = 587
