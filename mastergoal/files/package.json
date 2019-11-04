@@ -8,7 +8,7 @@
     "bootstrap": "^4.2.1",
     "chart.js": "^2.7.2",
     "gulp-shell": "^0.6.5",
-    "jquery": "^3.3.1",
+    "jquery": "^3.4.0",
     "jquery-bridget": "^2.0.1",
     "masonry-layout": "^4.2.2",
     "perfect-scrollbar": "^1.4.0",
