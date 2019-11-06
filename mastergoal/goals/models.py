@@ -46,16 +46,24 @@ def g_all_filter():
     return Q()
 
 
+def g_active_filter():
+    return Q(is_archived=False, progress__lt=100)
+
+
 def g_star_filter():
     return Q(is_starred=True)
 
 
 def g_unreached_filter():
-    return Q(progress__lt=100)
+    return Q(progress__lt=100, archived=False)
 
 
 def g_achieved_filter():
     return Q(progress_gte=100)
+
+
+def g_archive_filter():
+    return Q(is_archived=True)
 
 
 def g_depth_filter():
@@ -125,7 +133,8 @@ class Goal(models.Model):
     impact = models.TextField(blank=True, null=True)
     deadline = models.DateTimeField(null=True, blank=True)
     sub_goals = models.ManyToManyField(to='self', through='Link', symmetrical=False, related_name='master_goals')
-    archived = models.BooleanField(default=False)
+    is_archived = models.BooleanField(default=False)
+    addition = models.TextField(blank=True, null=True)
     # speed
     progress = models.PositiveSmallIntegerField(default=0, blank=True)
     # user
@@ -148,6 +157,8 @@ class Goal(models.Model):
     def get_goals(goals, choice):
         if choice == "ALL":
             goals = goals.filter(g_all_filter())
+        if choice == 'ACTIVE':
+            goals = goals.filter(g_active_filter())
         elif choice == "STAR":
             goals = goals.filter(g_star_filter())
         elif choice == "UNREACHED":
@@ -156,6 +167,8 @@ class Goal(models.Model):
             goals = goals.filter(g_achieved_filter())
         elif choice == "DEPTH" and False:
             goals = goals.filter(g_depth_filter())
+        elif choice == 'ARCHIVE':
+            goals = goals.filter(g_archive_filter())
         else:
             goals = goals.filter(g_none_filter())
         return goals
@@ -184,7 +197,7 @@ class Goal(models.Model):
         return ''
 
     def get_tree_html(self):
-        sub_goals = ''.join([goal.get_tree_html() for goal in self.sub_goals.exclude(progress=100)])
+        sub_goals = ''.join([goal.get_tree_html() for goal in self.sub_goals.exclude(progress=100, is_archived=True)])
         sub_goals_tree = '<ul class="tree--nested">{}</ul>'.format(sub_goals)
         sub_strategies = ''.join([strategy.get_tree_html() for strategy in self.strategies.exclude(progress=100)])
         sub_strategies_tree = '<ul class="tree--nested">{}</ul>'.format(sub_strategies)

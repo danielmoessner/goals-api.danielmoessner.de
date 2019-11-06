@@ -28,7 +28,19 @@
 <div class="masonry--item masonry--item-4">
 	<div class="adminator-box">
 		<div class="adminator-box--heading">
-			<a class="adminator-box--toggle" id="edit-user-to-dos-choices-toggle" href="#edit-user-to-dos-choices-target" data-toggle="collapse">To Do's View</a>
+			<a class="adminator-box--toggle" id="edit-user-goal-view-toggle" href="#edit-user-goal-view-target" data-toggle="collapse">Goal View</a>
+		</div>
+		<div class="adminator-box--content collapse" id="edit-user-goal-view-target">
+			{{ fg.onClickAjaxForm("edit-user-goal-view", url("users:user_goal_view_choices", args=[user.pk])) }}
+		</div>
+	</div>
+</div>
+
+
+<div class="masonry--item masonry--item-4">
+	<div class="adminator-box">
+		<div class="adminator-box--heading">
+			<a class="adminator-box--toggle" id="edit-user-to-dos-choices-toggle" href="#edit-user-to-dos-choices-target" data-toggle="collapse">To Do View</a>
 		</div>
 		<div class="adminator-box--content collapse" id="edit-user-to-dos-choices-target">
 			{{ fg.onClickAjaxForm("edit-user-to-dos-choices", url("users:user_to_dos_choices", args=[user.pk])) }}

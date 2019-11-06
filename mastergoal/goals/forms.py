@@ -20,7 +20,7 @@ class GoalForm(forms.ModelForm):
 
     class Meta:
         model = Goal
-        fields = ('name', 'why', 'impact', 'deadline')
+        fields = ('name', 'why', 'impact', 'deadline', 'is_archived', 'addition')
 
     def __init__(self, user, *args, **kwargs):
         super(GoalForm, self).__init__(*args, **kwargs)

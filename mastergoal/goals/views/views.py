@@ -27,7 +27,9 @@ class DashboardView(LoginRequiredMixin, ListView):
     context_object_name = 'goals'
 
     def get_queryset(self):
-        return self.request.user.goals.exclude(progress=100)
+        user = self.request.user
+        goals = Goal.get_goals(user.goals.all(), user.goal_view_goal_choice)
+        return goals
 
 
 class SearchView(LoginRequiredMixin, TemplateView):
@@ -108,7 +110,8 @@ class TreeView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(TreeView, self).get_context_data(**kwargs)
-        all_goals = self.request.user.goals.all()
+        user = self.request.user
+        all_goals = user.goals.filter(is_archived=False)
         all_links = Link.objects.filter(sub_goal__in=all_goals, master_goal__in=all_goals)\
             .select_related('master_goal', 'sub_goal')
         no_master_goals = [link.sub_goal.pk for link in all_links]

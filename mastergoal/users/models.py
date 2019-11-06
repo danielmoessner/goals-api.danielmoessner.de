@@ -1,5 +1,4 @@
 from django.contrib.auth.models import AbstractUser
-from django.db.models import signals
 from django.db import models
 
 from datetime import timedelta
@@ -16,10 +15,12 @@ class CustomUser(AbstractUser):
     )
     GOAL_CHOICES = (
         ("ALL", "Show all goals."),
+        ('ACTIVE', 'Show all goals that are considered active.'),
         ("STAR", "Show all starred goals."),
         ("UNREACHED", "Show all not yet achieved goals."),
         ("ACHIEVED", "Show all achieved goals."),
         ("DEPTH", "Show all goals within the depth range."),
+        ('ARCHIVE', "Show all goals that are in the archive."),
         ("NONE", "Show no goals.")
     )
     PROGRESS_MONITOR_CHOICES = (
@@ -53,6 +54,8 @@ class CustomUser(AbstractUser):
     )
     # general
     page_choice = models.CharField(max_length=10, choices=PAGE_CHOICES, default="DASHBOARD")
+    # goal view
+    goal_view_goal_choice = models.CharField(max_length=10, choices=GOAL_CHOICES, default='ALL')
     # star view
     goal_depth = models.PositiveSmallIntegerField(blank=True, null=True)
     goal_choice = models.CharField(max_length=10, choices=GOAL_CHOICES, default="ALL")
@@ -65,7 +68,7 @@ class CustomUser(AbstractUser):
     starview_neverendingtodos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default="ALL")
     starview_multipletodos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default="ALL")
     starview_pipelinetodos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default="ALL")
-    # to-do view
+    # to do view
     to_dos_delta = models.DurationField(blank=True, default=timedelta(days=7))
     normal_to_dos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default="ALL")
     repetitive_to_dos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default="ALL")

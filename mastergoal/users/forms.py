@@ -33,6 +33,13 @@ class CustomUserStarHeaderForm(forms.ModelForm):
         }
 
 
+class CustomUserGoalViewForm(forms.ModelForm):
+
+    class Meta:
+        model = CustomUser
+        fields = ('goal_view_goal_choice',)
+
+
 class CustomUserStarForm(forms.ModelForm):
 
     class Meta:

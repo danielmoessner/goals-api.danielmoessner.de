@@ -39,6 +39,7 @@
 					{% if goal.deadline %}
 						<p class="adminator-box--p">Deadline: {{ goal.get_deadline() }}</p>
 					{% endif %}
+						<p class="adminator-box--p">Archived: {{ goal.is_archived }}</p>
 				</div>
 			</div>
 		</div>
@@ -61,6 +62,18 @@
 			</div>
 		</div>	
 	</div>
+	{% if goal.is_archived %}
+		<div class="row m-0">
+		<div class='col-12 p-0'>
+			<div class="adminator-box">
+				<h6 class="adminator-box--heading">Addition</h6>
+				<div class="adminator-box--content">
+					<p class="adminator-box--p">{{ goal.addition }}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endif %}
 </div>
 
 
