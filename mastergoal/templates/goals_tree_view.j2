@@ -11,6 +11,48 @@
 {% endblock %}
 
 
+{% macro monitor_tree(monitors) %}
+	{% for monitor in monitors %}
+		<li class="tree--li">
+			<div class="tree--caret">
+               	<span class="tree--caret--name"><span class="tree--caret--arrow">&#8613;</span> {{ monitor.name }}</span>
+               	<span class="blue-badge">{{ monitor.progress }} %</span>
+               	<a class="adminator-href-button" href="{{ url('goals:progress_monitor', args=[monitor.pk]) }}">Open</a>
+            </div>
+        </li>
+	{% endfor %}
+{% endmacro %}
+
+
+{% macro strategy_tree(strategies) %}
+	{% for strategy in strategies %}
+		<li class="tree--li">
+            <span class="tree--caret"><span class="tree--caret--name"><span class="tree--caret--arrow">&#8605;</span> {{ strategy.name }}</span>
+               <span class="blue-badge">{{ strategy.progress }} %</span>
+               <a class="adminator-href-button" href="{{ url('goals:strategy', args=[strategy.pk]) }}">Open</a>
+               </span>
+            {# all the todos in here#}
+        </li>
+	{% endfor %}
+{% endmacro %}
+
+
+{% macro goal_tree(goals) %}
+	{% for goal in goals %}
+		<li class="tree--li">
+            <span class="tree--caret">
+            	<span class="tree--caret--name"><span class="tree--caret--arrow">&#8611;</span> {{ goal.name }}</span>
+               	<span class="blue-badge">{{ goal.progress }} %</span>
+               	<a class="adminator-href-button" href="{{ url('goals:goal', args=[goal.pk]) }}">Open</a>
+            </span>
+            <ul class="tree--nested">{{ monitor_tree(goal.monitors) }}</ul>
+			<ul class="tree--nested">{{ goal_tree(goal.subgoals) }}</ul>
+			<ul class="tree--nested">{{ strategy_tree(goal.strategies) }}</ul>
+	    </li>
+	{% endfor %}
+{% endmacro %}
+
+
 {% block main %}
 
 
@@ -26,9 +68,34 @@
 		<div class="adminator-box--content">
 			<div class="tree">
 				<ul class="tree--ul">
-					{% for goal in master_goals %}
+					{#% for goal in master_goals %}
 						{{ goal.get_tree_html()|safe }}
-					{% endfor %}
+					{% endfor %#}
+				</ul>
+				<div class="tree--script">
+					{# <script type="text/javascript">
+						$(".tree--caret--name").on("click", function(){
+							$(this).parent().siblings().toggleClass("tree--nested")
+							if ($(this).parent().siblings().length > 0) { 
+								$(this).toggleClass("tree--caret--name--active")
+							}
+							$(".masonry").masonry()
+						})
+					</script> #}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="masonry--item masonry--item-5">
+	<div class="adminator-box">
+		<h6 class="adminator-box--heading">Tree</h6>
+		<div class="adminator-box--content">
+			<div class="tree">
+				<ul class="tree--ul">
+					{{ goal_tree(tree) }}
 				</ul>
 				<div class="tree--script">
 					<script type="text/javascript">
@@ -45,7 +112,6 @@
 		</div>
 	</div>
 </div>
-
 
 {#
 <div class="masonry--item masonry--item-4">

@@ -59,7 +59,7 @@ def g_unreached_filter():
 
 
 def g_achieved_filter():
-    return Q(progress_gte=100)
+    return Q(progress__gte=100)
 
 
 def g_archive_filter():
@@ -157,7 +157,7 @@ class Goal(models.Model):
     def get_goals(goals, choice):
         if choice == "ALL":
             goals = goals.filter(g_all_filter())
-        if choice == 'ACTIVE':
+        elif choice == 'ACTIVE':
             goals = goals.filter(g_active_filter())
         elif choice == "STAR":
             goals = goals.filter(g_star_filter())
@@ -196,6 +196,41 @@ class Goal(models.Model):
             return timezone.localtime(self.deadline).strftime("%d.%m.%Y")
         return ''
 
+    def get_tree(self,
+                 normaltodo_choice='ALL',
+                 repetitivetodo_choice='ALL',
+                 neverendingtodo_choice='ALL',
+                 pipelinetodo_choice='ALL',
+                 multipletodo_choice='ALL',
+                 delta=None,
+                 goal_choice='ALL',
+                 strategy_choice='ALL',
+                 monitor_choice='ALL'):
+        data = dict()
+        data['name'] = self.name
+        data['progress'] = self.progress
+        data['pk'] = self.pk
+        data['subgoals'] = [goal.get_tree(
+            normaltodo_choice,
+            repetitivetodo_choice,
+            neverendingtodo_choice,
+            pipelinetodo_choice,
+            multipletodo_choice,
+            delta,
+            goal_choice,
+            strategy_choice,
+            monitor_choice) for goal in list(Goal.get_goals(self.sub_goals.all(), goal_choice))]
+        data['strategies'] = [strategy.get_tree(
+            normaltodo_choice,
+            repetitivetodo_choice,
+            neverendingtodo_choice,
+            pipelinetodo_choice,
+            multipletodo_choice,
+            delta) for strategy in list(Strategy.get_strategies(self.strategies.all(), strategy_choice))]
+        data['monitors'] = [monitor.get_tree(
+            ) for monitor in list(ProgressMonitor.get_monitors(self.progress_monitors.all(), monitor_choice))]
+        return data
+
     def get_tree_html(self):
         sub_goals = ''.join([goal.get_tree_html() for goal in self.sub_goals.exclude(progress=100, is_archived=True)])
         sub_goals_tree = '<ul class="tree--nested">{}</ul>'.format(sub_goals)
@@ -224,6 +259,12 @@ class Goal(models.Model):
         query = self.sub_goals.all()
         for goal in self.sub_goals.all():
             query = query | goal.get_all_subgoals()
+        return query
+
+    def get_all_mastergoals(self):
+        query = self.master_goals.all()
+        for goal in self.master_goals.all():
+            query = query | goal.get_all_mastergoals()
         return query
 
     def get_sub_to_dos(self):
@@ -313,6 +354,13 @@ class ProgressMonitor(models.Model):
         else:
             monitors = monitors.filter(m_none_filter())
         return monitors
+
+    def get_tree(self):
+        data = dict()
+        data['name'] = self.monitor
+        data['progress'] = self.progress
+        data['pk'] = self.pk
+        return data
 
     def get_tree_html(self):
         html = '<li class="tree--li">' \
@@ -424,6 +472,25 @@ class Strategy(models.Model):
         else:
             strategies = strategies.filter(s_none_filter())
         return strategies
+
+    def get_tree(self, normaltodo_choice='ALL', repetitivetodo_choice='ALL', neverendingtodo_choice='ALL',
+                 pipelinetodo_choice='ALL', multipletodo_choice='ALL', delta=None):
+        data = dict()
+        data['name'] = self.name
+        data['pk'] = self.pk
+        data['progress'] = self.progress
+        strategies = Strategy.objects.filter(pk=self.pk)
+        data['normaltodos'] = [todo.get_tree(
+            ) for todo in list(ToDo.get_to_dos(strategies, ToDo, normaltodo_choice, delta))]
+        data['repetitivetodos'] = [todo.get_tree(
+            ) for todo in list(ToDo.get_to_dos(strategies, RepetitiveToDo, repetitivetodo_choice, delta))]
+        data['neverendingtodos'] = [todo.get_tree(
+            ) for todo in list(ToDo.get_to_dos(strategies, NeverEndingToDo, neverendingtodo_choice, delta))]
+        data['pipelinetodos'] = [todo.get_tree(
+            ) for todo in list(ToDo.get_to_dos(strategies, PipelineToDo, pipelinetodo_choice, delta))]
+        data['multipletodos'] = [todo.get_tree(
+            ) for todo in list(ToDo.get_to_dos(strategies, MultipleToDo, multipletodo_choice, delta))]
+        return data
 
     def get_tree_html(self):
         to_dos_filter = Q(is_done=False, has_failed=False)
@@ -537,6 +604,15 @@ class ToDo(models.Model):
         to_dos = to_dos.order_by('deadline')
 
         return to_dos
+
+    def get_tree(self):
+        data = dict()
+        data['name'] = self.name
+        data['pk'] = self.pk
+        data['is_done'] = self.is_done
+        data['has_failed'] = self.has_failed
+        data['deadline'] = self.get_deadline()
+        return data
 
     def get_tree_html(self):
         html = '<li class="tree--li">' \

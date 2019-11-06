@@ -16,6 +16,7 @@ urlpatterns = [
     path('user/<pk>/todoschoices', form_views.CustomUserToDosChoices.as_view(), name='user_to_dos_choices'),
     path('user/<pk>/pagechoice', form_views.CustomUserPageChoice.as_view(), name='user_page_choice'),
     path('user/<pk>/goalviewchoice', form_views.CustomUserGoalViewChoices.as_view(), name='user_goal_view_choices'),
+    path('user/<pk>/treeviewchoices', form_views.CustomUserTreeViewChoices.as_view(), name='user_treeview_choices'),
     # views
     path('signin/', views.SignInView.as_view(), name='sign_in'),
     path('signup/', views.SignUpView.as_view(), name='sign_up'),

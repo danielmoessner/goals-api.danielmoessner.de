@@ -111,12 +111,31 @@ class TreeView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(TreeView, self).get_context_data(**kwargs)
         user = self.request.user
-        all_goals = user.goals.filter(is_archived=False)
-        all_links = Link.objects.filter(sub_goal__in=all_goals, master_goal__in=all_goals)\
-            .select_related('master_goal', 'sub_goal')
-        no_master_goals = [link.sub_goal.pk for link in all_links]
-        context["master_goals"] = all_goals.exclude(pk__in=no_master_goals).prefetch_related('sub_goals', 'strategies',
-                                                                                             'sub_links')
+        all_goals = Goal.get_goals(user.goals.all(), user.treeview_goal_choice).prefetch_related('sub_goals')
+        subgoal_pks = []
+        for goal in list(all_goals):
+            for master_goal in list(goal.master_goals.all()):
+                if master_goal in all_goals:
+                    subgoal_pks.append(goal.pk)
+                    break
+        tree = []
+        master_goals = all_goals.exclude(pk__in=subgoal_pks)
+        for goal in list(master_goals):
+            goal_tree = goal.get_tree(
+                normaltodo_choice=user.treeview_normaltodos_choice,
+                repetitivetodo_choice=user.treeview_repetitivetodos_choice,
+                neverendingtodo_choice=user.treeview_neverendingtodos_choice,
+                multipletodo_choice=user.treeview_multipletodos_choice,
+                pipelinetodo_choice=user.treeview_pipelinetodos_choice,
+                goal_choice=user.treeview_goal_choice,
+                strategy_choice=user.treeview_strategy_choice,
+                monitor_choice=user.treeview_monitor_choice
+            )
+            tree.append(goal_tree)
+        context['tree'] = tree
+        # context['tree'] = [{'name': 'test', 'pk': 1, 'progress': 100, 'subgoals': [{'name': 'test1', 'pk': 2, 'progress': 199}]}]
+        # context["master_goals"] = all_goals.exclude(pk__in=subgoal_pks)\
+        #     .prefetch_related('sub_goals', 'strategies', 'sub_links')
         return context
 
 

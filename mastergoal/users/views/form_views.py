@@ -13,11 +13,12 @@ from django.urls import reverse_lazy
 from mastergoal.users.models import CustomUser
 from mastergoal.users.forms import CustomUserStarHeaderForm
 from mastergoal.users.forms import CustomUserCreationForm
+from mastergoal.users.forms import CustomUserTreeViewForm
+from mastergoal.users.forms import CustomUserGoalViewForm
 from mastergoal.users.forms import CustomUserChangeForm
 from mastergoal.users.forms import CustomUserToDosForm
 from mastergoal.users.forms import CustomUserStarForm
 from mastergoal.users.forms import CustomUserPageForm
-from mastergoal.users.forms import CustomUserGoalViewForm
 from mastergoal.core.views import CustomAjaxFormMixin
 
 import json
@@ -93,6 +94,17 @@ class CustomUserStarChoicesHeader(LoginRequiredMixin, UserPassesTestMixin, Custo
 
 class CustomUserStarChoices(LoginRequiredMixin, UserPassesTestMixin, CustomAjaxFormMixin, generic.UpdateView):
     form_class = CustomUserStarForm
+    template_name = 'snippets/form.j2'
+    model = CustomUser
+
+    def test_func(self):
+        if self.get_object() == self.request.user:
+            return True
+        return False
+
+
+class CustomUserTreeViewChoices(LoginRequiredMixin, UserPassesTestMixin, CustomAjaxFormMixin, generic.UpdateView):
+    form_class = CustomUserTreeViewForm
     template_name = 'snippets/form.j2'
     model = CustomUser
 
