@@ -611,7 +611,7 @@ class ToDo(models.Model):
         data['pk'] = self.pk
         data['is_done'] = self.is_done
         data['has_failed'] = self.has_failed
-        data['deadline'] = self.get_deadline()
+        data['status'] = self.get_to_deadline_time()
         return data
 
     def get_tree_html(self):
