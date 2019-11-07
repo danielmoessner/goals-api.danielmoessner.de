@@ -265,6 +265,14 @@ class Goal(models.Model):
         return query
 
     # get master
+    def get_all_master_objects(self):
+        objects = list()
+        links = list(self.master_links.all())
+        objects += links
+        for link in links:
+            objects += link.get_all_master_objects()
+        return objects
+
     def get_all_mastergoals(self):
         query = self.master_goals.all()
         for goal in self.master_goals.all():
@@ -284,12 +292,6 @@ class Goal(models.Model):
         Goal.objects.filter(pk=self.pk).update(is_starred=(not self.is_starred))
 
     # calc
-    def calc(self):
-        self.progress = self.calc_progress()
-        self.save()
-        for link in self.master_links.all():
-            link.calc()
-
     def calc_progress(self):
         if not self.progress_monitors.exists():
             return self.calc_sub_progress()
@@ -360,6 +362,12 @@ class ProgressMonitor(models.Model):
             monitors = monitors.filter(m_none_filter())
         return monitors
 
+    def get_all_master_objects(self):
+        objects = list()
+        objects += [self.goal]
+        objects += self.goal.get_all_master_objects()
+        return objects
+
     def get_notes(self):
         if self.notes:
             return self.notes
@@ -376,11 +384,6 @@ class ProgressMonitor(models.Model):
         return self.progress
 
     # calc
-    def calc(self):
-        self.progress = self.calc_progress()
-        self.save()
-        self.goal.calc()
-
     def calc_progress(self):
         return (float(self.step) / float(self.steps)) * 100 if self.steps != 0 else 100
 
@@ -419,6 +422,14 @@ class Link(models.Model):
             links = links.filter(l_none_filter())
         return links
 
+    # get master
+    def get_all_master_objects(self):
+        objects = list()
+        objects += [self.master_goal]
+        objects += self.master_goal.get_all_master_objects()
+        return objects
+
+    # get whatever
     def get_name(self):
         return self.master_goal.name + ' --> ' + self.sub_goal.name
 
@@ -426,11 +437,6 @@ class Link(models.Model):
         return self.progress
 
     # calc
-    def calc(self):
-        self.progress = self.calc_progress()
-        self.save()
-        self.master_goal.calc()
-
     def calc_progress(self):
         return min(self.sub_goal.progress * (100 / self.proportion), 100)
 
@@ -491,6 +497,12 @@ class Strategy(models.Model):
             ) for todo in list(ToDo.get_to_dos(strategies, MultipleToDo, multipletodo_choice, delta))]
         return data
 
+    def get_all_master_objects(self):
+        objects = list()
+        objects += [self.goal]
+        objects += self.goal.get_all_master_objects()
+        return objects
+
     def get_goal(self):
         return self.goal.name if self.goal else ''
 
@@ -517,11 +529,6 @@ class Strategy(models.Model):
         Strategy.objects.filter(pk=self.pk).update(is_starred=(not self.is_starred))
 
     # calc
-    def calc(self):
-        self.progress = self.calc_progress()
-        self.save()
-        self.goal.calc()
-
     def calc_progress(self):
         progress = 0
         if self.rolling:
@@ -587,6 +594,12 @@ class ToDo(models.Model):
         to_dos = to_dos.order_by('deadline')
 
         return to_dos
+
+    def get_all_master_objects(self):
+        objects = list()
+        objects += [self.strategy]
+        objects += self.strategy.get_all_master_objects()
+        return objects
 
     def get_tree(self):
         data = dict()
@@ -661,10 +674,6 @@ class ToDo(models.Model):
 
     def get_previous(self):
         return 'None'
-
-    # calc
-    def calc(self):
-        self.strategy.calc()
 
 
 class RepetitiveToDo(ToDo):

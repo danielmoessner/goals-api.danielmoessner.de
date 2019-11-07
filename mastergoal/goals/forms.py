@@ -1,5 +1,5 @@
-from django import forms
 from django.utils import timezone
+from django import forms
 
 from mastergoal.goals.models import ProgressMonitor
 from mastergoal.goals.models import NeverEndingToDo
@@ -27,12 +27,6 @@ class GoalForm(forms.ModelForm):
         self.instance.user = user
         self.fields["deadline"].initial = timezone.now()
 
-    def save(self, commit=True):
-        super(GoalForm, self).save(commit=commit)
-        if commit:
-            self.instance.calc()
-        return self.instance
-
 
 # Milestone
 class ProgressMonitorForm(forms.ModelForm):
@@ -43,12 +37,6 @@ class ProgressMonitorForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(ProgressMonitorForm, self).__init__(*args, **kwargs)
         self.fields["goal"].queryset = user.goals.exclude(progress=100).order_by('name')
-
-    def save(self, commit=True):
-        super(ProgressMonitorForm, self).save(commit=commit)
-        if commit:
-            self.instance.calc()
-        return self.instance
 
 
 class ProgressMonitorStepForm(forms.ModelForm):
@@ -65,12 +53,6 @@ class ProgressMonitorStepForm(forms.ModelForm):
             cleaned_data['step'] = self.instance.steps
         return cleaned_data
 
-    def save(self, commit=True):
-        super(ProgressMonitorStepForm, self).save(commit=commit)
-        if commit:
-            self.instance.calc()
-        return self.instance
-
 
 # Link
 class LinkForm(forms.ModelForm):
@@ -82,12 +64,6 @@ class LinkForm(forms.ModelForm):
         super(LinkForm, self).__init__(*args, **kwargs)
         self.fields["master_goal"].queryset = user.goals.exclude(progress=100).order_by('name')
         self.fields["sub_goal"].queryset = user.goals.exclude(progress=100).order_by('name')
-
-    def save(self, commit=True):
-        super(LinkForm, self).save(commit=commit)
-        if commit:
-            self.instance.calc()
-        return self.instance
 
 
 # Strategy
@@ -105,12 +81,6 @@ class StrategyForm(forms.ModelForm):
         super(StrategyForm, self).__init__(*args, **kwargs)
         self.fields["goal"].queryset = user.goals.exclude(progress=100).order_by('name')
         self.fields["deadline"].initial = timezone.now()
-
-    def save(self, commit=True):
-        super(StrategyForm, self).save(commit=commit)
-        if commit:
-            self.instance.calc()
-        return self.instance
 
 
 # NormalToDo
@@ -133,12 +103,6 @@ class ToDoForm(forms.ModelForm):
         self.fields["deadline"].initial = timezone.now()
         self.fields["activate"].initial = timezone.now()
 
-    def save(self, commit=True):
-        super(ToDoForm, self).save(commit=commit)
-        if commit:
-            self.instance.calc()
-        return self.instance
-
 
 class ToDoDoneForm(forms.ModelForm):
     class Meta:
@@ -148,12 +112,6 @@ class ToDoDoneForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(ToDoDoneForm, self).__init__(*args, **kwargs)
 
-    def save(self, commit=True):
-        super(ToDoDoneForm, self).save(commit=commit)
-        if commit:
-            self.instance.calc()
-        return self.instance
-
 
 class ToDoFailedForm(forms.ModelForm):
     class Meta:
@@ -162,12 +120,6 @@ class ToDoFailedForm(forms.ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super(ToDoFailedForm, self).__init__(*args, **kwargs)
-
-    def save(self, commit=True):
-        super(ToDoFailedForm, self).save(commit=commit)
-        if commit:
-            self.instance.calc()
-        return self.instance
 
 
 class ToDoNotesForm(forms.ModelForm):
@@ -203,12 +155,6 @@ class RepetitiveToDoForm(forms.ModelForm):
         self.fields["activate"].initial = timezone.now()
         self.fields["end_day"].initial = timezone.now()
 
-    def save(self, commit=True):
-        super(RepetitiveToDoForm, self).save(commit=commit)
-        if commit:
-            self.instance.calc()
-        return self.instance
-
 
 class RepetitiveToDoDoneForm(forms.ModelForm):
     class Meta:
@@ -218,12 +164,6 @@ class RepetitiveToDoDoneForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(RepetitiveToDoDoneForm, self).__init__(*args, **kwargs)
 
-    def save(self, commit=True):
-        super(RepetitiveToDoDoneForm, self).save(commit=commit)
-        if commit:
-            self.instance.calc()
-        return self.instance
-
 
 class RepetitiveToDoFailedForm(forms.ModelForm):
     class Meta:
@@ -232,12 +172,6 @@ class RepetitiveToDoFailedForm(forms.ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super(RepetitiveToDoFailedForm, self).__init__(*args, **kwargs)
-
-    def save(self, commit=True):
-        super(RepetitiveToDoFailedForm, self).save(commit=commit)
-        if commit:
-            self.instance.calc()
-        return self.instance
 
 
 # NeverEndingToDo
@@ -255,13 +189,6 @@ class NeverEndingToDoForm(forms.ModelForm):
         super(NeverEndingToDoForm, self).__init__(*args, **kwargs)
         self.fields["strategy"].queryset = Strategy.objects.filter(goal__in=user.goals.all()).order_by('name')
 
-    def save(self, commit=True):
-        self.instance.deadline = timezone.now() + self.instance.duration
-        super(NeverEndingToDoForm, self).save(commit=commit)
-        if commit:
-            self.instance.calc()
-        return self.instance
-
 
 class NeverEndingToDoDoneForm(forms.ModelForm):
     class Meta:
@@ -271,12 +198,6 @@ class NeverEndingToDoDoneForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(NeverEndingToDoDoneForm, self).__init__(*args, **kwargs)
 
-    def save(self, commit=True):
-        super(NeverEndingToDoDoneForm, self).save(commit=commit)
-        if commit:
-            self.instance.calc()
-        return self.instance
-
 
 class NeverEndingToDoFailedForm(forms.ModelForm):
     class Meta:
@@ -285,12 +206,6 @@ class NeverEndingToDoFailedForm(forms.ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super(NeverEndingToDoFailedForm, self).__init__(*args, **kwargs)
-
-    def save(self, commit=True):
-        super(NeverEndingToDoFailedForm, self).save(commit=commit)
-        if commit:
-            self.instance.calc()
-        return self.instance
 
 
 # NeverEndingToDo
@@ -310,12 +225,6 @@ class PipelineToDoForm(forms.ModelForm):
             goal__in=user.goals.exclude(progress=100)), has_failed=False, is_done=False).order_by('name')
         self.fields["deadline"].initial = timezone.now()
 
-    def save(self, commit=True):
-        super(PipelineToDoForm, self).save(commit=commit)
-        if commit:
-            self.instance.calc()
-        return self.instance
-
 
 class PipelineToDoDoneForm(forms.ModelForm):
     class Meta:
@@ -325,12 +234,6 @@ class PipelineToDoDoneForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(PipelineToDoDoneForm, self).__init__(*args, **kwargs)
 
-    def save(self, commit=True):
-        super(PipelineToDoDoneForm, self).save(commit=commit)
-        if commit:
-            self.instance.calc()
-        return self.instance
-
 
 class PipelineToDoFailedForm(forms.ModelForm):
     class Meta:
@@ -339,12 +242,6 @@ class PipelineToDoFailedForm(forms.ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super(PipelineToDoFailedForm, self).__init__(*args, **kwargs)
-
-    def save(self, commit=True):
-        super(PipelineToDoFailedForm, self).save(commit=commit)
-        if commit:
-            self.instance.calc()
-        return self.instance
 
 
 # MultipleToDo
@@ -356,12 +253,6 @@ class MultipleToDoDoneForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(MultipleToDoDoneForm, self).__init__(*args, **kwargs)
 
-    def save(self, commit=True):
-        super(MultipleToDoDoneForm, self).save(commit=commit)
-        if commit:
-            self.instance.calc()
-        return self.instance
-
 
 class MultipleToDoFailedForm(forms.ModelForm):
     class Meta:
@@ -370,9 +261,3 @@ class MultipleToDoFailedForm(forms.ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super(MultipleToDoFailedForm, self).__init__(*args, **kwargs)
-
-    def save(self, commit=True):
-        super(MultipleToDoFailedForm, self).save(commit=commit)
-        if commit:
-            self.instance.calc()
-        return self.instance
