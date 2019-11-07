@@ -6,6 +6,7 @@ from mastergoal.goals.models import NeverEndingToDo
 from mastergoal.goals.models import RepetitiveToDo
 from mastergoal.goals.models import PipelineToDo
 from mastergoal.goals.models import MultipleToDo
+from mastergoal.goals.models import NormalToDo
 from mastergoal.goals.models import Strategy
 from mastergoal.goals.models import Goal
 from mastergoal.goals.models import ToDo
@@ -93,7 +94,7 @@ class ToDoForm(forms.ModelForm):
         input_formats=["%Y-%m-%dT%H:%M"], label="Deadline (not required)", required=False)
 
     class Meta:
-        model = ToDo
+        model = NormalToDo
         fields = ('name', 'strategy', 'activate', 'deadline', 'notes')
 
     def __init__(self, user, *args, **kwargs):
@@ -106,7 +107,7 @@ class ToDoForm(forms.ModelForm):
 
 class ToDoDoneForm(forms.ModelForm):
     class Meta:
-        model = ToDo
+        model = NormalToDo
         fields = ("is_done",)
 
     def __init__(self, user, *args, **kwargs):
@@ -115,7 +116,7 @@ class ToDoDoneForm(forms.ModelForm):
 
 class ToDoFailedForm(forms.ModelForm):
     class Meta:
-        model = ToDo
+        model = NormalToDo
         fields = ("has_failed",)
 
     def __init__(self, user, *args, **kwargs):
@@ -124,7 +125,7 @@ class ToDoFailedForm(forms.ModelForm):
 
 class ToDoNotesForm(forms.ModelForm):
     class Meta:
-        model = ToDo
+        model = NormalToDo
         fields = ("notes",)
 
     def __init__(self, user, *args, **kwargs):
@@ -201,14 +202,14 @@ class NeverEndingToDoDoneForm(forms.ModelForm):
 
 class NeverEndingToDoFailedForm(forms.ModelForm):
     class Meta:
-        model = PipelineToDo
+        model = NeverEndingToDo
         fields = ("has_failed",)
 
     def __init__(self, user, *args, **kwargs):
         super(NeverEndingToDoFailedForm, self).__init__(*args, **kwargs)
 
 
-# NeverEndingToDo
+# PipelineToDo
 class PipelineToDoForm(forms.ModelForm):
     deadline = forms.DateTimeField(widget=forms.DateTimeInput(
         attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
@@ -237,7 +238,7 @@ class PipelineToDoDoneForm(forms.ModelForm):
 
 class PipelineToDoFailedForm(forms.ModelForm):
     class Meta:
-        model = NeverEndingToDo
+        model = PipelineToDo
         fields = ("has_failed",)
 
     def __init__(self, user, *args, **kwargs):

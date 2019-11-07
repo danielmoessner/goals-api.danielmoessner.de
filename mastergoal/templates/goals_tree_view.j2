@@ -20,33 +20,6 @@
 		<div class="adminator-box--content">
 			<div class="tree">
 				<ul class="tree--ul">
-					{#% for goal in master_goals %}
-						{{ goal.get_tree_html()|safe }}
-					{% endfor %#}
-				</ul>
-				<div class="tree--script">
-					{# <script type="text/javascript">
-						$(".tree--caret--name").on("click", function(){
-							$(this).parent().siblings().toggleClass("tree--nested")
-							if ($(this).parent().siblings().length > 0) { 
-								$(this).toggleClass("tree--caret--name--active")
-							}
-							$(".masonry").masonry()
-						})
-					</script> #}
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-
-
-<div class="masonry--item masonry--item-5">
-	<div class="adminator-box">
-		<h6 class="adminator-box--heading">Tree</h6>
-		<div class="adminator-box--content">
-			<div class="tree">
-				<ul class="tree--ul">
 					{{ tg.goal_tree(tree) }}
 				</ul>
 				<div class="tree--script">
@@ -64,6 +37,7 @@
 		</div>
 	</div>
 </div>
+
 
 {#
 <div class="masonry--item masonry--item-4">

@@ -9,6 +9,7 @@ from mastergoal.goals.models import ProgressMonitor
 from mastergoal.goals.models import RepetitiveToDo
 from mastergoal.goals.models import MultipleToDo
 from mastergoal.goals.models import PipelineToDo
+from mastergoal.goals.models import NormalToDo
 from mastergoal.goals.models import Strategy
 from mastergoal.goals.models import ToDo
 from mastergoal.goals.models import Link
@@ -45,7 +46,7 @@ class SearchView(LoginRequiredMixin, TemplateView):
         context['goals'] = all_goals.filter(name__icontains=query)
         context['strategies'] = all_strategies.filter(name__icontains=query)
         context['to_dos'] = ToDo\
-            .get_to_dos(all_strategies, ToDo, 'ALL')\
+            .get_to_dos(all_strategies, NormalToDo, 'ALL')\
             .filter(name__icontains=query)
         context['never_ending_to_dos'] = ToDo\
             .get_to_dos(all_strategies, NeverEndingToDo, 'ALL')\
@@ -77,7 +78,7 @@ class ToDosView(LoginRequiredMixin, TemplateView):
         strategies = all_strategies.filter(is_starred=True)
 
         context['to_dos'] = ToDo.get_to_dos(all_strategies,
-                                            ToDo,
+                                            NormalToDo,
                                             user.normal_to_dos_choice,
                                             delta=user.to_dos_delta,
                                             strategies=strategies)
@@ -160,7 +161,7 @@ class StarView(LoginRequiredMixin, TemplateView):
             all_goals = all_goals | goal.get_all_sub_goals()
         all_strategies = Strategy.objects.filter(goal__in=all_goals) | context['strategies']
         context['to_dos'] = ToDo.get_to_dos(all_strategies,
-                                            ToDo,
+                                            NormalToDo,
                                             user.starview_normaltodos_choice,
                                             user.starview_todos_delta)\
             .order_by('is_done', 'has_failed', 'deadline', 'activate', 'name')
@@ -342,7 +343,7 @@ class AllToDosView(LoginRequiredMixin, TemplateView):
         user = self.request.user
         all_goals = user.goals.all()
         all_strategies = Strategy.objects.filter(goal__in=all_goals)
-        context['to_dos'] = ToDo.get_to_dos(all_strategies, ToDo, 'ALL')\
+        context['to_dos'] = ToDo.get_to_dos(all_strategies, NormalToDo, 'ALL')\
             .order_by('is_done', 'has_failed', 'deadline', 'activate', 'name')
         context['repetitive_to_dos'] = ToDo.get_to_dos(all_strategies, RepetitiveToDo, 'ALL')\
             .order_by('is_done', 'has_failed', 'deadline', 'activate', 'name')

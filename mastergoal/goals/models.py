@@ -148,7 +148,7 @@ class Goal(models.Model):
     def delete(self, using=None, keep_parents=False):
         master_goals = self.master_goals.all()
         super(Goal, self).delete(using=using, keep_parents=keep_parents)
-        [master_goal.calc() for master_goal in master_goals]
+        [master_goal.save() for master_goal in master_goals]
 
     # get
     @staticmethod
@@ -313,7 +313,6 @@ class Goal(models.Model):
 
         sub_links = self.sub_links.select_related('sub_goal').all()
         for link in sub_links:
-            # link.calc()
             progress += link.weight * link.progress
             weight += link.weight
 
@@ -345,7 +344,7 @@ class ProgressMonitor(models.Model):
     def delete(self, using=None, keep_parents=False):
         goal = self.goal
         super(ProgressMonitor, self).delete(using=using, keep_parents=keep_parents)
-        goal.calc()
+        goal.save()
 
     # get
     @staticmethod
@@ -407,7 +406,7 @@ class Link(models.Model):
     def delete(self, using=None, keep_parents=False):
         master_goal = self.master_goal
         super(Link, self).delete(using=using, keep_parents=keep_parents)
-        master_goal.calc()
+        master_goal.save()
 
     # get
     @staticmethod
@@ -463,7 +462,7 @@ class Strategy(models.Model):
     def delete(self, using=None, keep_parents=False):
         goal = self.goal
         super(Strategy, self).delete(using=using, keep_parents=keep_parents)
-        goal.calc()
+        goal.save()
 
     # get
     @staticmethod
@@ -486,7 +485,7 @@ class Strategy(models.Model):
         data['progress'] = self.progress
         strategies = Strategy.objects.filter(pk=self.pk)
         data['normaltodos'] = [todo.get_tree(
-            ) for todo in list(ToDo.get_to_dos(strategies, ToDo, normaltodo_choice, delta))]
+            ) for todo in list(ToDo.get_to_dos(strategies, NormalToDo, normaltodo_choice, delta))]
         data['repetitivetodos'] = [todo.get_tree(
             ) for todo in list(ToDo.get_to_dos(strategies, RepetitiveToDo, repetitivetodo_choice, delta))]
         data['neverendingtodos'] = [todo.get_tree(
@@ -563,19 +562,19 @@ class ToDo(models.Model):
     def delete(self, using=None, keep_parents=False):
         strategy = self.strategy
         super(ToDo, self).delete(using=using, keep_parents=keep_parents)
-        strategy.calc()
+        strategy.save()
 
     # getters
     @staticmethod
     def get_to_dos(all_strategies, to_do_class, to_dos_filter, delta=None, strategies=None):
         all_to_dos = to_do_class.objects.filter(strategy__in=all_strategies)
 
-        if to_do_class is ToDo:
-            all_to_dos = to_do_class.objects.filter(strategy__in=all_strategies) \
-                .exclude(pk__in=RepetitiveToDo.objects.filter(strategy__in=all_strategies)) \
-                .exclude(pk__in=NeverEndingToDo.objects.filter(strategy__in=all_strategies)) \
-                .exclude(pk__in=MultipleToDo.objects.filter(strategy__in=all_strategies)) \
-                .exclude(pk__in=PipelineToDo.objects.filter(strategy__in=all_strategies))
+        # if to_do_class is ToDo:
+        #     all_to_dos = to_do_class.objects.filter(strategy__in=all_strategies) \
+        #         .exclude(pk__in=RepetitiveToDo.objects.filter(strategy__in=all_strategies)) \
+        #         .exclude(pk__in=NeverEndingToDo.objects.filter(strategy__in=all_strategies)) \
+        #         .exclude(pk__in=MultipleToDo.objects.filter(strategy__in=all_strategies)) \
+        #         .exclude(pk__in=PipelineToDo.objects.filter(strategy__in=all_strategies))
 
         if to_dos_filter == "ALL":
             to_dos = all_to_dos
@@ -674,6 +673,10 @@ class ToDo(models.Model):
 
     def get_previous(self):
         return 'None'
+
+
+class NormalToDo(ToDo):
+    pass
 
 
 class RepetitiveToDo(ToDo):
