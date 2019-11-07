@@ -111,7 +111,6 @@ class TreeView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(TreeView, self).get_context_data(**kwargs)
         user = self.request.user
-        print('start')
         all_goals = Goal.get_goals(user.goals.all(), user.treeview_goal_choice).prefetch_related('sub_goals')
         subgoal_pks = []
         for goal in list(all_goals):
@@ -121,7 +120,6 @@ class TreeView(LoginRequiredMixin, TemplateView):
                     break
         tree = []
         master_goals = all_goals.exclude(pk__in=subgoal_pks)
-        print('treestart')
         for goal in list(master_goals):
             goal_tree = goal.get_tree(
                 normaltodo_choice=user.treeview_normaltodos_choice,
@@ -134,11 +132,7 @@ class TreeView(LoginRequiredMixin, TemplateView):
                 monitor_choice=user.treeview_monitor_choice
             )
             tree.append(goal_tree)
-        print('treefinito')
         context['tree'] = tree
-        # context['tree'] = [{'name': 'test', 'pk': 1, 'progress': 100, 'subgoals': [{'name': 'test1', 'pk': 2, 'progress': 199}]}]
-        # context["master_goals"] = all_goals.exclude(pk__in=subgoal_pks)\
-        #     .prefetch_related('sub_goals', 'strategies', 'sub_links')
         return context
 
 

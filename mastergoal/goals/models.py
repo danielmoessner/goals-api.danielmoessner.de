@@ -231,26 +231,6 @@ class Goal(models.Model):
             ) for monitor in list(ProgressMonitor.get_monitors(self.progress_monitors.all(), monitor_choice))]
         return data
 
-    def get_tree_html(self):
-        sub_goals = ''.join([goal.get_tree_html() for goal in self.sub_goals.exclude(progress=100, is_archived=True)])
-        sub_goals_tree = '<ul class="tree--nested">{}</ul>'.format(sub_goals)
-        sub_strategies = ''.join([strategy.get_tree_html() for strategy in self.strategies.exclude(progress=100)])
-        sub_strategies_tree = '<ul class="tree--nested">{}</ul>'.format(sub_strategies)
-        sub_progress_monitors = ''.join([pm.get_tree_html() for pm in self.progress_monitors.exclude(progress=100)])
-        sub_progress_monitors_tree = '<ul class="tree--nested">{}</ul>'.format(sub_progress_monitors)
-        html = '<li class="tree--li">' \
-               '<span class="tree--caret">' \
-               '<span class="tree--caret--name">' \
-               '<span class="tree--caret--arrow">&#8611;</span>' \
-               ' {}</span>' \
-               '<span class="blue-badge">{} %</span>' \
-               '<a class="adminator-href-button" href="{}">Open</a>' \
-               '</span>' \
-               '{}{}{}</li>'
-        item = html.format(self.name, self.progress, reverse('goals:goal', args=[self.pk]), sub_progress_monitors_tree,
-                           sub_goals_tree, sub_strategies_tree)
-        return item
-
     def get_class(self):
         result = min(8, max(1, int(8 * (self.progress + 10) / 100)))
         return result
@@ -355,25 +335,17 @@ class ProgressMonitor(models.Model):
             monitors = monitors.filter(m_none_filter())
         return monitors
 
+    def get_notes(self):
+        if self.notes:
+            return self.notes
+        return ''
+
     def get_tree(self):
         data = dict()
         data['name'] = self.monitor
         data['progress'] = self.progress
         data['pk'] = self.pk
         return data
-
-    def get_tree_html(self):
-        html = '<li class="tree--li">' \
-               '<div class="tree--caret">' \
-               '<span class="tree--caret--name">' \
-               '<span class="tree--caret--arrow">&#8613;</span>' \
-               ' {}</span>' \
-               '<span class="blue-badge">{} %</span>' \
-               '<a class="adminator-href-button" href="{}">Open</a>' \
-               '</div>' \
-               '</li>'
-        item = html.format(self.monitor, self.progress, reverse('goals:progress_monitor', args=[self.pk]))
-        return item
 
     def get_progress(self):
         return self.progress
@@ -492,23 +464,6 @@ class Strategy(models.Model):
             ) for todo in list(ToDo.get_to_dos(strategies, MultipleToDo, multipletodo_choice, delta))]
         return data
 
-    def get_tree_html(self):
-        to_dos_filter = Q(is_done=False, has_failed=False)
-        to_dos = ''.join([to_do.get_tree_html() for to_do in self.to_dos.filter(to_dos_filter)])
-        to_dos_tree = '<ul class="tree--nested">{}</ul>'.format(to_dos)
-        html = '<li class="tree--li">' \
-               '<span class="tree--caret">' \
-               '<span class="tree--caret--name">' \
-               '<span class="tree--caret--arrow">&#8605;</span>' \
-               ' {}</span>' \
-               '<span class="blue-badge">{} %</span>' \
-               '<a class="adminator-href-button" href="{}">Open</a>' \
-               '</span>' \
-               '{}</li>'
-        item = html.format(self.name, self.progress, reverse('goals:strategy', args=[self.pk]),
-                           to_dos_tree)
-        return item
-
     def get_goal(self):
         return self.goal.name if self.goal else ''
 
@@ -613,18 +568,6 @@ class ToDo(models.Model):
         data['has_failed'] = self.has_failed
         data['status'] = self.get_to_deadline_time()
         return data
-
-    def get_tree_html(self):
-        html = '<li class="tree--li">' \
-               '<span class="tree--caret">' \
-               '<span class="tree--caret--name">' \
-               '<span class="tree--caret--arrow">&#8623;</span>' \
-               ' {}</span>' \
-               '<a class="adminator-href-button" href="{}">Open</a>' \
-               '</span>' \
-               '</li>'
-        item = html.format(self.name, reverse('goals:to_do', args=[self.pk]))
-        return item
 
     def get_deadline(self, accuracy='high'):
         if self.deadline:

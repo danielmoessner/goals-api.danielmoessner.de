@@ -74,6 +74,16 @@
 				</div>
 			</div>
 		</div>
+		{% if progress_monitor.get_notes() %}
+			<div class='col-md-12 p-0'>
+				<div class="adminator-box">
+					<h6 class="adminator-box--heading">Notes</h6>
+					<div class="adminator-box--content">
+						<p class="adminator-box--p">{{ progress_monitor.get_notes()|replace('\n', '<br>')|safe }}</p>
+					</div>
+				</div>
+			</div>
+		{% endif %}
 	</div>
 </div>
 
