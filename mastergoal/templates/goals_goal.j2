@@ -36,10 +36,12 @@
 			<div class="adminator-box">
 				<h6 class="adminator-box--heading">Properties</h6>
 				<div class="adminator-box--content">
-					{% if goal.deadline %}
-						<p class="adminator-box--p">Deadline: {{ goal.get_deadline() }}</p>
-					{% endif %}
-						<p class="adminator-box--p">Archived: {{ goal.is_archived }}</p>
+					<p class="adminator-box--p">
+						{% if goal.deadline %}
+							Deadline: {{ goal.get_deadline() }}<br>
+						{% endif %}
+						Archived: {{ goal.is_archived }}
+					</p>
 				</div>
 			</div>
 		</div>

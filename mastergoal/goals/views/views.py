@@ -157,7 +157,7 @@ class StarView(LoginRequiredMixin, TemplateView):
                                                         context['goals']).select_related('goal')
         all_goals = context['goals']
         for goal in context['goals']:
-            all_goals = all_goals | goal.get_all_subgoals()
+            all_goals = all_goals | goal.get_all_sub_goals()
         all_strategies = Strategy.objects.filter(goal__in=all_goals) | context['strategies']
         context['to_dos'] = ToDo.get_to_dos(all_strategies,
                                             ToDo,

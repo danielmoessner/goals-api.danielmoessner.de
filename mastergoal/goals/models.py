@@ -1,5 +1,3 @@
-from django.db.models import signals
-from django.shortcuts import reverse
 from django.db.models import Q, F
 from django.utils import timezone
 from django.db import models
@@ -235,12 +233,38 @@ class Goal(models.Model):
         result = min(8, max(1, int(8 * (self.progress + 10) / 100)))
         return result
 
-    def get_all_subgoals(self):
+    # get sub
+    def get_all_sub_goals(self):
         query = self.sub_goals.all()
         for goal in self.sub_goals.all():
-            query = query | goal.get_all_subgoals()
+            query = query | goal.get_all_sub_goals()
         return query
 
+    def get_all_sub_monitors(self):
+        query = self.progress_monitors.all()
+        for goal in self.get_all_sub_goals():
+            query = query | goal.progress_monitors.all()
+        return query
+
+    def get_all_sub_strategies(self):
+        query = self.strategies.all()
+        for goal in self.get_all_sub_goals():
+            query = query | goal.strategies.all()
+        return query
+
+    def get_all_sub_todos(self):
+        query = ToDo.objects.none()
+        for strategy in self.get_all_sub_strategies():
+            query = query | strategy.to_dos.all()
+        return query
+
+    def get_all_sub_links(self):
+        query = self.sub_links.all()
+        for goal in self.get_all_sub_goals():
+            query = query | goal.sub_links.all()
+        return query
+
+    # get master
     def get_all_mastergoals(self):
         query = self.master_goals.all()
         for goal in self.master_goals.all():
@@ -306,6 +330,7 @@ class ProgressMonitor(models.Model):
     steps = models.PositiveSmallIntegerField()
     step = models.PositiveSmallIntegerField(default=0, blank=True)
     notes = models.TextField(default='', blank=True)
+    is_archived = models.BooleanField(default=False)
     # speed
     progress = models.PositiveSmallIntegerField(default=0, blank=True)
 
@@ -365,6 +390,7 @@ class Link(models.Model):
     sub_goal = models.ForeignKey(Goal, on_delete=models.CASCADE, related_name="master_links")
     weight = models.SmallIntegerField(default=1)
     proportion = models.SmallIntegerField(default=100)
+    is_archived = models.BooleanField(default=False)
     # speed
     progress = models.PositiveSmallIntegerField(default=0, blank=True)
 
@@ -415,6 +441,7 @@ class Strategy(models.Model):
     weight = models.SmallIntegerField(default=1)
     description = models.TextField(null=True, blank=True)
     rolling = models.DurationField(blank=True, null=True)
+    is_archived = models.BooleanField(default=False)
     # speed
     progress = models.PositiveSmallIntegerField(default=0, blank=True)
     # user
@@ -517,6 +544,7 @@ class ToDo(models.Model):
     activate = models.DateTimeField(null=True, blank=True)
     deadline = models.DateTimeField(null=True, blank=True)
     notes = models.TextField(null=True, blank=True)
+    is_archived = models.BooleanField(default=False)
 
     # whatever
     class Meta:
@@ -743,22 +771,3 @@ class PipelineToDo(ToDo):
 
 class MultipleToDo(ToDo):
     pass
-
-
-# signals
-def post_save_target(sender, instance, **kwargs):
-    if sender is ToDo:
-        if instance.pipeline_to_dos.exists() and instance.is_done:
-            instance.pipeline_to_dos.update(activate=timezone.now())
-    if sender is RepetitiveToDo:
-        if not instance.trash:
-            if not instance.get_next():
-                instance.generate_next()
-    elif sender is NeverEndingToDo:
-        if (instance.is_done or instance.has_failed) and not instance.next.all().exists():
-            instance.generate_next()
-
-
-signals.post_save.connect(post_save_target, sender=ToDo)
-signals.post_save.connect(post_save_target, sender=RepetitiveToDo)
-signals.post_save.connect(post_save_target, sender=NeverEndingToDo)
