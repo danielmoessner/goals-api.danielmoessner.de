@@ -59,7 +59,7 @@ class ProgressMonitorStepForm(forms.ModelForm):
 class LinkForm(forms.ModelForm):
     class Meta:
         model = Link
-        fields = ('master_goal', 'sub_goal', 'weight', 'proportion')
+        fields = '__all__'
 
     def __init__(self, user, *args, **kwargs):
         super(LinkForm, self).__init__(*args, **kwargs)
@@ -76,7 +76,7 @@ class StrategyForm(forms.ModelForm):
 
     class Meta:
         model = Strategy
-        fields = ('name', 'goal', 'description', 'deadline', 'weight', 'rolling')
+        fields = '__all__'
 
     def __init__(self, user, *args, **kwargs):
         super(StrategyForm, self).__init__(*args, **kwargs)

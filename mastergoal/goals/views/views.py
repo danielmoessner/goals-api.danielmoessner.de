@@ -197,21 +197,25 @@ class AddView(LoginRequiredMixin, TemplateView):
         return context
 
 
-# specific views
+# detail views
 class GoalView(LoginRequiredMixin, UserPassesGoalTestMixin, DetailView):
     template_name = "goals_goal.j2"
     model = Goal
 
     def get_context_data(self, **kwargs):
         context = super(GoalView, self).get_context_data(**kwargs)
-        context['strategies'] = self.object.strategies.all().select_related('goal')
-        context['master_goals'] = self.object.master_goals.all().prefetch_related('strategies', 'sub_goals',
-                                                                                  'master_goals', 'master_links',
-                                                                                  'sub_links')
-        context['sub_goals'] = self.object.sub_goals.all().prefetch_related('strategies', 'sub_goals', 'master_goals',
-                                                                            'master_links', 'sub_links')
-        context['progress_monitors'] = self.object.progress_monitors.all()
-        context['links'] = self.object.sub_links.select_related('master_goal', 'sub_goal')
+        context['strategies'] = self.object.strategies.filter().select_related('goal')
+        context['master_goals'] = self.object.master_goals.filter().prefetch_related(
+            'strategies', 'sub_goals', 'master_goals', 'master_links', 'sub_links')
+        sub_goals = self.object.sub_goals.all()
+        links = self.object.sub_links.all()
+        if not self.object.is_archived:
+            sub_goals = sub_goals.filter(is_archived=False)
+            links = links.filter(is_archived=False)
+        context['sub_goals'] = sub_goals.prefetch_related(
+            'strategies', 'sub_goals', 'master_goals', 'master_links', 'sub_links')
+        context['progress_monitors'] = self.object.progress_monitors.filter()
+        context['links'] = links.select_related('master_goal', 'sub_goal')
         return context
 
 
@@ -242,9 +246,7 @@ class StrategyView(LoginRequiredMixin, UserPassesStrategyTestMixin, DetailView):
         context["never_ending_to_dos"] = NeverEndingToDo.objects.filter(to_do_filter)
         context["multiple_to_dos"] = MultipleToDo.objects.filter(to_do_filter)
         context["pipeline_to_dos"] = PipelineToDo.objects.filter(to_do_filter)
-        context["to_dos"] = ToDo.objects.filter(to_do_filter).exclude(Q(pk__in=context["repetitive_to_dos"]) | Q(
-            pk__in=context["never_ending_to_dos"]) | Q(pk__in=context["multiple_to_dos"]) | Q(
-            pk__in=context['pipeline_to_dos']))
+        context["to_dos"] = NormalToDo.objects.filter(to_do_filter)
         return context
 
 
@@ -343,14 +345,9 @@ class AllToDosView(LoginRequiredMixin, TemplateView):
         user = self.request.user
         all_goals = user.goals.all()
         all_strategies = Strategy.objects.filter(goal__in=all_goals)
-        context['to_dos'] = ToDo.get_to_dos(all_strategies, NormalToDo, 'ALL')\
-            .order_by('is_done', 'has_failed', 'deadline', 'activate', 'name')
-        context['repetitive_to_dos'] = ToDo.get_to_dos(all_strategies, RepetitiveToDo, 'ALL')\
-            .order_by('is_done', 'has_failed', 'deadline', 'activate', 'name')
-        context['never_ending_to_dos'] = ToDo.get_to_dos(all_strategies, NeverEndingToDo, 'ALL')\
-            .order_by('is_done', 'has_failed', 'deadline', 'activate', 'name')
-        context['multiple_to_dos'] = ToDo.get_to_dos(all_strategies, MultipleToDo, 'ALL')\
-            .order_by('is_done', 'has_failed', 'deadline', 'activate', 'name')
-        context['pipeline_to_dos'] = ToDo.get_to_dos(all_strategies, PipelineToDo, 'ALL')\
-            .order_by('is_done', 'has_failed', 'deadline', 'activate', 'name')
+        context['to_dos'] = ToDo.get_to_dos(all_strategies, NormalToDo, 'ALL')
+        context['repetitive_to_dos'] = ToDo.get_to_dos(all_strategies, RepetitiveToDo, 'ALL')
+        context['never_ending_to_dos'] = ToDo.get_to_dos(all_strategies, NeverEndingToDo, 'ALL')
+        context['multiple_to_dos'] = ToDo.get_to_dos(all_strategies, MultipleToDo, 'ALL')
+        context['pipeline_to_dos'] = ToDo.get_to_dos(all_strategies, PipelineToDo, 'ALL')
         return context

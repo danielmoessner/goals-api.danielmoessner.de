@@ -140,7 +140,7 @@ class Goal(models.Model):
 
     # whatever
     class Meta:
-        ordering = ('progress', 'deadline', 'name')
+        ordering = ('is_archived', 'progress', 'deadline', 'name')
 
     def __str__(self):
         return self.name
@@ -336,7 +336,7 @@ class ProgressMonitor(models.Model):
     progress = models.PositiveSmallIntegerField(default=0, blank=True)
 
     class Meta:
-        ordering = ('progress', 'goal')
+        ordering = ('is_archived', 'progress', 'goal')
 
     def __str__(self):
         return self.monitor
@@ -398,7 +398,7 @@ class Link(models.Model):
 
     # whatever
     class Meta:
-        ordering = ('progress', 'master_goal')
+        ordering = ('is_archived', 'progress', 'master_goal')
 
     def __str__(self):
         return str(self.master_goal) + " --> " + str(self.sub_goal)
@@ -454,7 +454,7 @@ class Strategy(models.Model):
 
     # whatever
     class Meta:
-        ordering = ('progress', 'name')
+        ordering = ('is_archived', 'progress', 'name')
 
     def __str__(self):
         return str(self.name)
@@ -554,7 +554,7 @@ class ToDo(models.Model):
 
     # whatever
     class Meta:
-        ordering = ('is_done', 'has_failed', 'deadline', 'activate', 'name')
+        ordering = ('is_archived', 'deadline', 'is_done', 'has_failed', 'activate', 'name')
 
     def __str__(self):
         return str(self.name) + ": " + self.get_activate(accuracy='medium') + " - " + self.get_deadline(accuracy='medium')
@@ -590,7 +590,7 @@ class ToDo(models.Model):
             to_dos = all_to_dos.filter(deadline__lt=(F('deadline') - F('activate')) * .2 + timezone.now())
         else:
             to_dos = to_do_class.objects.none()
-        to_dos = to_dos.order_by('deadline')
+        # to_dos = to_dos.order_by('name')
 
         return to_dos
 
