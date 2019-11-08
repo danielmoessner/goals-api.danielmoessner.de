@@ -526,9 +526,9 @@ class Strategy(models.Model):
     def get_rolling(self):
         if self.rolling is None:
             return ''
-        if abs(self.rolling).days == 0:
+        if self.rolling.days == 0:
             rolling = strfdelta(self.rolling, "{hours}h {minutes}min")
-        elif abs(self.rolling).days == 1:
+        elif self.rolling.days == 1:
             rolling = strfdelta(self.rolling, "{days} day {hours}h {minutes}min")
         else:
             rolling = strfdelta(self.rolling, "{days} days {hours}h {minutes}min")
