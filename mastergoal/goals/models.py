@@ -428,6 +428,24 @@ class Link(models.Model):
         objects += self.master_goal.get_all_master_objects()
         return objects
 
+    # get sub
+    def get_all_sub_goals(self):
+        query = Goal.objects.filter(pk=self.sub_goal.pk)
+        query = query | self.sub_goal.get_all_sub_goals()
+        return query
+
+    def get_all_sub_strategies(self):
+        return self.sub_goal.get_all_sub_strategies()
+
+    def get_all_sub_links(self):
+        return self.sub_goal.get_all_sub_links()
+
+    def get_all_sub_monitors(self):
+        return self.sub_goal.get_all_sub_monitors()
+
+    def get_all_sub_todos(self):
+        return self.sub_goal.get_all_sub_todos()
+
     # get whatever
     def get_name(self):
         return self.master_goal.name + ' --> ' + self.sub_goal.name
@@ -557,7 +575,8 @@ class ToDo(models.Model):
         ordering = ('is_archived', 'deadline', 'is_done', 'has_failed', 'activate', 'name')
 
     def __str__(self):
-        return str(self.name) + ": " + self.get_activate(accuracy='medium') + " - " + self.get_deadline(accuracy='medium')
+        return '{}: {} - {}'.format(
+            self.name, self.get_activate(accuracy='medium'), self.get_deadline(accuracy='medium'))
 
     def delete(self, using=None, keep_parents=False):
         strategy = self.strategy
@@ -566,15 +585,8 @@ class ToDo(models.Model):
 
     # getters
     @staticmethod
-    def get_to_dos(all_strategies, to_do_class, to_dos_filter, delta=None, strategies=None):
+    def get_to_dos(all_strategies, to_do_class, to_dos_filter, delta=None):
         all_to_dos = to_do_class.objects.filter(strategy__in=all_strategies)
-
-        # if to_do_class is ToDo:
-        #     all_to_dos = to_do_class.objects.filter(strategy__in=all_strategies) \
-        #         .exclude(pk__in=RepetitiveToDo.objects.filter(strategy__in=all_strategies)) \
-        #         .exclude(pk__in=NeverEndingToDo.objects.filter(strategy__in=all_strategies)) \
-        #         .exclude(pk__in=MultipleToDo.objects.filter(strategy__in=all_strategies)) \
-        #         .exclude(pk__in=PipelineToDo.objects.filter(strategy__in=all_strategies))
 
         if to_dos_filter == "ALL":
             to_dos = all_to_dos
@@ -590,7 +602,6 @@ class ToDo(models.Model):
             to_dos = all_to_dos.filter(deadline__lt=(F('deadline') - F('activate')) * .2 + timezone.now())
         else:
             to_dos = to_do_class.objects.none()
-        # to_dos = to_dos.order_by('name')
 
         return to_dos
 

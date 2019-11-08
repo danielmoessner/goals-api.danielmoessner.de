@@ -22,13 +22,32 @@ def post_save_target(sender, instance, **kwargs):
     elif sender is NeverEndingToDo:
         if (instance.is_done or instance.has_failed) and not instance.next.all().exists():
             instance.generate_next()
-    elif sender is Goal:
+
+
+signals.post_save.connect(post_save_target, sender=NeverEndingToDo)
+signals.post_save.connect(post_save_target, sender=RepetitiveToDo)
+signals.post_save.connect(post_save_target, sender=ToDo)
+
+
+# archive
+def check_archive_target(sender, instance, **kwargs):
+    if sender is Goal or sender is Link:
         if instance.is_archived:
+            if sender is Goal:
+                instance.master_links.all().update(is_archived=True)
             instance.get_all_sub_goals().update(is_archived=True)
             instance.get_all_sub_monitors().update(is_archived=True)
             instance.get_all_sub_strategies().update(is_archived=True)
             instance.get_all_sub_todos().update(is_archived=True)
             instance.get_all_sub_links().update(is_archived=True)
+    elif sender is Strategy:
+        if instance.is_archived:
+            instance.to_dos.all().update(is_archived=True)
+
+
+signals.post_save.connect(check_archive_target, sender=Strategy)
+signals.post_save.connect(check_archive_target, sender=Goal)
+signals.post_save.connect(check_archive_target, sender=Link)
 
 
 # calc progress
@@ -45,8 +64,3 @@ signals.post_save.connect(calc_progress_target, sender=Strategy)
 signals.post_save.connect(calc_progress_target, sender=Goal)
 signals.post_save.connect(calc_progress_target, sender=Link)
 signals.post_save.connect(calc_progress_target, sender=ToDo)
-
-signals.post_save.connect(post_save_target, sender=NeverEndingToDo)
-signals.post_save.connect(post_save_target, sender=RepetitiveToDo)
-signals.post_save.connect(post_save_target, sender=Goal)
-signals.post_save.connect(post_save_target, sender=ToDo)
