@@ -1,3 +1,10 @@
+.form{
+	&--toggle-button{
+		float: right;
+	}
+}
+
+
 .django-form{
 	p{
 		@extend .form-child;

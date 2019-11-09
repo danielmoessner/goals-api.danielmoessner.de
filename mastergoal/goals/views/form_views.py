@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import ModelFormMixin
+from django.core.exceptions import ImproperlyConfigured
 from django.views.generic import View
 from django.shortcuts import HttpResponseRedirect
 from django.shortcuts import redirect
@@ -42,14 +43,30 @@ from mastergoal.core.views import CustomAjaxFormMixin
 from mastergoal.core.views import CustomGetFormMixin
 
 
+class FieldsetFormContextMixin(object):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        if 'form' not in context:
+            raise ImproperlyConfigured(
+                'There need to be a form in the context for the FieldsetFormContextMixin to work.')
+        fieldsets = None
+        form_class = self.get_form_class()
+        if 'fieldsets' in form_class.Meta.__dict__:
+            fieldsets = form_class.Meta.__dict__['fieldsets']
+        context['form'].__dict__['fieldsets'] = fieldsets
+        return context
+
+
 # Goal
-class GoalAdd(LoginRequiredMixin, CustomAjaxFormMixin, CustomGetFormMixin, generic.CreateView):
+class GoalAdd(LoginRequiredMixin, FieldsetFormContextMixin, CustomAjaxFormMixin, CustomGetFormMixin,
+              generic.CreateView):
     form_class = GoalForm
     model = Goal
-    template_name = "snippets/form.j2"
+    template_name = "snippets/fieldset_form.j2"
 
 
-class GoalEdit(LoginRequiredMixin, UserPassesGoalTestMixin, CustomAjaxFormMixin, CustomGetFormMixin, generic.UpdateView):
+class GoalEdit(LoginRequiredMixin, UserPassesGoalTestMixin, CustomAjaxFormMixin, CustomGetFormMixin,
+               generic.UpdateView):
     form_class = GoalForm
     model = Goal
     template_name = "snippets/form.j2"
@@ -71,9 +88,9 @@ class GoalStar(LoginRequiredMixin, UserPassesGoalTestMixin, generic.DetailView):
     model = Goal
 
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.set_starred()
-        return redirect('goals:goal', pk=self.object.pk)
+        goal = self.get_object()
+        goal.set_starred()
+        return redirect('goals:goal', pk=goal.pk)
 
 
 # Milestone
@@ -152,9 +169,9 @@ class StrategyStar(LoginRequiredMixin, UserPassesStrategyTestMixin, ModelFormMix
     model = Strategy
 
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.set_starred()
-        return redirect('goals:strategy', pk=self.object.pk)
+        strategy = self.get_object()
+        strategy.set_starred()
+        return redirect('goals:strategy', pk=strategy.pk)
 
 
 # NormalToDo

@@ -1,22 +1,37 @@
-var gulp = require("gulp"),
-	shell = require("gulp-shell");
+const gulp = require("gulp");
+const browserify = require("gulp-browserify");
+const sass = require('gulp-sass');
+const rename = require('gulp-rename');
 
 
-	// gulp.task("sass", shell.task("sassc -t compressed scss/main.scss app/css/main.css"));
-	gulp.task("sass", shell.task("sassc scss/main.scss app/css/main.css"));
+gulp.task("scss", function(done) {
+	gulp.src('./scss/**/*.scss')
+		.pipe(sass().on('error', sass.logError))
+		.pipe(gulp.dest('./app/css'));
+	done();
+});
 
 
-	gulp.task("watch-sass", function(){
-		gulp.watch("./scss/**/*.scss", gulp.task("sass"))
-	});
+gulp.task('js-head', function(done) {
+    gulp.src('./javascript/global.js')
+        .pipe(browserify())
+        .pipe(gulp.dest('./app/js'));
+    done();
+});
+gulp.task('js-body', function(done) {
+    gulp.src('./javascript/body.js')
+        .pipe(browserify())
+        .pipe(gulp.dest('./app/js'));
+    done();
+});
 
 
-	gulp.task("js", shell.task("browserify javascript/global.js -o app/js/global.js; browserify javascript/body.js -o app/js/body.js"))
+gulp.task("watch-sass", function(){
+	gulp.watch("./scss/**/*.scss", gulp.task("sass"))
+});
+gulp.task("watch-js", function(){
+	gulp.watch("./javascript/**/*.js", gulp.parallel("js-head", "js-body"))
+});
 
 
-	gulp.task("watch-js", function(){
-		gulp.watch("./javascript/**/*.js", gulp.task("js"))
-	});
-
-
-	gulp.task("default", gulp.parallel("watch-sass", "watch-js"));
+gulp.task("default", gulp.parallel("watch-sass", "watch-js"));

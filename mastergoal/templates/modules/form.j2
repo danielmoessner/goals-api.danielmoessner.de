@@ -60,6 +60,7 @@
 					        $("#{{ id }} .adminator-form--content").html(response)
 					    });
 					})
+					{#
 					// do an ajax post instead of normal post
 					$("#{{ id }}").on("submit", function(event){
 					    event.preventDefault();
@@ -79,6 +80,7 @@
 					        }
 					    })
 					})
+					#}
 				})
 			</script>
 		</div>

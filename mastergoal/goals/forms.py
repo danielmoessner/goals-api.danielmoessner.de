@@ -21,19 +21,32 @@ class GoalForm(forms.ModelForm):
 
     class Meta:
         model = Goal
-        fields = ('name', 'why', 'impact', 'deadline', 'is_archived', 'addition')
+        fields = ('name', 'why', 'impact', 'addition', 'deadline', 'is_archived', 'progress', 'is_starred')
+        fieldsets = (
+            (None, {
+                'fields': ('name', 'why', 'impact')
+            }),
+            ('Additional Options', {
+                'fields': ('deadline',),
+                'classes': ('collapse',)
+            }),
+            ('Advanced Options', {
+                'fields': ('addition', 'is_archived', 'progress', 'is_starred'),
+                'classes': ('collapse',)
+            })
+        )
 
     def __init__(self, user, *args, **kwargs):
         super(GoalForm, self).__init__(*args, **kwargs)
         self.instance.user = user
-        self.fields["deadline"].initial = timezone.now()
+        # self.fields["deadline"].initial = timezone.now()
 
 
 # Milestone
 class ProgressMonitorForm(forms.ModelForm):
     class Meta:
         model = ProgressMonitor
-        fields = ('goal', 'monitor', 'weight', 'steps', 'notes')
+        fields = '__all__'
 
     def __init__(self, user, *args, **kwargs):
         super(ProgressMonitorForm, self).__init__(*args, **kwargs)
@@ -95,7 +108,7 @@ class ToDoForm(forms.ModelForm):
 
     class Meta:
         model = NormalToDo
-        fields = ('name', 'strategy', 'activate', 'deadline', 'notes')
+        fields = '__all__'
 
     def __init__(self, user, *args, **kwargs):
         super(ToDoForm, self).__init__(*args, **kwargs)
@@ -147,7 +160,7 @@ class RepetitiveToDoForm(forms.ModelForm):
 
     class Meta:
         model = RepetitiveToDo
-        fields = ('name', 'strategy', 'activate', 'deadline', 'duration', 'end_day', 'notes')
+        fields = '__all__'
 
     def __init__(self, user, *args, **kwargs):
         super(RepetitiveToDoForm, self).__init__(*args, **kwargs)
@@ -184,7 +197,7 @@ class NeverEndingToDoForm(forms.ModelForm):
 
     class Meta:
         model = NeverEndingToDo
-        fields = ('name', 'strategy', 'activate', 'duration', 'notes')
+        fields = '__all__'
 
     def __init__(self, user, *args, **kwargs):
         super(NeverEndingToDoForm, self).__init__(*args, **kwargs)
@@ -217,7 +230,7 @@ class PipelineToDoForm(forms.ModelForm):
 
     class Meta:
         model = PipelineToDo
-        fields = ('name', 'strategy', 'deadline', 'previous', 'notes')
+        fields = '__all__'
 
     def __init__(self, user, *args, **kwargs):
         super(PipelineToDoForm, self).__init__(*args, **kwargs)

@@ -80,28 +80,23 @@ class ToDosView(LoginRequiredMixin, TemplateView):
         context['to_dos'] = ToDo.get_to_dos(all_strategies,
                                             NormalToDo,
                                             user.normal_to_dos_choice,
-                                            delta=user.to_dos_delta,
-                                            strategies=strategies)
+                                            delta=user.to_dos_delta)
         context['repetitive_to_dos'] = ToDo.get_to_dos(all_strategies,
                                                        RepetitiveToDo,
                                                        user.repetitive_to_dos_choice,
-                                                       delta=user.to_dos_delta,
-                                                       strategies=strategies)
+                                                       delta=user.to_dos_delta)
         context['never_ending_to_dos'] = ToDo.get_to_dos(all_strategies,
                                                          NeverEndingToDo,
                                                          user.never_ending_to_dos_choice,
-                                                         delta=user.to_dos_delta,
-                                                         strategies=strategies)
+                                                         delta=user.to_dos_delta)
         context['multiple_to_dos'] = ToDo.get_to_dos(all_strategies,
                                                      MultipleToDo,
                                                      user.multiple_to_dos_choice,
-                                                     delta=user.to_dos_delta,
-                                                     strategies=strategies)
+                                                     delta=user.to_dos_delta)
         context['pipeline_to_dos'] = ToDo.get_to_dos(all_strategies,
                                                      PipelineToDo,
                                                      user.pipeline_to_dos_choice,
-                                                     delta=user.to_dos_delta,
-                                                     strategies=strategies)
+                                                     delta=user.to_dos_delta)
 
         return context
 

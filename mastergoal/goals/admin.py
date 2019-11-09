@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 from .models import ProgressMonitor
 from .models import NeverEndingToDo
 from .models import RepetitiveToDo
