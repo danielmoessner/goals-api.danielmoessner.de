@@ -5,7 +5,6 @@ from mastergoal.goals.models import ProgressMonitor
 from mastergoal.goals.models import NeverEndingToDo
 from mastergoal.goals.models import RepetitiveToDo
 from mastergoal.goals.models import PipelineToDo
-from mastergoal.goals.models import MultipleToDo
 from mastergoal.goals.models import NormalToDo
 from mastergoal.goals.models import Strategy
 from mastergoal.goals.models import Goal
@@ -205,27 +204,24 @@ class RepetitiveToDoForm(forms.ModelForm):
         input_formats=["%Y-%m-%dT%H:%M"], label="Activate")
     deadline = forms.DateTimeField(widget=forms.DateTimeInput(
         attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
-        input_formats=["%Y-%m-%dT%H:%M"], label="Deadline")
-    end_day = forms.DateTimeField(widget=forms.DateTimeInput(
-        attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
-        input_formats=["%Y-%m-%dT%H:%M"], label="End Day")
+        input_formats=["%Y-%m-%dT%H:%M"], label="Deadline", required=False)
 
     class Meta:
         model = RepetitiveToDo
         fields = (
-            'name', 'strategy', 'activate', 'duration', 'deadline', 'end_day', 'notes', 'is_archived', 'is_done',
-            'has_failed', 'previous', 'trash'
+            'name', 'strategy', 'activate', 'duration', 'deadline', 'repetitions', 'notes', 'is_archived', 'is_done',
+            'has_failed', 'previous'
         )
         fieldsets = (
             (None, {
-                'fields': ('name', 'strategy', 'activate', 'duration', 'deadline', 'end_day')
+                'fields': ('name', 'strategy', 'activate', 'duration', 'repetitions')
             }),
             ('Additional Options', {
                 'fields': ('notes',),
                 'classes': ('collapse',)
             }),
             ('Advanced Options', {
-                'fields': ('is_archived', 'is_done', 'has_failed', 'previous', 'trash'),
+                'fields': ('deadline', 'is_archived', 'is_done', 'has_failed', 'previous'),
                 'classes': ('collapse',)
             })
         )
@@ -233,9 +229,15 @@ class RepetitiveToDoForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(RepetitiveToDoForm, self).__init__(*args, **kwargs)
         self.fields["strategy"].queryset = Strategy.objects.filter(goal__in=user.goals.all()).order_by('name')
-        # self.fields["deadline"].initial = timezone.now()
-        # self.fields["activate"].initial = timezone.now()
-        # self.fields["end_day"].initial = timezone.now()
+        self.fields["activate"].initial = timezone.now()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        deadline = cleaned_data['deadline']
+        if deadline is None:
+            deadline = cleaned_data['activate'] + cleaned_data['duration']
+            cleaned_data['deadline'] = deadline
+        return cleaned_data
 
 
 class RepetitiveToDoDoneForm(forms.ModelForm):
@@ -273,14 +275,14 @@ class NeverEndingToDoForm(forms.ModelForm):
         )
         fieldsets = (
             (None, {
-                'fields': ('name', 'strategy', 'duration', 'deadline')
+                'fields': ('name', 'strategy', 'duration')
             }),
             ('Additional Options', {
                 'fields': ('notes',),
                 'classes': ('collapse',)
             }),
             ('Advanced Options', {
-                'fields': ('is_archived', 'is_done', 'has_failed', 'activate'),
+                'fields': ('deadline', 'is_archived', 'is_done', 'has_failed', 'activate'),
                 'classes': ('collapse',)
             })
         )
@@ -289,6 +291,14 @@ class NeverEndingToDoForm(forms.ModelForm):
         super(NeverEndingToDoForm, self).__init__(*args, **kwargs)
         self.fields["strategy"].queryset = Strategy.objects.filter(goal__in=user.goals.all()).order_by('name')
         self.fields["activate"].initial = timezone.now()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        deadline = cleaned_data['deadline']
+        if deadline is None:
+            deadline = cleaned_data['activate'] + cleaned_data['duration']
+            cleaned_data['deadline'] = deadline
+        return cleaned_data
 
 
 class NeverEndingToDoDoneForm(forms.ModelForm):
@@ -313,24 +323,26 @@ class NeverEndingToDoFailedForm(forms.ModelForm):
 class PipelineToDoForm(forms.ModelForm):
     deadline = forms.DateTimeField(widget=forms.DateTimeInput(
         attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
-        input_formats=["%Y-%m-%dT%H:%M"], label="Deadline (not required)", required=False)
+        input_formats=["%Y-%m-%dT%H:%M"], label="Deadline", required=False)
     activate = forms.DateTimeField(widget=forms.DateTimeInput(
         attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
         input_formats=["%Y-%m-%dT%H:%M"], label="Activate", required=False)
 
     class Meta:
         model = PipelineToDo
-        fields = '__all__'
+        fields = (
+            'name', 'strategy', 'previous', 'deadline', 'notes', 'is_archived', 'is_done', 'has_failed', 'activate'
+                  )
         fieldsets = (
             (None, {
-                'fields': ('name', 'strategy', 'previous')
+                'fields': ('name', 'previous')
             }),
             ('Additional Options', {
-                'fields': ('deadline', 'notes'),
+                'fields': ('strategy', 'notes'),
                 'classes': ('collapse',)
             }),
             ('Advanced Options', {
-                'fields': ('is_archived', 'is_done', 'has_failed', 'activate'),
+                'fields': ('deadline', 'is_archived', 'is_done', 'has_failed', 'activate'),
                 'classes': ('collapse',)
             })
         )
@@ -338,9 +350,18 @@ class PipelineToDoForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(PipelineToDoForm, self).__init__(*args, **kwargs)
         self.fields["strategy"].queryset = Strategy.objects.filter(goal__in=user.goals.all())
+        self.fields['strategy'].required = False
         self.fields["previous"].queryset = ToDo.objects.filter(strategy__in=Strategy.objects.filter(
             goal__in=user.goals.exclude(progress=100)), has_failed=False, is_done=False).order_by('name')
-        # self.fields["deadline"].initial = timezone.now()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        strategy = cleaned_data['strategy']
+        if strategy is None:
+            previous = cleaned_data['previous']
+            strategy = previous.strategy
+            cleaned_data['strategy'] = strategy
+        return cleaned_data
 
 
 class PipelineToDoDoneForm(forms.ModelForm):
@@ -359,22 +380,3 @@ class PipelineToDoFailedForm(forms.ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super(PipelineToDoFailedForm, self).__init__(*args, **kwargs)
-
-
-# MultipleToDo
-class MultipleToDoDoneForm(forms.ModelForm):
-    class Meta:
-        model = MultipleToDo
-        fields = ("is_done",)
-
-    def __init__(self, user, *args, **kwargs):
-        super(MultipleToDoDoneForm, self).__init__(*args, **kwargs)
-
-
-class MultipleToDoFailedForm(forms.ModelForm):
-    class Meta:
-        model = MultipleToDo
-        fields = ("has_failed",)
-
-    def __init__(self, user, *args, **kwargs):
-        super(MultipleToDoFailedForm, self).__init__(*args, **kwargs)

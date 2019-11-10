@@ -46,7 +46,7 @@ class CustomUserStarForm(forms.ModelForm):
         model = CustomUser
         fields = ('goal_depth', 'goal_choice', 'progress_monitor_choice', 'link_choice', 'strategy_choice',
                   'starview_normaltodos_choice', 'starview_neverendingtodos_choice', 'starview_repetitivetodos_choice',
-                  'starview_multipletodos_choice', 'starview_pipelinetodos_choice')
+                  'starview_pipelinetodos_choice')
 
 
 class CustomUserTreeViewForm(forms.ModelForm):
@@ -56,7 +56,7 @@ class CustomUserTreeViewForm(forms.ModelForm):
         fields = ('treeview_goal_depth', 'treeview_goal_choice', 'treeview_monitor_choice',
                   'treeview_strategy_choice', 'treeview_todos_delta',
                   'treeview_normaltodos_choice', 'treeview_repetitivetodos_choice', 'treeview_neverendingtodos_choice',
-                  'treeview_multipletodos_choice', 'treeview_pipelinetodos_choice')
+                  'treeview_pipelinetodos_choice')
 
 
 class CustomUserToDosForm(forms.ModelForm):
@@ -64,7 +64,7 @@ class CustomUserToDosForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ('to_dos_delta', 'normal_to_dos_choice', 'repetitive_to_dos_choice', 'never_ending_to_dos_choice',
-                  'multiple_to_dos_choice', 'pipeline_to_dos_choice')
+                  'pipeline_to_dos_choice')
 
 
 class CustomUserPageForm(forms.ModelForm):

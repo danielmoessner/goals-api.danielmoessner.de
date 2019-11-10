@@ -7,7 +7,6 @@ from django.db.models import Q
 from mastergoal.goals.models import NeverEndingToDo
 from mastergoal.goals.models import ProgressMonitor
 from mastergoal.goals.models import RepetitiveToDo
-from mastergoal.goals.models import MultipleToDo
 from mastergoal.goals.models import PipelineToDo
 from mastergoal.goals.models import NormalToDo
 from mastergoal.goals.models import Strategy
@@ -54,9 +53,6 @@ class SearchView(LoginRequiredMixin, TemplateView):
         context['repetitive_to_dos'] = ToDo\
             .get_to_dos(all_strategies, RepetitiveToDo, 'ALL')\
             .filter(name__icontains=query)
-        context['multiple_to_dos'] = ToDo\
-            .get_to_dos(all_strategies, MultipleToDo, 'ALL')\
-            .filter(name__icontains=query)
         context['pipeline_to_dos'] = ToDo\
             .get_to_dos(all_strategies, PipelineToDo, 'ALL')\
             .filter(name__icontains=query)
@@ -89,10 +85,6 @@ class ToDosView(LoginRequiredMixin, TemplateView):
                                                          NeverEndingToDo,
                                                          user.never_ending_to_dos_choice,
                                                          delta=user.to_dos_delta)
-        context['multiple_to_dos'] = ToDo.get_to_dos(all_strategies,
-                                                     MultipleToDo,
-                                                     user.multiple_to_dos_choice,
-                                                     delta=user.to_dos_delta)
         context['pipeline_to_dos'] = ToDo.get_to_dos(all_strategies,
                                                      PipelineToDo,
                                                      user.pipeline_to_dos_choice,
@@ -121,7 +113,6 @@ class TreeView(LoginRequiredMixin, TemplateView):
                 normaltodo_choice=user.treeview_normaltodos_choice,
                 repetitivetodo_choice=user.treeview_repetitivetodos_choice,
                 neverendingtodo_choice=user.treeview_neverendingtodos_choice,
-                multipletodo_choice=user.treeview_multipletodos_choice,
                 pipelinetodo_choice=user.treeview_pipelinetodos_choice,
                 goal_choice=user.treeview_goal_choice,
                 strategy_choice=user.treeview_strategy_choice,
@@ -169,11 +160,6 @@ class StarView(LoginRequiredMixin, TemplateView):
                                                        RepetitiveToDo,
                                                        user.starview_repetitivetodos_choice,
                                                        user.starview_todos_delta)\
-            .order_by('is_done', 'has_failed', 'deadline', 'activate', 'name')
-        context['multiple_to_dos'] = ToDo.get_to_dos(all_strategies,
-                                                     MultipleToDo,
-                                                     user.starview_multipletodos_choice,
-                                                     user.starview_todos_delta)\
             .order_by('is_done', 'has_failed', 'deadline', 'activate', 'name')
         context['pipeline_to_dos'] = ToDo.get_to_dos(all_strategies,
                                                      PipelineToDo,
@@ -239,7 +225,6 @@ class StrategyView(LoginRequiredMixin, UserPassesStrategyTestMixin, DetailView):
         to_do_filter = Q(strategy=self.object)
         context["repetitive_to_dos"] = RepetitiveToDo.objects.filter(to_do_filter)
         context["never_ending_to_dos"] = NeverEndingToDo.objects.filter(to_do_filter)
-        context["multiple_to_dos"] = MultipleToDo.objects.filter(to_do_filter)
         context["pipeline_to_dos"] = PipelineToDo.objects.filter(to_do_filter)
         context["to_dos"] = NormalToDo.objects.filter(to_do_filter)
         return context
@@ -273,15 +258,6 @@ class NeverEndingToDoView(ToDoView):
     def get_context_data(self, **kwargs):
         context = super(NeverEndingToDoView, self).get_context_data(**kwargs)
         context['to_do_prefix'] = 'never_ending_'
-        return context
-
-
-class MultipleToDoView(ToDoView):
-    model = MultipleToDo
-
-    def get_context_data(self, **kwargs):
-        context = super(MultipleToDoView, self).get_context_data(**kwargs)
-        context['to_do_prefix'] = 'multiple_'
         return context
 
 
@@ -343,6 +319,5 @@ class AllToDosView(LoginRequiredMixin, TemplateView):
         context['to_dos'] = ToDo.get_to_dos(all_strategies, NormalToDo, 'ALL')
         context['repetitive_to_dos'] = ToDo.get_to_dos(all_strategies, RepetitiveToDo, 'ALL')
         context['never_ending_to_dos'] = ToDo.get_to_dos(all_strategies, NeverEndingToDo, 'ALL')
-        context['multiple_to_dos'] = ToDo.get_to_dos(all_strategies, MultipleToDo, 'ALL')
         context['pipeline_to_dos'] = ToDo.get_to_dos(all_strategies, PipelineToDo, 'ALL')
         return context

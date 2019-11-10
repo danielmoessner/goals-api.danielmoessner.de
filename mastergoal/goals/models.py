@@ -13,27 +13,28 @@ def td_all_filter():
 
 
 def td_unfinished_filter():
-    return Q(Q(activate__lte=timezone.now()) | Q(activate=None), is_done=False, has_failed=False)
+    return Q(Q(activate__lte=timezone.now()) | Q(activate=None), is_done=False, has_failed=False, is_archived=False)
 
 
 def td_active_filter():
-    return Q(activate__lte=timezone.now(), is_done=False, has_failed=False)
+    return Q(activate__lte=timezone.now(), is_done=False, has_failed=False, is_archived=False)
 
 
 def td_overdue_filter():
-    return Q(deadline__lte=timezone.now(), is_done=False, has_failed=False)
+    return Q(deadline__lte=timezone.now(), is_done=False, has_failed=False, is_archived=False)
 
 
 def td_related_filter(strategies):
-    return Q(strategy__in=strategies, is_done=False, has_failed=False)
+    return Q(strategy__in=strategies, is_done=False, has_failed=False, is_archived=False)
 
 
 def td_delta_filter(delta):
-    return Q(deadline__lte=timezone.now() + delta, activate__lte=timezone.now(), is_done=False, has_failed=False)
+    return Q(deadline__lte=timezone.now() + delta, activate__lte=timezone.now(), is_done=False, has_failed=False,
+             is_archived=False)
 
 
 def td_orange_filter():
-    return Q(activate__lte=timezone.now(), is_done=False, has_failed=False)
+    return Q(activate__lte=timezone.now(), is_done=False, has_failed=False, is_archived=False)
 
 
 def td_none_filter():
@@ -53,7 +54,7 @@ def g_star_filter():
 
 
 def g_unreached_filter():
-    return Q(progress__lt=100, archived=False)
+    return Q(progress__lt=100, is_archived=False)
 
 
 def g_achieved_filter():
@@ -77,11 +78,11 @@ def m_all_filter():
 
 
 def m_unreached_filter():
-    return Q(progress_lt=100)
+    return Q(progress_lt=100, is_archived=False)
 
 
 def m_loaded_filter():
-    return Q(progress_gte=100)
+    return Q(progress_gte=100, is_archived=False)
 
 
 def m_related_filter(goals):
@@ -97,11 +98,11 @@ def l_all_filter():
 
 
 def l_related_filter(goals):
-    return Q(Q(master_goal__in=goals) | Q(sub_goal__in=goals))
+    return Q(Q(master_goal__in=goals) | Q(sub_goal__in=goals), is_archived=False)
 
 
 def l_xrelated_filter(goals):
-    return Q(master_goal__in=goals, sub_goal__in=goals)
+    return Q(master_goal__in=goals, sub_goal__in=goals, is_archived=False)
 
 
 def l_none_filter():
@@ -199,7 +200,6 @@ class Goal(models.Model):
                  repetitivetodo_choice='ALL',
                  neverendingtodo_choice='ALL',
                  pipelinetodo_choice='ALL',
-                 multipletodo_choice='ALL',
                  delta=None,
                  goal_choice='ALL',
                  strategy_choice='ALL',
@@ -213,7 +213,6 @@ class Goal(models.Model):
             repetitivetodo_choice,
             neverendingtodo_choice,
             pipelinetodo_choice,
-            multipletodo_choice,
             delta,
             goal_choice,
             strategy_choice,
@@ -223,7 +222,6 @@ class Goal(models.Model):
             repetitivetodo_choice,
             neverendingtodo_choice,
             pipelinetodo_choice,
-            multipletodo_choice,
             delta) for strategy in list(Strategy.get_strategies(self.strategies.all(), strategy_choice))]
         data['monitors'] = [monitor.get_tree(
             ) for monitor in list(ProgressMonitor.get_monitors(self.progress_monitors.all(), monitor_choice))]
@@ -496,7 +494,7 @@ class Strategy(models.Model):
         return strategies
 
     def get_tree(self, normaltodo_choice='ALL', repetitivetodo_choice='ALL', neverendingtodo_choice='ALL',
-                 pipelinetodo_choice='ALL', multipletodo_choice='ALL', delta=None):
+                 pipelinetodo_choice='ALL', delta=None):
         data = dict()
         data['name'] = self.name
         data['pk'] = self.pk
@@ -510,8 +508,6 @@ class Strategy(models.Model):
             ) for todo in list(ToDo.get_to_dos(strategies, NeverEndingToDo, neverendingtodo_choice, delta))]
         data['pipelinetodos'] = [todo.get_tree(
             ) for todo in list(ToDo.get_to_dos(strategies, PipelineToDo, pipelinetodo_choice, delta))]
-        data['multipletodos'] = [todo.get_tree(
-            ) for todo in list(ToDo.get_to_dos(strategies, MultipleToDo, multipletodo_choice, delta))]
         return data
 
     def get_all_master_objects(self):
@@ -691,10 +687,9 @@ class NormalToDo(ToDo):
 
 
 class RepetitiveToDo(ToDo):
-    end_day = models.DateTimeField()
     duration = models.DurationField()
     previous = models.OneToOneField('self', blank=True, null=True, on_delete=models.SET_NULL, related_name='next')
-    trash = models.BooleanField(default=False)
+    repetitions = models.PositiveSmallIntegerField(default=None, null=True)
 
     # whatever
     def delete(self, using=None, keep_parents=False):
@@ -702,7 +697,7 @@ class RepetitiveToDo(ToDo):
         if next_rtd and self.previous:
             next_rtd.previous = self.previous
             self.previous = None
-            self.trash = True
+            self.repetitions = 0
             self.save()
             next_rtd.save()
         super(RepetitiveToDo, self).delete(using, keep_parents)
@@ -745,11 +740,12 @@ class RepetitiveToDo(ToDo):
     # generate
     def generate_next(self):
         next_deadline = self.deadline + self.duration
-        if self.end_day and next_deadline > self.end_day:
+        if self.repetitions <= 0:
             return
         next_activate = self.activate + self.duration
+        repetitions = self.repetitions - 1
         RepetitiveToDo.objects.create(name=self.name, strategy=self.strategy, previous=self, deadline=next_deadline,
-                                      activate=next_activate, end_day=self.end_day, duration=self.duration)
+                                      activate=next_activate, repetitions=repetitions, duration=self.duration)
 
 
 class NeverEndingToDo(ToDo):
@@ -790,7 +786,3 @@ class PipelineToDo(ToDo):
 
     def get_previous(self):
         return self.previous
-
-
-class MultipleToDo(ToDo):
-    pass

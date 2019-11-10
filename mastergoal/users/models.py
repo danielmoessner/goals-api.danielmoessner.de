@@ -66,14 +66,12 @@ class CustomUser(AbstractUser):
     starview_normaltodos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default="ALL")
     starview_repetitivetodos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default="ALL")
     starview_neverendingtodos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default="ALL")
-    starview_multipletodos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default="ALL")
     starview_pipelinetodos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default="ALL")
     # to do view
     to_dos_delta = models.DurationField(blank=True, default=timedelta(days=7))
     normal_to_dos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default="ALL")
     repetitive_to_dos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default="ALL")
     never_ending_to_dos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default="ALL")
-    multiple_to_dos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default="ALL")
     pipeline_to_dos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default="ALL")
     # tree view
     treeview_goal_depth = models.PositiveSmallIntegerField(blank=True, null=True)
@@ -84,5 +82,4 @@ class CustomUser(AbstractUser):
     treeview_normaltodos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default="ALL")
     treeview_repetitivetodos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default="ALL")
     treeview_neverendingtodos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default="ALL")
-    treeview_multipletodos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default="ALL")
     treeview_pipelinetodos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default="ALL")

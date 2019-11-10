@@ -1,42 +1,34 @@
-   <div class="masonry--item masonry--item-4">
-      <div class="adminator-box">
-          <div class="adminator-box--heading">
-            <a class="adminator-box--toggle" id="add-to-do-toggle" href="#add-to-do-target" data-toggle="collapse">Add To Do</a>
-          </div>
-          <div class="adminator-box--content collapse" id="add-to-do-target">
-            {{ fg.onClickAjaxForm("add-to-do", url("goals:to_do_add")) }}
-          </div>
+<div class="masonry--item masonry--item-4">
+  <div class="adminator-box">
+      <div class="adminator-box--heading">
+        <a class="adminator-box--toggle" id="add-to-do-toggle" href="#add-to-do-target" data-toggle="collapse">Add To Do</a>
       </div>
-      <div class="adminator-box">
-          <div class="adminator-box--heading">
-            <a class="adminator-box--toggle" id="add-repetitive-to-do-toggle" href="#add-repetitive-to-do-target" data-toggle="collapse">Add Repetitive To Do</a>
-          </div>
-          <div class="adminator-box--content collapse" id="add-repetitive-to-do-target">
-            {{ fg.onClickAjaxForm("add-repetitive-to-do", url("goals:repetitive_to_do_add")) }}
-          </div>
+      <div class="adminator-box--content collapse" id="add-to-do-target">
+        {{ fg.onClickAjaxForm("add-to-do", url("goals:to_do_add")) }}
       </div>
-      <div class="adminator-box">
-          <div class="adminator-box--heading">
-            <a class="adminator-box--toggle" id="add-never-ending-to-do-toggle" href="#add-never-ending-to-do-target" data-toggle="collapse">Add Never Ending To Do</a>
-          </div>
-          <div class="adminator-box--content collapse" id="add-never-ending-to-do-target">
-            {{ fg.onClickAjaxForm("add-never-ending-to-do", url("goals:never_ending_to_do_add")) }}
-          </div>
+  </div>
+  <div class="adminator-box">
+      <div class="adminator-box--heading">
+        <a class="adminator-box--toggle" id="add-repetitive-to-do-toggle" href="#add-repetitive-to-do-target" data-toggle="collapse">Add Repetitive To Do</a>
       </div>
-      <div class="adminator-box">
-          <div class="adminator-box--heading">
-            <a class="adminator-box--toggle" id="add-multiple-to-do-toggle" href="#add-multiple-to-do-target" data-toggle="collapse">Add Multiple To Do</a>
-          </div>
-          <div class="adminator-box--content collapse" id="add-multiple-to-do-target">
-            {{ fg.onClickAjaxForm("add-multiple-to-do", url("goals:to_do_add")) }}
-          </div>
+      <div class="adminator-box--content collapse" id="add-repetitive-to-do-target">
+        {{ fg.onClickAjaxForm("add-repetitive-to-do", url("goals:repetitive_to_do_add")) }}
       </div>
-      <div class="adminator-box">
-          <div class="adminator-box--heading">
-            <a class="adminator-box--toggle" id="add-pipeline-to-do-toggle" href="#add-pipeline-to-do-target" data-toggle="collapse">Add Pipeline To Do</a>
-          </div>
-          <div class="adminator-box--content collapse" id="add-pipeline-to-do-target">
-            {{ fg.onClickAjaxForm("add-pipeline-to-do", url("goals:pipeline_to_do_add")) }}
-          </div>
+  </div>
+  <div class="adminator-box">
+      <div class="adminator-box--heading">
+        <a class="adminator-box--toggle" id="add-never-ending-to-do-toggle" href="#add-never-ending-to-do-target" data-toggle="collapse">Add Never Ending To Do</a>
       </div>
-    </div>
+      <div class="adminator-box--content collapse" id="add-never-ending-to-do-target">
+        {{ fg.onClickAjaxForm("add-never-ending-to-do", url("goals:never_ending_to_do_add")) }}
+      </div>
+  </div>
+  <div class="adminator-box">
+      <div class="adminator-box--heading">
+        <a class="adminator-box--toggle" id="add-pipeline-to-do-toggle" href="#add-pipeline-to-do-target" data-toggle="collapse">Add Pipeline To Do</a>
+      </div>
+      <div class="adminator-box--content collapse" id="add-pipeline-to-do-target">
+        {{ fg.onClickAjaxForm("add-pipeline-to-do", url("goals:pipeline_to_do_add")) }}
+      </div>
+  </div>
+</div>

@@ -69,6 +69,5 @@ urlpatterns = [
     path('progressmonitor/<pk>', views.ProgressMonitorView.as_view(), name="progress_monitor"),
     path('neverendingtodo/<pk>', views.NeverEndingToDoView.as_view(), name="never_ending_to_do"),
     path('repetitivetodo/<pk>', views.RepetitiveToDoView.as_view(), name="repetitive_to_do"),
-    path('multipletodo/<pk>', views.MultipleToDoView.as_view(), name="multiple_to_do"),
     path('pipelinetodo/<pk>', views.PipelineToDoView.as_view(), name="pipeline_to_do"),
 ]

@@ -16,9 +16,8 @@ def post_save_target(sender, instance, **kwargs):
         if instance.pipeline_to_dos.exists() and instance.is_done:
             instance.pipeline_to_dos.update(activate=timezone.now())
     if sender is RepetitiveToDo:
-        if not instance.trash:
-            if not instance.get_next():
-                instance.generate_next()
+        if instance.repetitions > 0 and instance.get_next() is None:
+            instance.generate_next()
     elif sender is NeverEndingToDo:
         if (instance.is_done or instance.has_failed) and not instance.next.all().exists():
             instance.generate_next()
