@@ -65,11 +65,11 @@ class GoalAdd(LoginRequiredMixin, FieldsetFormContextMixin, CustomAjaxFormMixin,
     template_name = "snippets/fieldset_form.j2"
 
 
-class GoalEdit(LoginRequiredMixin, UserPassesGoalTestMixin, CustomAjaxFormMixin, CustomGetFormMixin,
-               generic.UpdateView):
+class GoalEdit(LoginRequiredMixin, FieldsetFormContextMixin, UserPassesGoalTestMixin, CustomAjaxFormMixin,
+               CustomGetFormMixin, generic.UpdateView):
     form_class = GoalForm
     model = Goal
-    template_name = "snippets/form.j2"
+    template_name = "snippets/fieldset_form.j2"
 
 
 class GoalDelete(LoginRequiredMixin, UserPassesGoalTestMixin, generic.DeleteView):
@@ -94,17 +94,18 @@ class GoalStar(LoginRequiredMixin, UserPassesGoalTestMixin, generic.DetailView):
 
 
 # Milestone
-class ProgressMonitorAdd(LoginRequiredMixin, CustomAjaxFormMixin, CustomGetFormMixin, generic.CreateView):
+class ProgressMonitorAdd(LoginRequiredMixin, FieldsetFormContextMixin, CustomAjaxFormMixin, CustomGetFormMixin,
+                         generic.CreateView):
     form_class = ProgressMonitorForm
     model = ProgressMonitor
-    template_name = 'snippets/form.j2'
+    template_name = 'snippets/fieldset_form.j2'
 
 
-class ProgressMonitorEdit(LoginRequiredMixin, UserPassesProgressMonitorTestMixin, CustomAjaxFormMixin,
-                          CustomGetFormMixin, generic.UpdateView):
+class ProgressMonitorEdit(LoginRequiredMixin, UserPassesProgressMonitorTestMixin, FieldsetFormContextMixin,
+                          CustomAjaxFormMixin, CustomGetFormMixin, generic.UpdateView):
     form_class = ProgressMonitorForm
     model = ProgressMonitor
-    template_name = "snippets/form.j2"
+    template_name = 'snippets/fieldset_form.j2'
 
 
 class ProgressMonitorDelete(LoginRequiredMixin, UserPassesProgressMonitorTestMixin, generic.DeleteView):
@@ -121,17 +122,18 @@ class ProgressMonitorStep(LoginRequiredMixin, UserPassesProgressMonitorTestMixin
 
 
 # Link
-class LinkAdd(LoginRequiredMixin, CustomAjaxFormMixin, CustomGetFormMixin, generic.CreateView):
+class LinkAdd(LoginRequiredMixin, FieldsetFormContextMixin, CustomAjaxFormMixin, CustomGetFormMixin,
+              generic.CreateView):
     form_class = LinkForm
     model = Link
-    template_name = 'snippets/form.j2'
+    template_name = 'snippets/fieldset_form.j2'
 
 
-class LinkEdit(LoginRequiredMixin, UserPassesLinkTestMixin, CustomAjaxFormMixin, CustomGetFormMixin,
-               generic.UpdateView):
+class LinkEdit(LoginRequiredMixin, UserPassesLinkTestMixin, FieldsetFormContextMixin, CustomAjaxFormMixin,
+               CustomGetFormMixin, generic.UpdateView):
     form_class = LinkForm
     model = Link
-    template_name = "snippets/form.j2"
+    template_name = 'snippets/fieldset_form.j2'
 
 
 class LinkDelete(LoginRequiredMixin, UserPassesLinkTestMixin, generic.DeleteView):
@@ -141,17 +143,18 @@ class LinkDelete(LoginRequiredMixin, UserPassesLinkTestMixin, generic.DeleteView
 
 
 # Strategy
-class StrategyAdd(LoginRequiredMixin, CustomAjaxFormMixin, CustomGetFormMixin, generic.CreateView):
+class StrategyAdd(LoginRequiredMixin, FieldsetFormContextMixin, CustomAjaxFormMixin, CustomGetFormMixin,
+                  generic.CreateView):
     form_class = StrategyForm
     model = Strategy
-    template_name = "snippets/form.j2"
+    template_name = 'snippets/fieldset_form.j2'
 
 
-class StrategyEdit(LoginRequiredMixin, UserPassesStrategyTestMixin, CustomAjaxFormMixin, CustomGetFormMixin,
-                   generic.UpdateView):
+class StrategyEdit(LoginRequiredMixin, UserPassesStrategyTestMixin, FieldsetFormContextMixin, CustomAjaxFormMixin,
+                   CustomGetFormMixin, generic.UpdateView):
     form_class = StrategyForm
     model = Strategy
-    template_name = "snippets/form.j2"
+    template_name = 'snippets/fieldset_form.j2'
 
 
 class StrategyDelete(LoginRequiredMixin, UserPassesStrategyTestMixin, generic.DeleteView):
@@ -175,17 +178,18 @@ class StrategyStar(LoginRequiredMixin, UserPassesStrategyTestMixin, ModelFormMix
 
 
 # NormalToDo
-class ToDoAdd(LoginRequiredMixin, CustomAjaxFormMixin, CustomGetFormMixin, generic.CreateView):
+class ToDoAdd(LoginRequiredMixin, FieldsetFormContextMixin, CustomAjaxFormMixin, CustomGetFormMixin,
+              generic.CreateView):
     form_class = ToDoForm
     model = ToDo
-    template_name = "snippets/form.j2"
+    template_name = 'snippets/fieldset_form.j2'
 
 
-class ToDoEdit(LoginRequiredMixin, UserPassesToDoTestMixin, CustomAjaxFormMixin, CustomGetFormMixin,
-               generic.UpdateView):
+class ToDoEdit(LoginRequiredMixin, FieldsetFormContextMixin, UserPassesToDoTestMixin, CustomAjaxFormMixin,
+               CustomGetFormMixin, generic.UpdateView):
     form_class = ToDoForm
     model = ToDo
-    template_name = "snippets/form.j2"
+    template_name = 'snippets/fieldset_form.j2'
 
 
 class ToDoDelete(LoginRequiredMixin, UserPassesToDoTestMixin, generic.DeleteView):
@@ -222,13 +226,13 @@ class ToDoNotes(LoginRequiredMixin, UserPassesToDoTestMixin, CustomSimpleAjaxFor
 class RepetitiveToDoAdd(ToDoAdd):
     form_class = RepetitiveToDoForm
     model = RepetitiveToDo
-    template_name = "snippets/form.j2"
+    template_name = 'snippets/fieldset_form.j2'
 
 
 class RepetitiveToDoEdit(ToDoEdit):
     form_class = RepetitiveToDoForm
     model = RepetitiveToDo
-    template_name = "snippets/form.j2"
+    template_name = 'snippets/fieldset_form.j2'
 
 
 class RepetitiveToDoDelete(ToDoDelete):
@@ -277,13 +281,13 @@ class RepetitiveToDoFailed(ToDoFailed):
 class NeverEndingToDoAdd(ToDoAdd):
     form_class = NeverEndingToDoForm
     model = NeverEndingToDo
-    template_name = "snippets/form.j2"
+    template_name = 'snippets/fieldset_form.j2'
 
 
 class NeverEndingToDoEdit(ToDoEdit):
     form_class = NeverEndingToDoForm
     model = NeverEndingToDo
-    template_name = "snippets/form.j2"
+    template_name = 'snippets/fieldset_form.j2'
 
 
 class NeverEndingToDoDelete(ToDoDelete):
@@ -305,13 +309,13 @@ class NeverEndingToDoFailed(ToDoFailed):
 class PipelineToDoAdd(ToDoAdd):
     form_class = PipelineToDoForm
     model = PipelineToDo
-    template_name = "snippets/form.j2"
+    template_name = 'snippets/fieldset_form.j2'
 
 
 class PipelineToDoEdit(ToDoEdit):
     form_class = PipelineToDoForm
     model = PipelineToDo
-    template_name = "snippets/form.j2"
+    template_name = 'snippets/fieldset_form.j2'
 
 
 class PipelineToDoDelete(ToDoDelete):

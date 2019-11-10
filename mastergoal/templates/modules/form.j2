@@ -60,7 +60,6 @@
 					        $("#{{ id }} .adminator-form--content").html(response)
 					    });
 					})
-					{#
 					// do an ajax post instead of normal post
 					$("#{{ id }}").on("submit", function(event){
 					    event.preventDefault();
@@ -70,6 +69,7 @@
 					        data : $("#{{ id }}").serialize(),
 					        success : function(data) {
 					        	if (data.valid) {
+					        		console.log('valid')
 					        		window.location.reload()
 					        	} else {
 					        		$("#{{ id }} .adminator-form--content").html(data.html).promise().done(setTimeout(function() {$(".masonry").masonry()}, 500))
@@ -80,7 +80,6 @@
 					        }
 					    })
 					})
-					#}
 				})
 			</script>
 		</div>

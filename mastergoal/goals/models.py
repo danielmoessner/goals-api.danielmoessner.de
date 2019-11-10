@@ -694,7 +694,7 @@ class RepetitiveToDo(ToDo):
     end_day = models.DateTimeField()
     duration = models.DurationField()
     previous = models.OneToOneField('self', blank=True, null=True, on_delete=models.SET_NULL, related_name='next')
-    trash = models.BooleanField(default=False, editable=False)
+    trash = models.BooleanField(default=False)
 
     # whatever
     def delete(self, using=None, keep_parents=False):
