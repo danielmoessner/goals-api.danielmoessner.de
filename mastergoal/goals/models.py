@@ -13,7 +13,7 @@ def td_all_filter():
 
 
 def td_unfinished_filter():
-    return Q(Q(activate__lte=timezone.now()) | Q(activate=None), is_done=False, has_failed=False, is_archived=False)
+    return Q(is_done=False, has_failed=False, is_archived=False)
 
 
 def td_active_filter():
@@ -725,11 +725,17 @@ class RepetitiveToDo(ToDo):
         return None
 
     def get_all_after(self):
-        q = RepetitiveToDo.objects.filter(pk=self.pk)
-        next_rtd = self.get_next()
-        if next_rtd:
-            q = q | next_rtd.get_all_after()
-        return q
+        repetitive_to_dos = [self]
+        next_repetitive_to_do = self.get_next()
+        if next_repetitive_to_do:
+            repetitive_to_dos = repetitive_to_dos + next_repetitive_to_do.get_all_after()
+        return repetitive_to_dos
+        # this code may throw a parser stack overflow
+        # q = RepetitiveToDo.objects.filter(pk=self.pk)
+        # next_rtd = self.get_next()
+        # if next_rtd:
+        #     q = q | next_rtd.get_all_after()
+        # return q
 
     def get_all_before(self):
         q = RepetitiveToDo.objects.filter(pk=self.pk)

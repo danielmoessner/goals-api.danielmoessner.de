@@ -246,7 +246,9 @@ class RepetitiveToDoListDelete(LoginRequiredMixin, UserPassesToDoTestMixin, gene
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
+        print(self.object)
         self.objects = self.get_objects()
+        print(self.objects)
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
 

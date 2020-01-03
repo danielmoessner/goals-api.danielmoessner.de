@@ -77,6 +77,7 @@ class ToDosView(LoginRequiredMixin, TemplateView):
                                             NormalToDo,
                                             user.normal_to_dos_choice,
                                             delta=user.to_dos_delta)
+        print(user.repetitive_to_dos_choice)
         context['repetitive_to_dos'] = ToDo.get_to_dos(all_strategies,
                                                        RepetitiveToDo,
                                                        user.repetitive_to_dos_choice,
