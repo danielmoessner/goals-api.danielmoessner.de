@@ -263,9 +263,9 @@ class RepetitiveToDoListDelete(LoginRequiredMixin, UserPassesToDoTestMixin, gene
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.objects = self.get_objects()
-        self.object.get_all_before().update(end_day=self.object.activate)
         success_url = reverse_lazy("goals:strategy", args=[self.object.strategy.pk])
-        self.objects.delete()
+        object_pks = [obj.pk for obj in self.objects]
+        self.model.objects.filter(pk__in=object_pks).delete()
         return HttpResponseRedirect(success_url)
 
 
