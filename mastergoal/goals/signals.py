@@ -53,9 +53,16 @@ signals.post_save.connect(check_archive_target, sender=Link)
 def calc_progress_target(sender, instance, **kwargs):
     # calc progress of the saved object
     instance.__class__.objects.filter(pk=instance.pk).update(progress=instance.calc_progress())
+
     # calc the progress of its path to the master node
     for obj in instance.get_all_master_objects():
+        print('next step')
+        print(obj.__class__)
+        print(obj)
+        print("old:", obj.progress)
+        print("calc", obj.calc_progress())
         obj.__class__.objects.filter(pk=obj.pk).update(progress=obj.calc_progress())
+        print("new:", obj.__class__.objects.filter(pk=obj.pk).first().progress)
 
 
 signals.post_save.connect(calc_progress_target, sender=ProgressMonitor)

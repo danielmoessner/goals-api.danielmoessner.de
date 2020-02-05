@@ -453,7 +453,7 @@ class Link(models.Model):
 
     # calc
     def calc_progress(self):
-        return min(self.sub_goal.progress * (100 / self.proportion), 100)
+        return min(Goal.objects.filter(pk=self.sub_goal.id).first().progress * (self.proportion / 100), 100)
 
 
 class Strategy(models.Model):
