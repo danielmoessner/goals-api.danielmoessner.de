@@ -93,6 +93,15 @@ class GoalStar(LoginRequiredMixin, UserPassesGoalTestMixin, generic.DetailView):
         return redirect('goals:goal', pk=goal.pk)
 
 
+class GoalArchive(LoginRequiredMixin, UserPassesGoalTestMixin, generic.DetailView):
+    model = Goal
+
+    def get(self, request, *args, **kwargs):
+        goal = self.get_object()
+        goal.set_archived()
+        return redirect('goals:goal', pk=goal.pk)
+
+
 # Milestone
 class ProgressMonitorAdd(LoginRequiredMixin, FieldsetFormContextMixin, CustomAjaxFormMixin, CustomGetFormMixin,
                          generic.CreateView):
@@ -174,6 +183,15 @@ class StrategyStar(LoginRequiredMixin, UserPassesStrategyTestMixin, ModelFormMix
     def get(self, request, *args, **kwargs):
         strategy = self.get_object()
         strategy.set_starred()
+        return redirect('goals:strategy', pk=strategy.pk)
+
+
+class StrategyArchive(LoginRequiredMixin, UserPassesStrategyTestMixin, ModelFormMixin, View):
+    model = Strategy
+
+    def get(self, request, *args, **kwargs):
+        strategy = self.get_object()
+        strategy.set_archived()
         return redirect('goals:strategy', pk=strategy.pk)
 
 

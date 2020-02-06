@@ -42,6 +42,16 @@
 	border-color: #C76911;
 }
 
+.update-button {
+	@extend .btn;
+	@extend .btn-info;
+	@extend .btn-sm;
+	@extend .badge;
+	@extend .badge-pill;
+	@extend .badge-info;
+	@extend .p-5;
+}
+
 
 // adminator
 .adminator-submit-button{

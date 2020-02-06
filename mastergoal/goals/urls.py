@@ -11,6 +11,7 @@ urlpatterns = [
     path('goal/<pk>/edit', form_views.GoalEdit.as_view(), name='goal_edit'),
     path('goal/<pk>/delete', form_views.GoalDelete.as_view(), name='goal_delete'),
     path('goal/<pk>/star', form_views.GoalStar.as_view(), name='goal_star'),
+    path('goal/<pk>/archive', form_views.GoalArchive.as_view(), name='goal_archive'),
     # progressmonitor
     path('progressmonitor/add', form_views.ProgressMonitorAdd.as_view(), name='progress_monitor_add'),
     path('progressmonitor/<pk>/edit', form_views.ProgressMonitorEdit.as_view(), name='progress_monitor_edit'),
@@ -25,6 +26,7 @@ urlpatterns = [
     path('strategy/<pk>/edit', form_views.StrategyEdit.as_view(), name='strategy_edit'),
     path('strategy/<pk>/delete', form_views.StrategyDelete.as_view(), name='strategy_delete'),
     path('strategy/<pk>/star', form_views.StrategyStar.as_view(), name='strategy_star'),
+    path('strategy/<pk>/archive', form_views.StrategyArchive.as_view(), name='strategy_archive'),
     # todos
     path('todo/add', form_views.ToDoAdd.as_view(), name='to_do_add'),
     path('todo/<pk>/edit', form_views.ToDoEdit.as_view(), name='to_do_edit'),

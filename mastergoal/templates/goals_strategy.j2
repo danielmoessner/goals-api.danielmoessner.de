@@ -7,94 +7,96 @@
 {% block main %}
 
 
-{% import "modules/button.j2" as bg %}
-{% import "modules/form.j2" as fg %}
-{% import "modules/item.j2" as ig %}
-{% import "modules/card.j2" as cg %}
+    {% import "modules/button.j2" as bg %}
+    {% import "modules/form.j2" as fg %}
+    {% import "modules/item.j2" as ig %}
+    {% import "modules/card.j2" as cg %}
 
 
-<div class="masonry--item masonry--item-4">
-	<div class="row m-0">
-		<div class='col-md-6 p-0'>
-			<div class="adminator-box">
-				<div class="adminator-box--top">
-					<h6 class="adminator-box--heading">{{ strategy.name }}</h6>
-					<a class="star--link" href="{{ url('goals:strategy_star', args=[strategy.pk]) }}">
-						{% if strategy.is_starred %}
-							<span class="star--black"></span>
-						{% else %}
-							<span class="star--white"></span>
-						{% endif %}
-					</a>
-				</div>
-				<div class="adminator-box--content">
-					<span class="blue-badge">{{ strategy.progress }}%</span>
-				</div>
-			</div>
-		</div>
-		<div class='col-md-6 p-0'>
-			<div class="adminator-box">
-				<h6 class="adminator-box--heading">Properties</h6>
-				<div class="adminator-box--content">
-					<p class="adminator-box--p">
-						Weight: {{ strategy.weight }}
-						{% if strategy.rolling %}
-							<br>Rolling: {{ strategy.get_rolling() }}
-						{% endif %}
-						<br>Archived: {{ strategy.is_archived }}
-					</p>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="row m-0">
-		<div class='col-md-12 p-0'>
-			<div class="adminator-box">
-				<h6 class="adminator-box--heading">Description</h6>
-				<div class="adminator-box--content">
-					<p class="adminator-box--p">{{ strategy.description }}</p>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-
-
-<div class="masonry--item masonry--item-4">
-	<div class="adminator-box">
-		<h6 class="adminator-box--heading">Goal</h6>
-		<div class="adminator-box--content">
-			{{ ig.goal(goal, csrf_token) }} 
-		</div>
-	</div>
-</div>
-
-
-{% include "snippets/to_dos.j2" %}
-
-
-<div class="masonry--item masonry--item-4" >
-    <div class="adminator-box">
-        <div class="adminator-box--heading">
-          	<a class="adminator-box--toggle" id="edit-strategy-toggle" href="#edit-strategy-target" data-toggle="collapse">Edit</a>
+    <div class="masonry--item masonry--item-4">
+        <div class="row m-0">
+            <div class='col-md-6 p-0'>
+                <div class="adminator-box">
+                    <div class="adminator-box--top">
+                        <h6 class="adminator-box--heading">{{ strategy.name }}</h6>
+                        <a class="update-button" href="{{ url('goals:strategy_star', args=[strategy.pk]) }}">Star</a>
+                        <a class="update-button" href="{{ url('goals:strategy_archive', args=[strategy.pk]) }}">Archive</a>
+                    </div>
+                    <div class="adminator-box--content">
+                        <span class="blue-badge">{{ strategy.progress }}%</span>
+                    </div>
+                </div>
+            </div>
+            <div class='col-md-6 p-0'>
+                <div class="adminator-box">
+                    <h6 class="adminator-box--heading">Properties</h6>
+                    <div class="adminator-box--content">
+                        <p class="adminator-box--p">
+                            Weight: {{ strategy.weight }}
+                            {% if strategy.is_starred %}
+                                <br>Starred
+                            {% endif %}
+                            {% if strategy.is_archived %}
+                                <br>Archived
+                            {% endif %}
+                            {% if strategy.rolling %}
+                                <br>Rolling: {{ strategy.get_rolling() }}
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="adminator-box--content collapse" id="edit-strategy-target">
-          	{{ fg.onClickAjaxForm("edit-strategy", url("goals:strategy_edit", args=[strategy.pk])) }}
+        <div class="row m-0">
+            <div class='col-md-12 p-0'>
+                <div class="adminator-box">
+                    <h6 class="adminator-box--heading">Description</h6>
+                    <div class="adminator-box--content">
+                        <p class="adminator-box--p">{{ strategy.description }}</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 
 
-<div class="masonry--item masonry--item-4" >
-    <div class="adminator-box">
-        <div class="adminator-box--heading">
-          	<a class="adminator-box--toggle" id="delete-strategy-toggle" href="#delete-strategy-target" data-toggle="collapse">Delete</a>
-        </div>
-        <div class="adminator-box--content collapse" id="delete-strategy-target">
-          	{{ fg.onClickForm("delete-strategy", url("goals:strategy_delete", args=[strategy.pk])) }}
+    <div class="masonry--item masonry--item-4">
+        <div class="adminator-box">
+            <h6 class="adminator-box--heading">Goal</h6>
+            <div class="adminator-box--content">
+                {{ ig.goal(goal, csrf_token) }}
+            </div>
         </div>
     </div>
-</div>
+
+
+    {% include "snippets/to_dos.j2" %}
+
+
+    <div class="masonry--item masonry--item-4">
+        <div class="adminator-box">
+            <div class="adminator-box--heading">
+                <a class="adminator-box--toggle" id="edit-strategy-toggle" href="#edit-strategy-target"
+                   data-toggle="collapse">Edit</a>
+            </div>
+            <div class="adminator-box--content collapse" id="edit-strategy-target">
+                {{ fg.onClickAjaxForm("edit-strategy", url("goals:strategy_edit", args=[strategy.pk])) }}
+            </div>
+        </div>
+    </div>
+
+
+    <div class="masonry--item masonry--item-4">
+        <div class="adminator-box">
+            <div class="adminator-box--heading">
+                <a class="adminator-box--toggle" id="delete-strategy-toggle" href="#delete-strategy-target"
+                   data-toggle="collapse">Delete</a>
+            </div>
+            <div class="adminator-box--content collapse" id="delete-strategy-target">
+                {{ fg.onClickForm("delete-strategy", url("goals:strategy_delete", args=[strategy.pk])) }}
+            </div>
+        </div>
+    </div>
 
 
 {% endblock main %}

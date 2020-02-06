@@ -27,19 +27,15 @@ class CustomUser(AbstractUser):
         ("ALL", "Show all progress monitors."),
         ("UNREACHED", "Show all not yet fully loaded progress monitors."),
         ("LOADED", "Show all fully loaded progress monitors."),
-        ("RELATED", "Show goal related progress monitors."),
         ("NONE", "Show no progress monitors.")
     )
     LINK_CHOICES = (
         ("ALL", "Show all links."),
-        ("RELATED", "Show master or sub goal related links."),
-        ("XRELATED", "Show master and sub goal related links."),
         ("NONE", "Show no links.")
     )
     STRATEGY_CHOICES = (
         ("ALL", "Show all strategies."),
         ("STAR", "Show all starred strategies."),
-        ("RELATED", "Show goal related strategies."),
         ("NONE", "Show no strategies.")
     )
     TO_DO_CHOICES = (
@@ -49,7 +45,6 @@ class CustomUser(AbstractUser):
         ("DELTA", "Show all to dos that are active and with a deadline within the delta range."),
         ("OVERDUE", "Show all to dos that are overdue."),
         ("ORANGE", "Show all to dos that are active or orange or red."),
-        ("RELATED", "Show goal related to dos."),  # remove later because it's too complicated and not simple
         ("NONE", "Show no to do's.")
     )
     # general

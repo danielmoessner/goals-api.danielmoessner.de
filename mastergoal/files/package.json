@@ -16,11 +16,23 @@
     "skycons": "^1.0.0"
   },
   "devDependencies": {
-    "browserify": "^16.2.3",
-    "gulp": "^4.0.0",
+    "@babel/core": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "autoprefixer": "^9.7.4",
+    "browser-sync": "2.26.7",
+    "cssnano": "^4.1.10",
+    "del": "4.1.1",
+    "gulp": "4.0.2",
+    "gulp-babel": "^8.0.0",
     "gulp-browserify": "^0.5.1",
-    "gulp-rename": "^1.4.0",
-    "gulp-sass": "^4.0.2"
+    "gulp-clean-css": "4.2.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-npm-dist": "1.0.3",
+    "gulp-postcss": "^8.0.0",
+    "gulp-sass": "4.0.2",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-uglify": "3.0.2",
+    "postcss-discard-comments": "^4.0.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

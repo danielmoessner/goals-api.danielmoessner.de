@@ -28,7 +28,7 @@ class DashboardView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         user = self.request.user
-        goals = Goal.get_goals(user.goals.all(), user.goal_view_goal_choice)
+        goals = Goal.get_goals_user(user, user.goal_view_goal_choice)
         return goals
 
 
@@ -39,22 +39,22 @@ class SearchView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data()
         user = self.request.user
         all_goals = user.goals.all()
-        all_strategies = Strategy.objects.filter(goal__in=all_goals)
+        all_strategies = Strategy.get_strategies_goals(all_goals, "ALL")
         query = self.request.GET['q']
 
         context['goals'] = all_goals.filter(name__icontains=query)
         context['strategies'] = all_strategies.filter(name__icontains=query)
         context['to_dos'] = ToDo\
-            .get_to_dos(all_strategies, NormalToDo, 'ALL')\
+            .get_to_dos_strategies(all_strategies, NormalToDo, 'ALL')\
             .filter(name__icontains=query)
         context['never_ending_to_dos'] = ToDo\
-            .get_to_dos(all_strategies, NeverEndingToDo, 'ALL')\
+            .get_to_dos_strategies(all_strategies, NeverEndingToDo, 'ALL')\
             .filter(name__icontains=query)
         context['repetitive_to_dos'] = ToDo\
-            .get_to_dos(all_strategies, RepetitiveToDo, 'ALL')\
+            .get_to_dos_strategies(all_strategies, RepetitiveToDo, 'ALL')\
             .filter(name__icontains=query)
         context['pipeline_to_dos'] = ToDo\
-            .get_to_dos(all_strategies, PipelineToDo, 'ALL')\
+            .get_to_dos_strategies(all_strategies, PipelineToDo, 'ALL')\
             .filter(name__icontains=query)
         return context
 
@@ -69,27 +69,25 @@ class ToDosView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ToDosView, self).get_context_data(**kwargs)
         user = self.request.user
-        all_goals = user.goals.all()
-        all_strategies = Strategy.objects.filter(goal__in=all_goals)
-        strategies = all_strategies.filter(is_starred=True)
+        all_goals = user.goals.filter(is_archived=False)
+        all_strategies = Strategy.get_strategies_goals(all_goals, "ALL")
 
-        context['to_dos'] = ToDo.get_to_dos(all_strategies,
-                                            NormalToDo,
-                                            user.normal_to_dos_choice,
-                                            delta=user.to_dos_delta)
-        print(user.repetitive_to_dos_choice)
-        context['repetitive_to_dos'] = ToDo.get_to_dos(all_strategies,
-                                                       RepetitiveToDo,
-                                                       user.repetitive_to_dos_choice,
+        context['to_dos'] = ToDo.get_to_dos_strategies(all_strategies,
+                                                       NormalToDo,
+                                                       user.normal_to_dos_choice,
                                                        delta=user.to_dos_delta)
-        context['never_ending_to_dos'] = ToDo.get_to_dos(all_strategies,
-                                                         NeverEndingToDo,
-                                                         user.never_ending_to_dos_choice,
-                                                         delta=user.to_dos_delta)
-        context['pipeline_to_dos'] = ToDo.get_to_dos(all_strategies,
-                                                     PipelineToDo,
-                                                     user.pipeline_to_dos_choice,
-                                                     delta=user.to_dos_delta)
+        context['repetitive_to_dos'] = ToDo.get_to_dos_strategies(all_strategies,
+                                                                  RepetitiveToDo,
+                                                                  user.repetitive_to_dos_choice,
+                                                                  delta=user.to_dos_delta)
+        context['never_ending_to_dos'] = ToDo.get_to_dos_strategies(all_strategies,
+                                                                    NeverEndingToDo,
+                                                                    user.never_ending_to_dos_choice,
+                                                                    delta=user.to_dos_delta)
+        context['pipeline_to_dos'] = ToDo.get_to_dos_strategies(all_strategies,
+                                                                PipelineToDo,
+                                                                user.pipeline_to_dos_choice,
+                                                                delta=user.to_dos_delta)
 
         return context
 
@@ -100,7 +98,7 @@ class TreeView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(TreeView, self).get_context_data(**kwargs)
         user = self.request.user
-        all_goals = Goal.get_goals(user.goals.all(), user.treeview_goal_choice).prefetch_related('sub_goals')
+        all_goals = Goal.get_goals_user(user, user.treeview_goal_choice).prefetch_related('sub_goals')
         subgoal_pks = []
         for goal in list(all_goals):
             for master_goal in list(goal.master_goals.all()):
@@ -130,42 +128,38 @@ class StarView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(StarView, self).get_context_data(**kwargs)
         user = self.request.user
-        all_goals = user.goals.all()
-        context['goals'] = Goal.get_goals(all_goals, user.goal_choice).prefetch_related('master_goals', 'sub_goals',
-                                                                                        'strategies', 'master_links',
-                                                                                        'sub_links')
-        all_monitors = ProgressMonitor.objects.filter(goal__in=all_goals)
-        context['progress_monitors'] = ProgressMonitor.get_monitors(all_monitors, user.progress_monitor_choice,
-                                                                    context['goals']).select_related('goal')
-        all_links = Link.objects.filter(master_goal__in=all_goals, sub_goal__in=all_goals)
-        context['links'] = Link.get_links(all_links, user.link_choice, context['goals']).select_related('sub_goal',
-                                                                                                        'master_goal')
-        all_strategies = Strategy.objects.filter(goal__in=all_goals)
-        context['strategies'] = Strategy.get_strategies(all_strategies, user.strategy_choice,
-                                                        context['goals']).select_related('goal')
-        all_goals = context['goals']
-        for goal in context['goals']:
-            all_goals = all_goals | goal.get_all_sub_goals()
-        all_strategies = Strategy.objects.filter(goal__in=all_goals) | context['strategies']
-        context['to_dos'] = ToDo.get_to_dos(all_strategies,
-                                            NormalToDo,
-                                            user.starview_normaltodos_choice,
-                                            user.starview_todos_delta)\
+
+        context['goals'] = Goal.get_goals_user(user, user.goal_choice)\
+            .prefetch_related('master_goals', 'sub_goals', 'strategies', 'master_links', 'sub_links')
+
+        context['progress_monitors'] = ProgressMonitor.get_monitors_user(user, user.progress_monitor_choice)\
+            .select_related('goal')
+
+        context['links'] = Link.get_links_user(user, user.link_choice)\
+            .select_related('sub_goal', 'master_goal')
+
+        context['strategies'] = Strategy.get_strategies_user(user, user.strategy_choice)\
+            .select_related('goal')
+
+        context['to_dos'] = ToDo.get_to_dos_user(user,
+                                                 NormalToDo,
+                                                 user.starview_normaltodos_choice,
+                                                 user.starview_todos_delta)\
             .order_by('is_done', 'has_failed', 'deadline', 'activate', 'name')
-        context['never_ending_to_dos'] = ToDo.get_to_dos(all_strategies,
-                                                         NeverEndingToDo,
-                                                         user.starview_neverendingtodos_choice,
-                                                         user.starview_todos_delta)\
+        context['never_ending_to_dos'] = ToDo.get_to_dos_user(user,
+                                                              NeverEndingToDo,
+                                                              user.starview_neverendingtodos_choice,
+                                                              user.starview_todos_delta)\
             .order_by('is_done', 'has_failed', 'deadline', 'activate', 'name')
-        context['repetitive_to_dos'] = ToDo.get_to_dos(all_strategies,
-                                                       RepetitiveToDo,
-                                                       user.starview_repetitivetodos_choice,
-                                                       user.starview_todos_delta)\
+        context['repetitive_to_dos'] = ToDo.get_to_dos_user(user,
+                                                            RepetitiveToDo,
+                                                            user.starview_repetitivetodos_choice,
+                                                            user.starview_todos_delta)\
             .order_by('is_done', 'has_failed', 'deadline', 'activate', 'name')
-        context['pipeline_to_dos'] = ToDo.get_to_dos(all_strategies,
-                                                     PipelineToDo,
-                                                     user.starview_pipelinetodos_choice,
-                                                     user.starview_todos_delta)\
+        context['pipeline_to_dos'] = ToDo.get_to_dos_user(user,
+                                                          PipelineToDo,
+                                                          user.starview_pipelinetodos_choice,
+                                                          user.starview_todos_delta)\
             .order_by('is_done', 'has_failed', 'deadline', 'activate', 'name')
 
         return context
@@ -277,8 +271,8 @@ class AllGoalsView(LoginRequiredMixin, ListView):
     context_object_name = 'goals'
 
     def get_queryset(self):
-        return self.request.user.goals.all().prefetch_related('strategies', 'sub_links', 'master_links', 'master_goals',
-                                                              'sub_goals')
+        return Goal.get_goals_user(self.request.user, "ALL").prefetch_related(
+            'strategies', 'sub_links', 'master_links', 'master_goals', 'sub_goals')
 
 
 class AllProgressMonitorsView(LoginRequiredMixin, ListView):
@@ -286,8 +280,7 @@ class AllProgressMonitorsView(LoginRequiredMixin, ListView):
     context_object_name = 'progress_monitors'
 
     def get_queryset(self):
-        all_goals = self.request.user.goals.all()
-        return ProgressMonitor.objects.filter(goal__in=all_goals).select_related('goal')
+        return ProgressMonitor.get_monitors_user(self.request.user, "ALL")
 
 
 class AllLinksView(LoginRequiredMixin, ListView):
@@ -295,9 +288,7 @@ class AllLinksView(LoginRequiredMixin, ListView):
     context_object_name = 'links'
 
     def get_queryset(self):
-        all_goals = self.request.user.goals.all()
-        return Link.objects.filter(sub_goal__in=all_goals, master_goal__in=all_goals).select_related('master_goal',
-                                                                                                     'sub_goal')
+        return Link.get_links_user(self.request.user, "ALL")
 
 
 class AllStrategiesView(LoginRequiredMixin, ListView):
@@ -305,8 +296,7 @@ class AllStrategiesView(LoginRequiredMixin, ListView):
     context_object_name = 'strategies'
 
     def get_queryset(self):
-        all_goals = self.request.user.goals.all()
-        return Strategy.objects.filter(goal__in=all_goals).select_related('goal')
+        return Strategy.get_strategies_user(self.request.user, "ALL")
 
 
 class AllToDosView(LoginRequiredMixin, TemplateView):
@@ -314,11 +304,9 @@ class AllToDosView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(AllToDosView, self).get_context_data(**kwargs)
-        user = self.request.user
-        all_goals = user.goals.all()
-        all_strategies = Strategy.objects.filter(goal__in=all_goals)
-        context['to_dos'] = ToDo.get_to_dos(all_strategies, NormalToDo, 'ALL')
-        context['repetitive_to_dos'] = ToDo.get_to_dos(all_strategies, RepetitiveToDo, 'ALL')
-        context['never_ending_to_dos'] = ToDo.get_to_dos(all_strategies, NeverEndingToDo, 'ALL')
-        context['pipeline_to_dos'] = ToDo.get_to_dos(all_strategies, PipelineToDo, 'ALL')
+        all_strategies = Strategy.get_strategies_user(self.request.user, "ALL")
+        context['to_dos'] = ToDo.get_to_dos_strategies(all_strategies, NormalToDo, 'ALL')
+        context['repetitive_to_dos'] = ToDo.get_to_dos_strategies(all_strategies, RepetitiveToDo, 'ALL')
+        context['never_ending_to_dos'] = ToDo.get_to_dos_strategies(all_strategies, NeverEndingToDo, 'ALL')
+        context['pipeline_to_dos'] = ToDo.get_to_dos_strategies(all_strategies, PipelineToDo, 'ALL')
         return context
