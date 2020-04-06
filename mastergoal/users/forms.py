@@ -71,4 +71,4 @@ class CustomUserPageForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ('page_choice',)
+        fields = ('page_choice', 'show_archived_objects')

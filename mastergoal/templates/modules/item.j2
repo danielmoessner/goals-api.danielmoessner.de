@@ -45,16 +45,6 @@
 		<h5 class="progress-item--title">{{ goal.name }}</h5>
 		<a class="adminator-href-button" href="{{ url('goals:goal', args=[goal.pk]) }}">Open</a>
 	</div>
-	{% if goal.master_links.all() %}
-		<small><span class="progress-item--subtitle">Mastergoals: </span>{{ goal.get_mastergoals() }}</small>
-	{% endif %}
-	{% if goal.sub_links.all() %}
-		<small><span class="progress-item--subtitle">Subgoals: </span>{{ goal.get_subgoals() }}</small>
-	{% endif %}
-	{% if goal.strategies.all() %}
-		<small><span class="progress-item--subtitle">Strategies: </span>{{ goal.get_strategies() }}</small>
-	{% endif %}
-	<span class="progress-item--progress-number">{% if goal.deadline %}{{ goal.get_deadline('d') }} - {% endif %}{{ goal.progress }} %</span>
 	<div class="progress-item--progress">
 		<div class="progress-item--progress-bar" style="width:{{ goal.progress }}%;"></div>
 	</div>
@@ -68,8 +58,6 @@
 		<h5 class="progress-item--title">{{ strategy.name }}</h5>
 		<a class="adminator-href-button" href="{{ url('goals:strategy', args=[strategy.pk]) }}">Open</a>
 	</div>
-	<small><span class="progress-item--subtitle">Goal:</span> {{ strategy.get_goal() }}</small>
-	<span class="progress-item--progress-number">{{ strategy.progress }}%</span>
 	<div class="progress-item--progress">
 		<div class="progress-item--progress-bar" style="width:{{ strategy.progress }}%;"></div>
 	</div>
@@ -80,10 +68,9 @@
 {% macro link(link) %}
 <div class="progress-item">
 	<div class="progress-item--top">
-		<h5 class="progress-item--title">{{ link.master_goal }} <==> {{ link.sub_goal }}</h5>
+		<h5 class="progress-item--title">{{ link.master_goal }} <= {{ link.sub_goal }}</h5>
 		<a class="adminator-href-button" href="{{ url('goals:link', args=[link.pk]) }}">Open</a>
 	</div>
-	<span class="progress-item--progress-number">{{ link.progress }} %</span>
 	<div class="progress-item--progress">
 		<div class="progress-item--progress-bar" style="width:{{ link.progress }}%;"></div>
 	</div>
@@ -98,10 +85,8 @@
 		<h5 class="progress-item--title">{{ progress_monitor.monitor }}</h5>
 		<button class="adminator-update-button" id="progress-monitor-{{ progress_monitor.pk }}-up">Up</button>
 		<button class="adminator-update-button" id="progress-monitor-{{ progress_monitor.pk }}-down">Down</button>
-		<a class="adminator-href-button" href="{{ url('goals:progress_monitor', args=[progress_monitor.pk]) }}">Open</a>
+		<a class="adminator-href-button ml-1" href="{{ url('goals:progress_monitor', args=[progress_monitor.pk]) }}">Open</a>
 	</div>
-	<small><span class="progress-item--subtitle">Goal:</span> {{ progress_monitor.goal }}</small>
-	<span class="progress-item--progress-number">{{ progress_monitor.step }}/{{ progress_monitor.steps }}</span>
 	<div class="progress-item--progress">
 		<div class="progress-item--progress-bar" style="width:{{ progress_monitor.progress }}%;"></div>
 	</div>

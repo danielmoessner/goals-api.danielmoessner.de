@@ -9,28 +9,27 @@ from datetime import timedelta
 
 
 def td_all_filter():
-    return Q(is_archived=False)
+    return Q()
 
 
 def td_unfinished_filter():
-    return Q(is_done=False, has_failed=False, is_archived=False)
+    return Q(is_done=False, has_failed=False)
 
 
 def td_active_filter():
-    return Q(activate__lte=timezone.now(), is_done=False, has_failed=False, is_archived=False)
+    return Q(activate__lte=timezone.now(), is_done=False, has_failed=False)
 
 
 def td_overdue_filter():
-    return Q(deadline__lte=timezone.now(), is_done=False, has_failed=False, is_archived=False)
+    return Q(deadline__lte=timezone.now(), is_done=False, has_failed=False)
 
 
 def td_delta_filter(delta):
-    return Q(deadline__lte=timezone.now() + delta, activate__lte=timezone.now(), is_done=False, has_failed=False,
-             is_archived=False)
+    return Q(deadline__lte=timezone.now() + delta, activate__lte=timezone.now(), is_done=False, has_failed=False)
 
 
 def td_orange_filter():
-    return Q(activate__lte=timezone.now(), is_done=False, has_failed=False, is_archived=False)
+    return Q(activate__lte=timezone.now(), is_done=False, has_failed=False)
 
 
 def td_none_filter():
@@ -38,31 +37,31 @@ def td_none_filter():
 
 
 def g_all_filter():
-    return Q(is_archived=False)
+    return Q()
 
 
 def g_active_filter():
-    return Q(is_archived=False, progress__lt=100)
+    return Q(progress__lt=100)
 
 
 def g_star_filter():
-    return Q(is_starred=True, is_archived=False)
+    return Q(is_starred=True)
 
 
 def g_unreached_filter():
-    return Q(progress__lt=100, is_archived=False)
+    return Q(progress__lt=100)
 
 
 def g_achieved_filter():
-    return Q(progress__gte=100, is_archived=False)
+    return Q(progress__gte=100)
 
 
 def g_archive_filter():
-    return Q(is_archived=True)
+    return Q()
 
 
 def g_depth_filter():
-    return Q(False, is_archived=False)
+    return Q(False)
 
 
 def g_none_filter():
@@ -70,15 +69,15 @@ def g_none_filter():
 
 
 def m_all_filter():
-    return Q(is_archived=False)
+    return Q()
 
 
 def m_unreached_filter():
-    return Q(progress_lt=100, is_archived=False)
+    return Q(progress_lt=100)
 
 
 def m_loaded_filter():
-    return Q(progress_gte=100, is_archived=False)
+    return Q(progress_gte=100)
 
 
 def m_none_filter():
@@ -94,11 +93,11 @@ def l_none_filter():
 
 
 def s_all_filter():
-    return Q(is_archived=False)
+    return Q()
 
 
 def s_star_filter():
-    return Q(is_starred=True, is_archived=False)
+    return Q(is_starred=True)
 
 
 def s_none_filter():
@@ -120,6 +119,13 @@ class Goal(models.Model):
     is_starred = models.BooleanField(default=False)
 
     # whatever
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        # calculate the progress of all master links
+        for link in self.master_links.all():
+            link.progress = link.calc_progress()
+            link.save()
+
     class Meta:
         ordering = ('is_archived', 'progress', 'deadline', 'name')
 
@@ -133,7 +139,7 @@ class Goal(models.Model):
 
     # get
     @staticmethod
-    def get_goals(goals, goal_filter):
+    def get_goals(goals, goal_filter, include_archived_goals=False):
         if goal_filter == "ALL":
             goals = goals.filter(g_all_filter())
         elif goal_filter == 'ACTIVE':
@@ -150,12 +156,14 @@ class Goal(models.Model):
             goals = goals.filter(g_archive_filter())
         else:
             goals = goals.filter(g_none_filter())
+        if not include_archived_goals:
+            goals = goals.filter(is_archived=False)
         return goals
 
     @staticmethod
-    def get_goals_user(user, choice):
+    def get_goals_user(user, choice, include_archived_goals=False):
         goals = user.goals.all()
-        goals = Goal.get_goals(goals, choice)
+        goals = Goal.get_goals(goals, choice, include_archived_goals)
         return goals
 
     def get_progress(self):
@@ -210,7 +218,7 @@ class Goal(models.Model):
             pipelinetodo_choice,
             delta) for strategy in list(Strategy.get_strategies(self.strategies.all(), strategy_choice))]
         data['monitors'] = [monitor.get_tree(
-            ) for monitor in list(ProgressMonitor.get_monitors(self.progress_monitors.all(), monitor_choice))]
+        ) for monitor in list(ProgressMonitor.get_monitors(self.progress_monitors.all(), monitor_choice))]
         return data
 
     def get_class(self):
@@ -322,6 +330,13 @@ class ProgressMonitor(models.Model):
     # speed
     progress = models.PositiveSmallIntegerField(default=0, blank=True)
 
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        # calculate the goals progress
+        goal = self.goal
+        goal.progress = goal.calc_progress()
+        goal.save()
+
     class Meta:
         ordering = ('is_archived', 'progress', 'goal')
 
@@ -335,7 +350,7 @@ class ProgressMonitor(models.Model):
 
     # get
     @staticmethod
-    def get_monitors(monitors, choice):
+    def get_monitors(monitors, choice, included_archived_progress_monitors=False):
         if choice == "ALL":
             monitors = monitors.filter(m_all_filter())
         elif choice == "UNREACHED":
@@ -344,13 +359,15 @@ class ProgressMonitor(models.Model):
             monitors = monitors.filter(m_loaded_filter())
         else:
             monitors = monitors.filter(m_none_filter())
+        if not included_archived_progress_monitors:
+            monitors = monitors.filter(is_archived=False)
         return monitors
 
     @staticmethod
-    def get_monitors_user(user, monitor_filter):
+    def get_monitors_user(user, monitor_filter, included_archived_progress_monitors=False):
         goals = Goal.get_goals_user(user, "ALL")
         monitors = ProgressMonitor.objects.filter(goal__in=goals)
-        monitors = ProgressMonitor.get_monitors(monitors, monitor_filter)
+        monitors = ProgressMonitor.get_monitors(monitors, monitor_filter, included_archived_progress_monitors)
         return monitors
 
     def get_all_master_objects(self):
@@ -395,6 +412,13 @@ class Link(models.Model):
     def __str__(self):
         return str(self.master_goal) + " --> " + str(self.sub_goal)
 
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        # calculate the master goal progress
+        goal = self.master_goal
+        goal.progress = goal.calc_progress()
+        goal.save()
+
     def delete(self, using=None, keep_parents=False):
         master_goal = self.master_goal
         super(Link, self).delete(using=using, keep_parents=keep_parents)
@@ -402,18 +426,20 @@ class Link(models.Model):
 
     # get
     @staticmethod
-    def get_links(links, choice):
+    def get_links(links, choice, include_archived_links=False):
         if choice == "ALL":
             links = links.filter(l_all_filter())
         else:
             links = links.filter(l_none_filter())
+        if not include_archived_links:
+            links.filter(is_archived=False)
         return links
 
     @staticmethod
-    def get_links_user(user, link_filter):
+    def get_links_user(user, link_filter, include_archived_links=False):
         goals = Goal.get_goals_user(user, "ALL")
         links = Link.objects.filter(master_goal__in=goals, sub_goal__in=goals)
-        links = Link.get_links(links, link_filter)
+        links = Link.get_links(links, link_filter, include_archived_links)
         return links
 
     # get master
@@ -469,6 +495,15 @@ class Strategy(models.Model):
     class Meta:
         ordering = ('is_archived', 'progress', 'name')
 
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        # calc goal progress
+        goal = self.goal
+        goal.progress = goal.calc_progress()
+        goal.save()
+        # clean up old stuff. in the past a to do that is set to done or failed was not archived.
+        self.to_dos.filter(Q(is_done=True) | Q(has_failed=True), Q(is_archived=False)).update(is_archived=True)
+
     def __str__(self):
         return str(self.name)
 
@@ -479,27 +514,29 @@ class Strategy(models.Model):
 
     # get
     @staticmethod
-    def get_strategies(strategies, strategy_filter):
+    def get_strategies(strategies, strategy_filter, include_archived_strategies=False):
         if strategy_filter == "ALL":
             strategies = strategies.filter(s_all_filter())
         elif strategy_filter == "STAR":
             strategies = strategies.filter(s_star_filter())
         else:
             strategies = strategies.filter(s_none_filter())
+        if not include_archived_strategies:
+            strategies = strategies.filter(is_archived=False)
         return strategies
 
     @staticmethod
-    def get_strategies_goals(goals, strategy_filter):
+    def get_strategies_goals(goals, strategy_filter, include_archived_strategies=False):
         strategies = Strategy.objects.filter(goal__in=goals)
 
-        strategies = Strategy.get_strategies(strategies, strategy_filter)
+        strategies = Strategy.get_strategies(strategies, strategy_filter, include_archived_strategies)
 
         return strategies
 
     @staticmethod
-    def get_strategies_user(user, strategy_filter):
+    def get_strategies_user(user, strategy_filter, include_archived_strategies=False):
         goals = Goal.get_goals_user(user, "ALL")
-        strategies = Strategy.get_strategies_goals(goals, strategy_filter)
+        strategies = Strategy.get_strategies_goals(goals, strategy_filter, include_archived_strategies)
         return strategies
 
     def get_tree(self, normaltodo_choice='ALL', repetitivetodo_choice='ALL', neverendingtodo_choice='ALL',
@@ -510,13 +547,13 @@ class Strategy(models.Model):
         data['progress'] = self.progress
         strategies = Strategy.objects.filter(pk=self.pk)
         data['normaltodos'] = [todo.get_tree(
-            ) for todo in list(ToDo.get_to_dos_strategies(strategies, NormalToDo, normaltodo_choice, delta))]
+        ) for todo in list(ToDo.get_to_dos_strategies(strategies, NormalToDo, normaltodo_choice, delta))]
         data['repetitivetodos'] = [todo.get_tree(
-            ) for todo in list(ToDo.get_to_dos_strategies(strategies, RepetitiveToDo, repetitivetodo_choice, delta))]
+        ) for todo in list(ToDo.get_to_dos_strategies(strategies, RepetitiveToDo, repetitivetodo_choice, delta))]
         data['neverendingtodos'] = [todo.get_tree(
-            ) for todo in list(ToDo.get_to_dos_strategies(strategies, NeverEndingToDo, neverendingtodo_choice, delta))]
+        ) for todo in list(ToDo.get_to_dos_strategies(strategies, NeverEndingToDo, neverendingtodo_choice, delta))]
         data['pipelinetodos'] = [todo.get_tree(
-            ) for todo in list(ToDo.get_to_dos_strategies(strategies, PipelineToDo, pipelinetodo_choice, delta))]
+        ) for todo in list(ToDo.get_to_dos_strategies(strategies, PipelineToDo, pipelinetodo_choice, delta))]
         return data
 
     def get_all_master_objects(self):
@@ -579,6 +616,17 @@ class ToDo(models.Model):
     is_archived = models.BooleanField(default=False)
 
     # whatever
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        # set self to archived if done or failed
+        if self.is_done or self.has_failed:
+            self.is_archived = True
+        # save
+        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        # update the strategy
+        strategy = self.strategy
+        strategy.progress = self.strategy.calc_progress()
+        strategy.save()
+
     class Meta:
         ordering = ('is_archived', 'deadline', 'is_done', 'has_failed', 'activate', 'name')
 
@@ -589,11 +637,14 @@ class ToDo(models.Model):
     def delete(self, using=None, keep_parents=False):
         strategy = self.strategy
         super(ToDo, self).delete(using=using, keep_parents=keep_parents)
+        strategy.progress = strategy.calc_progress()
         strategy.save()
 
     # getters
     @staticmethod
-    def get_to_dos(to_dos, to_do_filter, delta=None):
+    def get_to_dos(to_dos, to_do_filter, delta=None, include_archived_to_dos=False):
+        print(to_dos.first().__class__)
+        print(to_dos)
         if to_do_filter == "ALL":
             to_dos = to_dos
         elif to_do_filter == "ACTIVE":
@@ -609,19 +660,22 @@ class ToDo(models.Model):
         else:
             to_dos = to_dos.objects.none()
 
+        if not include_archived_to_dos:
+            to_dos = to_dos.filter(is_archived=False)
+
         return to_dos
 
     @staticmethod
-    def get_to_dos_strategies(all_strategies, to_do_class, to_do_filter, delta=None):
+    def get_to_dos_strategies(all_strategies, to_do_class, to_do_filter, delta=None, include_archived_to_dos=False):
         all_to_dos = to_do_class.objects.filter(strategy__in=all_strategies)
-        to_dos = ToDo.get_to_dos(all_to_dos, to_do_filter, delta)
+        to_dos = ToDo.get_to_dos(all_to_dos, to_do_filter, delta, include_archived_to_dos)
         return to_dos
 
     @staticmethod
-    def get_to_dos_user(user, to_do_class, to_do_filter, delta=None):
+    def get_to_dos_user(user, to_do_class, to_do_filter, delta=None, include_archived_to_dos=False):
         strategies = Strategy.get_strategies_user(user, "ALL")
         all_to_dos = to_do_class.objects.filter(strategy__in=strategies)
-        to_dos = ToDo.get_to_dos(all_to_dos, to_do_filter, delta)
+        to_dos = ToDo.get_to_dos(all_to_dos, to_do_filter, delta, include_archived_to_dos)
         return to_dos
 
     def get_all_master_objects(self):

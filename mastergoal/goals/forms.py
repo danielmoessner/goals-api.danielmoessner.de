@@ -101,8 +101,8 @@ class LinkForm(forms.ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super(LinkForm, self).__init__(*args, **kwargs)
-        self.fields["master_goal"].queryset = user.goals.filter(is_archived=False).order_by('name')
-        self.fields["sub_goal"].queryset = user.goals.filter(is_archived=False).order_by('name')
+        self.fields["master_goal"].queryset = user.goals.all().order_by('name')
+        self.fields["sub_goal"].queryset = user.goals.all().order_by('name')
 
 
 # Strategy

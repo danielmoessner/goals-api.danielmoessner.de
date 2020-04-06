@@ -49,6 +49,7 @@ class CustomUser(AbstractUser):
     )
     # general
     page_choice = models.CharField(max_length=10, choices=PAGE_CHOICES, default="DASHBOARD")
+    show_archived_objects = models.BooleanField(default=False)
     # goal view
     goal_view_goal_choice = models.CharField(max_length=10, choices=GOAL_CHOICES, default='ALL')
     # star view
