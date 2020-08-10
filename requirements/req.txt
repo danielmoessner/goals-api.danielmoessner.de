@@ -1,4 +1,4 @@
-Django==2.2.4
+Django==2.2.13
 django-debug-toolbar==2.0
 django-filebrowser-no-grappelli==3.7.8
 django-tinymce4-lite==1.7.5
