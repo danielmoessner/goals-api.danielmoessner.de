@@ -118,13 +118,12 @@ class Goal(models.Model):
     # user
     is_starred = models.BooleanField(default=False)
 
-    # whatever
+    # general
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
-        # calculate the progress of all master links
+        # reset the progress of all master links
         for link in self.master_links.all():
-            link.progress = link.calc_progress()
-            link.save()
+            link.reset()
 
     class Meta:
         ordering = ('is_archived', 'progress', 'deadline', 'name')
@@ -133,11 +132,12 @@ class Goal(models.Model):
         return self.name
 
     def delete(self, using=None, keep_parents=False):
-        master_goals = self.master_goals.all()
+        links = self.master_links.all()
         super(Goal, self).delete(using=using, keep_parents=keep_parents)
-        [master_goal.save() for master_goal in master_goals]
+        for link in links:
+            link.reset()
 
-    # get
+    # getters
     @staticmethod
     def get_goals(goals, goal_filter, include_archived_goals=False):
         if goal_filter == "ALL":
@@ -225,7 +225,6 @@ class Goal(models.Model):
         result = min(8, max(1, int(8 * (self.progress + 10) / 100)))
         return result
 
-    # get sub
     def get_all_sub_goals(self):
         query = self.sub_goals.all()
         for goal in self.sub_goals.all():
@@ -256,7 +255,6 @@ class Goal(models.Model):
             query = query | goal.sub_links.all()
         return query
 
-    # get master
     def get_all_master_objects(self):
         objects = list()
         links = list(self.master_links.all())
@@ -279,20 +277,12 @@ class Goal(models.Model):
             to_dos += goal.get_sub_to_dos()
         return to_dos
 
-    # set
-    def set_starred(self):
-        Goal.objects.filter(pk=self.pk).update(is_starred=(not self.is_starred))
-
-    def set_archived(self):
-        Goal.objects.filter(pk=self.pk).update(is_archived=(not self.is_archived))
-
-    # calc
-    def calc_progress(self):
+    def get_progress_calc(self):
         if not self.progress_monitors.exists():
-            return self.calc_sub_progress()
-        return self.calc_milestone_progress() + (100 - self.calc_milestone_progress()) * self.calc_sub_progress() * .008
+            return self.get_sub_progress()
+        return self.get_milestone_progress() + (100 - self.get_milestone_progress()) * self.get_sub_progress() * .008
 
-    def calc_milestone_progress(self):
+    def get_milestone_progress(self):
         progress = 0
         weight = 0
 
@@ -302,7 +292,7 @@ class Goal(models.Model):
 
         return progress / weight if weight != 0 else 0
 
-    def calc_sub_progress(self):
+    def get_sub_progress(self):
         progress = 0
         weight = 0
 
@@ -318,6 +308,17 @@ class Goal(models.Model):
 
         return progress / weight if weight != 0 else 0
 
+    # setters
+    def set_starred(self):
+        Goal.objects.filter(pk=self.pk).update(is_starred=(not self.is_starred))
+
+    def set_archived(self):
+        Goal.objects.filter(pk=self.pk).update(is_archived=(not self.is_archived))
+
+    def reset(self):
+        self.progress = self.get_progress_calc()
+        self.save()
+
 
 class ProgressMonitor(models.Model):
     goal = models.ForeignKey(Goal, on_delete=models.CASCADE, related_name='progress_monitors')
@@ -330,12 +331,12 @@ class ProgressMonitor(models.Model):
     # speed
     progress = models.PositiveSmallIntegerField(default=0, blank=True)
 
+    # general
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        self.progress = self.get_progress_calc()
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
         # calculate the goals progress
-        goal = self.goal
-        goal.progress = goal.calc_progress()
-        goal.save()
+        self.goal.reset()
 
     class Meta:
         ordering = ('is_archived', 'progress', 'goal')
@@ -346,9 +347,9 @@ class ProgressMonitor(models.Model):
     def delete(self, using=None, keep_parents=False):
         goal = self.goal
         super(ProgressMonitor, self).delete(using=using, keep_parents=keep_parents)
-        goal.save()
+        goal.reset()
 
-    # get
+    # getters
     @staticmethod
     def get_monitors(monitors, choice, included_archived_progress_monitors=False):
         if choice == "ALL":
@@ -391,8 +392,7 @@ class ProgressMonitor(models.Model):
     def get_progress(self):
         return self.progress
 
-    # calc
-    def calc_progress(self):
+    def get_progress_calc(self):
         return (float(self.step) / float(self.steps)) * 100 if self.steps != 0 else 100
 
 
@@ -405,7 +405,7 @@ class Link(models.Model):
     # speed
     progress = models.PositiveSmallIntegerField(default=0, blank=True)
 
-    # whatever
+    # general
     class Meta:
         ordering = ('is_archived', 'progress', 'master_goal')
 
@@ -414,17 +414,20 @@ class Link(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
-        # calculate the master goal progress
-        goal = self.master_goal
-        goal.progress = goal.calc_progress()
-        goal.save()
+        # reset the master goal progress
+        self.master_goal.reset()
 
     def delete(self, using=None, keep_parents=False):
         master_goal = self.master_goal
         super(Link, self).delete(using=using, keep_parents=keep_parents)
-        master_goal.save()
+        master_goal.reset()
 
-    # get
+    # setters
+    def reset(self):
+        self.progress = self.get_progress_calc()
+        self.save()
+
+    # getters
     @staticmethod
     def get_links(links, choice, include_archived_links=False):
         if choice == "ALL":
@@ -442,14 +445,12 @@ class Link(models.Model):
         links = Link.get_links(links, link_filter, include_archived_links)
         return links
 
-    # get master
     def get_all_master_objects(self):
         objects = list()
         objects += [self.master_goal]
         objects += self.master_goal.get_all_master_objects()
         return objects
 
-    # get sub
     def get_all_sub_goals(self):
         query = Goal.objects.filter(pk=self.sub_goal.pk)
         query = query | self.sub_goal.get_all_sub_goals()
@@ -467,15 +468,13 @@ class Link(models.Model):
     def get_all_sub_todos(self):
         return self.sub_goal.get_all_sub_todos()
 
-    # get whatever
     def get_name(self):
         return self.master_goal.name + ' --> ' + self.sub_goal.name
 
     def get_progress(self):
         return self.progress
 
-    # calc
-    def calc_progress(self):
+    def get_progress_calc(self):
         return min(Goal.objects.filter(pk=self.sub_goal.id).first().progress * (self.proportion / 100), 100)
 
 
@@ -491,16 +490,14 @@ class Strategy(models.Model):
     # user
     is_starred = models.BooleanField(default=False)
 
-    # whatever
+    # general
     class Meta:
         ordering = ('is_archived', 'progress', 'name')
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
         # calc goal progress
-        goal = self.goal
-        goal.progress = goal.calc_progress()
-        goal.save()
+        self.goal.reset()
         # clean up old stuff. in the past a to do that is set to done or failed was not archived.
         self.to_dos.filter(Q(is_done=True) | Q(has_failed=True), Q(is_archived=False)).update(is_archived=True)
 
@@ -510,9 +507,9 @@ class Strategy(models.Model):
     def delete(self, using=None, keep_parents=False):
         goal = self.goal
         super(Strategy, self).delete(using=using, keep_parents=keep_parents)
-        goal.save()
+        goal.reset()
 
-    # get
+    # getters
     @staticmethod
     def get_strategies(strategies, strategy_filter, include_archived_strategies=False):
         if strategy_filter == "ALL":
@@ -583,15 +580,7 @@ class Strategy(models.Model):
         to_dos = list(self.to_dos.filter(td_unfinished_filter()))
         return to_dos
 
-    # set
-    def set_starred(self):
-        Strategy.objects.filter(pk=self.pk).update(is_starred=(not self.is_starred))
-
-    def set_archived(self):
-        Strategy.objects.filter(pk=self.pk).update(is_archived=(not self.is_archived))
-
-    # calc
-    def calc_progress(self):
+    def get_progress_calc(self):
         progress = 0
         if self.rolling:
             date = timezone.now() - self.rolling
@@ -602,7 +591,19 @@ class Strategy(models.Model):
             if todo.is_done:
                 progress += 1
         to_dos_count = to_dos.count()
-        return progress / to_dos_count * 100 if to_dos_count != 0 else 0
+        progress = progress / to_dos_count * 100 if to_dos_count != 0 else 100
+        return progress
+
+    # setters
+    def set_starred(self):
+        Strategy.objects.filter(pk=self.pk).update(is_starred=(not self.is_starred))
+
+    def set_archived(self):
+        Strategy.objects.filter(pk=self.pk).update(is_archived=(not self.is_archived))
+
+    def reset(self):
+        self.progress = self.get_progress_calc()
+        self.save()
 
 
 class ToDo(models.Model):
@@ -615,7 +616,7 @@ class ToDo(models.Model):
     notes = models.TextField(null=True, blank=True)
     is_archived = models.BooleanField(default=False)
 
-    # whatever
+    # general
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         # set self to archived if done or failed
         if self.is_done or self.has_failed:
@@ -623,9 +624,7 @@ class ToDo(models.Model):
         # save
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
         # update the strategy
-        strategy = self.strategy
-        strategy.progress = self.strategy.calc_progress()
-        strategy.save()
+        self.strategy.reset()
 
     class Meta:
         ordering = ('is_archived', 'deadline', 'is_done', 'has_failed', 'activate', 'name')
@@ -637,14 +636,11 @@ class ToDo(models.Model):
     def delete(self, using=None, keep_parents=False):
         strategy = self.strategy
         super(ToDo, self).delete(using=using, keep_parents=keep_parents)
-        strategy.progress = strategy.calc_progress()
-        strategy.save()
+        strategy.reset()
 
     # getters
     @staticmethod
     def get_to_dos(to_dos, to_do_filter, delta=None, include_archived_to_dos=False):
-        print(to_dos.first().__class__)
-        print(to_dos)
         if to_do_filter == "ALL":
             to_dos = to_dos
         elif to_do_filter == "ACTIVE":

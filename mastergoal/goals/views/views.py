@@ -193,7 +193,7 @@ class GoalView(LoginRequiredMixin, UserPassesGoalTestMixin, DetailView):
         context['master_goals'] = Goal.get_goals(self.object.master_goals.all(), 'ALL', sao)
         context['sub_goals'] = Goal.get_goals(self.object.sub_goals.all(), 'ALL', sao)
         context['progress_monitors'] = ProgressMonitor.get_monitors(self.object.progress_monitors.all(), 'ALL', sao)
-        context['links'] = Link.get_links(self.object.sub_links.all(), 'ALL', sao)
+        context['links'] = Link.get_links(self.object.master_links.all(), 'ALL', sao)
         return context
 
 
@@ -314,7 +314,4 @@ class AllToDosView(LoginRequiredMixin, TemplateView):
                                                                     include_archived_to_dos=True)
         context['pipeline_to_dos'] = ToDo.get_to_dos_strategies(all_strategies, PipelineToDo, 'ALL',
                                                                 include_archived_to_dos=True)
-        print(NeverEndingToDo.objects.all().first().strategy)
-        print(NeverEndingToDo.objects.all().first().pk)
-        print(context['never_ending_to_dos'])
         return context

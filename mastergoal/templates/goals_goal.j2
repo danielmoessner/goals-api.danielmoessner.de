@@ -97,7 +97,19 @@
     {% include 'snippets/strategies.j2' %}
 
 
-    {% include 'snippets/links.j2' %}
+    {% for link in links %}
+        <div class="masonry--item masonry--item-4">
+            <div class="adminator-box">
+                <div class="adminator-box--heading">
+                    <a class="adminator-box--toggle" id="edit-link-toggle" href="#edit-link-target"
+                       data-toggle="collapse">Edit Link To {{ link.master_goal.name }}</a>
+                </div>
+                <div class="adminator-box--content collapse" id="edit-link-target">
+                    {{ fg.onClickAjaxForm("edit-link", url("goals:link_edit", args=[link.pk])) }}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
 
 
     <div class="masonry--item masonry--item-4">
