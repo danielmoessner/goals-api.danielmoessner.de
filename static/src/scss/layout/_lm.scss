@@ -1,0 +1,47 @@
+.lm{
+	font-family: 'Rubik', sans-serif;
+	display: flex;
+	flex-direction: row;
+	@extend .container;
+	width: 100%;
+	padding-top: 15px;
+	padding-bottom: 200px;
+	background-color: $primary-color;
+	color: $font-color;
+	@include media-breakpoint-down(md) { 
+		flex-direction: column;
+		padding: 0;
+		padding-top: 0;
+		padding-bottom: 100px;
+	}
+	@include media-breakpoint-up(lg) { 
+		padding-top: 2rem;
+	}
+	&--html{
+		font-size: 14px;
+	}
+	&--left{
+		width: 25%;
+		max-width: calc(230px + 1.5rem);  // nav width + pr-4
+		@extend .pr-4;
+		@include media-breakpoint-down(md) { 
+			width: 100%;
+			max-width: 100%;
+			padding: 0!important;
+			padding-bottom: 10px;
+		}
+	}
+	&--main{
+		width: 75%; 
+		max-width: 75%;
+		@extend .pl-4;
+		@include media-breakpoint-down(md) { 
+			width: 100%;
+			max-width: 100%;
+			padding: 0;
+			padding-top: calc(10px + 50px);  //50px nav
+			padding-left: 10px!important;
+			padding-right: 10px;
+		}
+	}
+}

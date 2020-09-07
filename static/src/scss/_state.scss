@@ -1,0 +1,6 @@
+.is-hidden{
+	display: none!important;
+}
+.is-active{
+	@extend .active;
+}

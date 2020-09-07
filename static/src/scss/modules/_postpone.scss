@@ -1,0 +1,42 @@
+.postpone{
+	&--top{
+		@extend .container;
+		height: 50px;
+	}
+	&--image{
+		max-width: 100%;
+		height: auto;
+		box-shadow: 0 5px 11px 5px rgba(0,0,0,0.75);
+		border-radius: 5px;
+	}
+	&--content{
+		box-shadow: 0 5px 11px 5px rgba(0,0,0,0.75);
+		border-radius: 5px;
+		position: relative;
+	}
+	&--bottom{
+		height: 650px;
+		@include media-max-width(lg){
+			height: 540px;
+		}
+		@include media-max-width(md){
+			height: 390px;
+		}
+		@include media-max-width(sm){
+			height: 280px;
+		}
+		@include media-max-width(xs){
+			height: 260px;
+		}
+		@media only screen and (max-width: 500px) {
+			height: 220px;
+		}
+		@media only screen and (max-width: 400px) {
+			height: 140px;
+		}
+		@media only screen and (max-width: 350px) {
+			height: 120px;
+		}
+		background-color: $dark-yellow-color;
+	}
+} 

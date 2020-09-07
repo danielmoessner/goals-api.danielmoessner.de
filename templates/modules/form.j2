@@ -1,0 +1,191 @@
+{% macro instantAjaxForm(id, form_url) %}
+	<form class="adminator-form" id="{{ id }}">
+		<div class="adminator-form--content"></div>
+		<div class="adminator-form--buttons">
+			<input type="submit" value="Submit" class="adminator-form--submit-button">
+		</div>
+		<div class="adminator-form--script">
+			<script>
+				jQuery(function(){
+					// slide the form into the div
+					$(window).ready(function () {
+					    $.ajax({
+					        url: "{{ form_url|safe }}"
+					    }).done(function(response) {
+					        $("#{{ id }} .adminator-form--content").html(response)
+					    })
+					})
+					// do an ajax post instead of normal post
+					$("#{{ id }}").on("submit", function(event){
+					    event.preventDefault();
+					    $.ajax({
+					        url : "{{ form_url|safe }}",
+					        type : "POST",
+					        data : $("#{{ id }}").serialize(),
+					        success : function(data) {
+					        	if (data.valid) {
+					        		window.location.reload()
+					        	} else {
+					        		$("#{{ id }} .adminator-form--content").html(data.html).promise().done(setTimeout(function() {$(".masonry").masonry()}, 500))
+					        	}
+					        },
+					        error : function(data) {
+					        	$("#{{ id }} .adminator-form--content").html("Ajax Error")
+					        }
+					    })
+					})
+				})
+			</script>
+		</div>
+	</form>
+{% endmacro %}
+
+
+{% macro onClickAjaxForm(id, form_url) %}
+	<form class="adminator-form" id="{{ id }}">
+		<div class="adminator-form--content">
+
+		</div>
+		<div class="adminator-form--buttons">
+			<input type="submit" value="Submit" class="adminator-form--submit-button">
+		</div>
+		<div class="adminator-form--script">
+			<script>
+				jQuery(function(){
+					// slide the form into the div
+					$("#{{ id }}-toggle").on('click', function (event) {					    
+					    $.ajax({
+					        url: "{{ form_url|safe }}"
+					    }).done(function(response) {
+					        $("#{{ id }} .adminator-form--content").html(response)
+					    });
+					})
+					// do an ajax post instead of normal post
+					$("#{{ id }}").on("submit", function(event){
+					    event.preventDefault();
+					    $.ajax({
+					        url : "{{ form_url|safe }}",
+					        type : "POST",
+					        data : $("#{{ id }}").serialize(),
+					        success : function(data) {
+					        	if (data.valid) {
+					        		console.log('valid')
+					        		window.location.reload()
+					        	} else {
+					        		$("#{{ id }} .adminator-form--content").html(data.html).promise().done(setTimeout(function() {$(".masonry").masonry()}, 500))
+					        	}
+					        },
+					        error : function(data) {
+					        	$("#{{ id }} .adminator-form--content").html("Ajax Error")
+					        }
+					    })
+					})
+				})
+			</script>
+		</div>
+	</form>
+{% endmacro %}
+
+
+{% macro instantForm(id, form_url) %}
+	<form class="adminator-form" id="{{ id }}" method="post" action="{{ form_url|safe }}">
+		<div class="adminator-form--content">
+
+		</div>
+		<div class="adminator-form--buttons">
+			<input type="submit" value="Submit" class="adminator-form--submit-button">
+		</div>
+		<div class="adminator-form--script">
+			<script>
+				jQuery(function(){
+					// slide the form into the div
+					$(window).ready(function () {
+					    $.ajax({
+					        url: "{{ form_url|safe }}"
+					    }).done(function(response) {
+					        $("#{{ id }} .adminator-form--content").html(response)
+					    })
+					})
+				})
+			</script>
+		</div>
+	</form>
+{% endmacro %}
+
+
+{% macro onClickForm(id, form_url) %}
+	<form class="adminator-form" id="{{ id }}" method="post" action="{{ form_url|safe }}">
+		<div class="adminator-form--content"></div>
+		<div class="adminator-form--buttons">
+			<input type="submit" value="Submit" class="adminator-form--submit-button">
+		</div>
+		<div class="adminator-form--script">
+			<script>
+				jQuery(function(){
+					// slide the form into the div
+					$("#{{ id }}-toggle").on('click', function (event) {					    
+					    $.ajax({
+					        url: "{{ form_url|safe }}"
+					    }).done(function(response) {
+					        $("#{{ id }} .adminator-form--content").html(response)
+					    });
+					})
+				})
+			</script>
+		</div>
+	</form>
+{% endmacro %}
+
+
+
+
+{% macro headerAdminatorForm(id, form_url) %}
+<form class="adminator-form" id="{{ id }}" method="post">
+	<div class="adminator-form--content">
+		<div class="adminator-form--row">
+			<div class="adminator-form--insert"></div>
+			<div class="adminator-form--row-submit adminator-box">
+				<h6 class="adminator-box--heading">Reload</h6>
+				<div class="adminator-box--content">
+					<input type="submit" value="Submit" class="adminator-form--row-submit-button">
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="adminator-form--script">
+		<script>
+			jQuery(function(){
+				// slide the form into the div
+				$(window).ready(function () {
+				    $.ajax({
+				        url: "{{ form_url|safe }}"
+				    }).done(function(response) {
+				        $("#{{ id }} .adminator-form--insert").html(response)
+				        $('.masonry').masonry()
+				    })
+				})
+				// do an ajax post instead of normal post
+				$("#{{ id }}").on("submit", function(event){
+				    event.preventDefault();
+				    $.ajax({
+				        url : "{{ form_url|safe }}",
+				        type : "POST",
+				        data : $("#{{ id }}").serialize(),
+				        success : function(data) {
+				        	if (data.valid) {
+				        		window.location.reload();
+				        	} else {       
+				        		$("#{{ id }} .adminator-form--insert").html(data.html)
+				        		$('.masonry').masonry()
+				        	}
+				        },
+				        error : function(data) {
+				        	$("#{{ id }} .adminator-form--insert").html("Ajax Error")
+				        }
+				    })
+				})
+			})
+		</script>
+	</div>
+</form>
+{% endmacro %}

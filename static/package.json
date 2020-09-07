@@ -1,0 +1,48 @@
+{
+  "name": "files",
+  "version": "1.0.0",
+  "description": "The static files of my structure project.",
+  "main": "gulpfile.js",
+  "private": true,
+  "dependencies": {
+    "@popperjs/core": "^2.4.4",
+    "bootstrap": "^4.5.2",
+    "chart.js": "^2.9.3",
+    "jquery": "^3.5.1",
+    "jquery-bridget": "^2.0.1",
+    "masonry-layout": "^4.2.2",
+    "perfect-scrollbar": "^1.5.0",
+    "popper.js": "^1.16.1",
+    "rater-js": "^0.5.8",
+    "skycons": "^1.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.1",
+    "@babel/preset-env": "^7.11.0",
+    "autoprefixer": "^9.8.6",
+    "browser-sync": "^2.26.12",
+    "cssnano": "^4.1.10",
+    "del": "4.1.1",
+    "gulp": "4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-browserify": "^0.5.1",
+    "gulp-clean-css": "4.2.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-npm-dist": "1.0.3",
+    "gulp-postcss": "^8.0.0",
+    "gulp-sass": "4.0.2",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-uglify": "3.0.2",
+    "postcss-discard-comments": "^4.0.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Daniel Moessner",
+  "license": "",
+  "repository": {
+    "type": "git",
+    "url": ""
+  }
+}

@@ -1,0 +1,37 @@
+.messages{
+	&--debug, &--info, &--success, &--warning, &--error{
+		@extend .pl-2;
+		@extend .pt-1;
+		@extend .pr-2;
+		@extend .pb-1;
+	} 
+	&--debug{
+		@extend .rounded;
+		@extend .bg-info;
+		@extend .mb-1;
+	}
+	&--info{
+		@extend .rounded;
+		@extend .bg-info;
+		@extend .mb-1;
+	}
+	&--success{
+		@extend .rounded;
+		@extend .bg-success;
+		@extend .mb-1;
+	}
+	&--warning{
+		@extend .rounded;
+		@extend .bg-warning;
+		@extend .mb-1;
+		color: $opposite-font-color;
+	}
+	&--error{
+		@extend .rounded;
+		@extend .bg-danger;
+		@extend .mb-1;
+	}
+	&--debug:last-child, &--info:last-child, &--success:last-child, &--warning:last-child, &--error:last-child{
+		margin: 0!important;
+	}
+}

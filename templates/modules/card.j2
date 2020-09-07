@@ -1,0 +1,32 @@
+{% macro statsCard(heading, value, ext=None) %}
+<div class="card">
+	<h2 class="card--heading">{{ heading }}</h2>
+	<div class="card--body">
+		{% if ext=="%" and value!="x" %}
+		{{ value*100 }} {{ ext }}
+		{% elif ext %}
+		{{ value }} {{ ext }}
+		{% else %}
+		{{ value }}
+		{% endif %}
+	</div>
+</div>
+{% endmacro %}
+
+{% macro adminatorCard(heading, percentage) %}
+<div class='col-md-3'>
+	<div class="adminator-box">
+		<h6 class="adminator-box--heading">{{ heading }}</h6>
+		<div class="adminator-box--content">
+			<div class="peers ai-sb fxw-nw">
+				<div class="peer peer-greed">
+					<span id="sparklinedash"></span>
+				</div>
+				<div class="peer">
+					<span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-purple-50 c-purple-500">{{ percentage }}%</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endmacro %}

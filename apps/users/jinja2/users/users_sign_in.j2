@@ -1,0 +1,47 @@
+{% extends "layout/base.j2" %}
+
+
+{% set title="Login" %}
+
+
+{% block body %}
+
+
+{% import 'modules/form.j2' as fg %}
+
+
+<body class="app">
+
+
+	<div class='loader' id="loader">
+		<div class="loader--spinner"></div>
+	</div> 
+	<script>
+		window.addEventListener('load', () => {
+			const loader = document.getElementById('loader');
+			setTimeout(() => {
+				loader.classList.add('fadeOut');
+			}, 300);
+		});
+	</script>
+
+
+	<div class="peers ai-s fxw-nw h-100vh">
+		<div class="d-n@sm- peer peer-greed h-100 pos-r bgr-n bgpX-c bgpY-c bgsz-cv" style='background-image: url("../../static/img/bg.jpg")'>
+			<div class="pos-a centerXY">
+				<div class="bgc-white bdrs-50p pos-r" style='width: 120px; height: 120px;'>
+					<img class="pos-a centerXY" src="{{ static('img/logo.png') }}" alt="" width="128" height="128">
+				</div>
+			</div>
+		</div>
+		<div class="col-12 col-md-4 peer pX-40 pY-80 h-100 bgc-white scrollable pos-r" style='min-width: 320px;'>
+			<h4 class="fw-300 c-grey-900 mB-40">Login</h4>
+			{{ fg.instantAjaxForm("user-sign-in", url("users:user_sign_in")) }}
+		</div>
+	</div>
+
+
+</body>
+
+
+{% endblock body %}

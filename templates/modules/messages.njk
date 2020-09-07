@@ -1,0 +1,61 @@
+{% macro lmMessages(request) %}
+	{% with messages=get_messages(request) %}
+		{% if messages %}
+			<div class="vs-1"></div>
+			<div class="messages">
+				{% for message in messages %}
+					{% if message.level <= 10 %}
+						<p class="messages--debug">{{ message|safe }}</p>
+					{% elif message.level <= 20 %}
+						<p class="messages--info">{{ message|safe }}</p>
+					{% elif message.level <= 25 %}
+						<p class="messages--success">{{ message|safe }}</p>
+					{% elif message.level <= 30 %}
+						<p class="messages--warning">{{ message|safe }}</p>
+					{% elif message.level >= 40 %}
+						<p class="messages--error">{{ message|safe }}</p>
+					{% endif %}
+				{% endfor %}
+			</div>
+			<div class="vs-1"></div>
+			<hr class="hr">
+		{% endif %}
+	{% endwith %}
+{% endmacro %}
+
+{% macro requestMessages(request) %}
+	{% with messages=get_messages(request) %}
+		{% if messages %}
+			{% for message in messages %}
+				{% if message.level <= 10 %}
+					<p class="messages--debug">{{ message|safe }}</p>
+				{% elif message.level <= 20 %}
+					<p class="messages--info">{{ message|safe }}</p>
+				{% elif message.level <= 25 %}
+					<p class="messages--success">{{ message|safe }}</p>
+				{% elif message.level <= 30 %}
+					<p class="messages--warning">{{ message|safe }}</p>
+				{% elif message.level >= 40 %}
+					<p class="messages--error">{{ message|safe }}</p>
+				{% endif %}
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+{% endmacro %}
+
+
+{% macro messages(msgs) %}
+	{% for message in msgs %}
+		{% if message.level <= 10 %}
+			<p class="messages--debug">{{ message|safe }}</p>
+		{% elif message.level <= 20 %}
+			<p class="messages--info">{{ message|safe }}</p>
+		{% elif message.level <= 25 %}
+			<p class="messages--success">{{ message|safe }}</p>
+		{% elif message.level <= 30 %}
+			<p class="messages--warning">{{ message|safe }}</p>
+		{% elif message.level >= 40 %}
+			<p class="messages--error">{{ message|safe }}</p>
+		{% endif %}
+	{% endfor %}
+{% endmacro %}

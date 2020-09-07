@@ -1,0 +1,31 @@
+{% extends "layout/lhmf.j2" %}
+
+
+{% set title="Add View | Goals" %}
+
+
+{% block main %}
+
+
+{% import "modules/button.j2" as bg %}
+{% import "modules/form.j2" as fg %}
+{% import "modules/item.j2" as ig %}
+{% import "modules/card.j2" as cg %}
+
+
+{% include 'snippets/add_to_dos.j2' %}
+
+
+{% include 'snippets/add_goal.j2' %}
+
+
+{% include 'snippets/add_link.j2' %}
+
+
+{% include 'snippets/add_strategy.j2' %}
+
+
+{% include 'snippets/add_progress_monitor.j2' %}
+
+
+{% endblock main %}

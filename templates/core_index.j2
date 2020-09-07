@@ -1,0 +1,19 @@
+{% extends "layout/base.j2" %}
+
+
+{% set title="Landingpage" %}
+
+
+{% block body %}
+
+
+<div class="d-flex flex-column w-100 align-items-center justify-content-center" style="height: 80vh;">
+	<h1 class="text-center">Welcome to Mastergoal</h1><br>
+	<div class="d-flex">
+		<a href="{{ url('users:sign_in') }}">Login</a>
+		<a class="ml-2" href="{{ url('users:sign_up') }}">Sign Up</a>
+	</div>
+</div>
+
+
+{% endblock %}

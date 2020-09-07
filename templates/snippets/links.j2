@@ -1,0 +1,15 @@
+{% if links %}
+<div class="masonry--item masonry--item-4">
+    <div class="adminator-box">
+        <h6 class="adminator-box--heading">Links</h6>
+        <div class="adminator-box--content">
+            {% for link in links %}
+                {{ ig.link(link) }}
+                {% if not loop.last %}
+					<div class="vs-1"></div>
+				{% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}

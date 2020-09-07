@@ -1,0 +1,96 @@
+{% extends "layout/lhmf.j2" %}
+
+{% set title="Settings | User" %}
+
+{% block main %}
+
+    {% import "modules/button.j2" as bg %}
+    {% import "modules/form.j2" as fg %}
+    {% import "modules/item.j2" as ig %}
+    {% import "modules/card.j2" as cg %}
+
+    <div class="masonry--item masonry--item-4">
+        <div class="adminator-box">
+            <div class="adminator-box--heading">
+                <a class="adminator-box--toggle" id="edit-user-goal-view-toggle" href="#edit-user-goal-view-target"
+                   data-toggle="collapse">Goal View</a>
+            </div>
+            <div class="adminator-box--content collapse" id="edit-user-goal-view-target">
+                {{ fg.onClickAjaxForm("edit-user-goal-view", url("users:user_goal_view_choices", args=[user.pk])) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="masonry--item masonry--item-4">
+        <div class="adminator-box">
+            <div class="adminator-box--heading">
+                <a class="adminator-box--toggle" id="edit-user-strategy-view-toggle" href="#edit-user-strategy-view-target"
+                   data-toggle="collapse">Strategy View</a>
+            </div>
+            <div class="adminator-box--content collapse" id="edit-user-strategy-view-target">
+                {{ fg.onClickAjaxForm("edit-user-strategy-view", url("users:update_strategy_main_choice_user", args=[user.pk])) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="masonry--item masonry--item-4">
+        <div class="adminator-box">
+            <div class="adminator-box--heading">
+                <a class="adminator-box--toggle" id="edit-user-tree-view-toggle" href="#edit-user-tree-view-target"
+                   data-toggle="collapse">Tree View</a>
+            </div>
+            <div class="adminator-box--content collapse" id="edit-user-tree-view-target">
+                {{ fg.onClickAjaxForm("edit-user-tree-view", url("users:user_treeview_choices", args=[user.pk])) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="masonry--item masonry--item-4">
+        <div class="adminator-box">
+            <div class="adminator-box--heading">
+                <a class="adminator-box--toggle" id="edit-user-to-dos-choices-toggle"
+                   href="#edit-user-to-dos-choices-target" data-toggle="collapse">To Do View</a>
+            </div>
+            <div class="adminator-box--content collapse" id="edit-user-to-dos-choices-target">
+                {{ fg.onClickAjaxForm("edit-user-to-dos-choices", url("users:user_to_dos_choices", args=[user.pk])) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="masonry--item masonry--item-4">
+        <div class="adminator-box">
+            <div class="adminator-box--heading">
+                <a class="adminator-box--toggle" id="edit-user-toggle" href="#edit-user-target" data-toggle="collapse">Edit
+                    Self</a>
+            </div>
+            <div class="adminator-box--content collapse" id="edit-user-target">
+                {{ fg.onClickAjaxForm("edit-user", url("users:user_edit", args=[user.pk])) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="masonry--item masonry--item-4">
+        <div class="adminator-box">
+            <div class="adminator-box--heading">
+                <a class="adminator-box--toggle" id="edit-user-password-toggle" href="#edit-user-password-target"
+                   data-toggle="collapse">Change Password</a>
+            </div>
+            <div class="adminator-box--content collapse" id="edit-user-password-target">
+                {{ fg.onClickAjaxForm("edit-user-password", url("users:user_password", args=[user.pk])) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="masonry--item masonry--item-4">
+        <div class="adminator-box">
+            <div class="adminator-box--heading">
+                <a class="adminator-box--toggle" id="edit-user-page-toggle" href="#edit-user-page-target"
+                   data-toggle="collapse">General</a>
+            </div>
+            <div class="adminator-box--content collapse" id="edit-user-page-target">
+                {{ fg.onClickAjaxForm("edit-user-page", url("users:user_page_choice", args=[user.pk])) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock main %}

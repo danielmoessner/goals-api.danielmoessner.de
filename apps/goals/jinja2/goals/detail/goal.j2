@@ -1,0 +1,140 @@
+{% extends "layout/lhmf.j2" %}
+
+
+{% set title=goal.name + " | Goal | Goals" %}
+
+
+{% block main %}
+
+
+    {% import "modules/button.j2" as bg %}
+    {% import "modules/form.j2" as fg %}
+    {% import "modules/item.j2" as ig %}
+    {% import "modules/card.j2" as cg %}
+
+
+    <div class="masonry--item masonry--item-4">
+        <div class="row m-0">
+            <div class='col-md-6 p-0'>
+                <div class="adminator-box">
+                    <div class="adminator-box--top">
+                        <h6 class="adminator-box--heading">{{ goal.name }}</h6>
+                        <a href="{{ url('goals:goal_star', args=[goal.pk]) }}" class="update-button">Star</a>
+                        <a href="{{ url('goals:goal_archive', args=[goal.pk]) }}" class="update-button">Archive</a>
+                    </div>
+                    <div class="adminator-box--content">
+                        <span class="blue-badge">{{ goal.progress }}%</span>
+                    </div>
+                </div>
+            </div>
+            <div class='col-md-6 p-0'>
+                <div class="adminator-box">
+                    <h6 class="adminator-box--heading">Properties</h6>
+                    <div class="adminator-box--content">
+                        <p class="adminator-box--p">
+                            {% if goal.is_starred %}
+                                Starred<br>
+                            {% endif %}
+                            {% if goal.is_archived %}
+                                Archived<br>
+                            {% endif %}
+                            {% if goal.deadline %}
+                                Deadline: {{ goal.get_deadline() }}<br>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if goal.why and goal.impact %}
+            <div class="row m-0">
+                {% if goal.why %}
+                    <div class='col-md-6 p-0'>
+                        <div class="adminator-box">
+                            <h6 class="adminator-box--heading">Why</h6>
+                            <div class="adminator-box--content">
+                                <p class="adminator-box--p">{{ goal.why }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                {% if goal.impact %}
+                    <div class='col-md-6 p-0'>
+                        <div class="adminator-box">
+                            <h6 class="adminator-box--heading">Impact</h6>
+                            <div class="adminator-box--content">
+                                <p class="adminator-box--p">{{ goal.impact }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+        {% if goal.is_archived %}
+            <div class="row m-0">
+                <div class='col-12 p-0'>
+                    <div class="adminator-box">
+                        <h6 class="adminator-box--heading">Addition</h6>
+                        <div class="adminator-box--content">
+                            <p class="adminator-box--p">{{ goal.addition }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+
+    {% include 'snippets/progress_monitors.j2' %}
+
+
+    {% include 'snippets/master_goals.j2' %}
+
+
+    {% include 'snippets/sub_goals.j2' %}
+
+
+    {% include 'snippets/strategies.j2' %}
+
+
+    {% for link in links %}
+        <div class="masonry--item masonry--item-4">
+            <div class="adminator-box">
+                <div class="adminator-box--heading">
+                    <a class="adminator-box--toggle" id="edit-link-toggle" href="#edit-link-target"
+                       data-toggle="collapse">Edit Link To {{ link.master_goal.name }}</a>
+                </div>
+                <div class="adminator-box--content collapse" id="edit-link-target">
+                    {{ fg.onClickAjaxForm("edit-link", url("goals:link_edit", args=[link.pk])) }}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+
+    <div class="masonry--item masonry--item-4">
+        <div class="adminator-box">
+            <div class="adminator-box--heading">
+                <a class="adminator-box--toggle" id="edit-goal-toggle" href="#edit-goal-target" data-toggle="collapse">Edit</a>
+            </div>
+            <div class="adminator-box--content collapse" id="edit-goal-target">
+                {{ fg.onClickAjaxForm("edit-goal", url("goals:goal_edit", args=[goal.pk])) }}
+            </div>
+        </div>
+    </div>
+
+
+    <div class="masonry--item masonry--item-4">
+        <div class="adminator-box">
+            <div class="adminator-box--heading">
+                <a class="adminator-box--toggle" id="delete-goal-toggle" href="#delete-goal-target"
+                   data-toggle="collapse">Delete</a>
+            </div>
+            <div class="adminator-box--content collapse" id="delete-goal-target">
+                {{ fg.onClickForm("delete-goal", url("goals:goal_delete", args=[goal.pk])) }}
+            </div>
+        </div>
+    </div>
+
+
+{% endblock main %}

@@ -1,0 +1,62 @@
+{% if to_dos %}
+<div class="masonry--item masonry--item-4">
+  <div class="adminator-box">
+    <h6 class="adminator-box--heading">Normal To Do's</h6>
+    <div class="adminator-box--content">
+      <ul class="to-do-list">
+        {% for to_do in to_dos %}
+          {{ ig.to_do(to_do, "", csrf_token) }}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+
+{% if repetitive_to_dos %}
+<div class="masonry--item masonry--item-4">
+  <div class="adminator-box">
+    <h6 class="adminator-box--heading">Repetitive To Do's</h6>
+    <div class="adminator-box--content">
+      <ul class="to-do-list">
+        {% for to_do in repetitive_to_dos %}
+        {{ ig.to_do(to_do, "repetitive_", csrf_token) }}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+
+{% if never_ending_to_dos %}
+<div class="masonry--item masonry--item-4">
+  <div class="adminator-box">
+    <h6 class="adminator-box--heading">Never Ending To Do's</h6>
+    <div class="adminator-box--content">
+      <ul class="to-do-list">
+        {% for to_do in never_ending_to_dos %}
+        {{ ig.to_do(to_do, "never_ending_", csrf_token) }}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+
+{% if pipeline_to_dos %}
+<div class="masonry--item masonry--item-4">
+  <div class="adminator-box">
+    <h6 class="adminator-box--heading">Pipeline To Do's</h6>
+    <div class="adminator-box--content">
+      <ul class="to-do-list">
+        {% for to_do in pipeline_to_dos %}
+        {{ ig.to_do(to_do, "pipeline_", csrf_token) }}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endif %}

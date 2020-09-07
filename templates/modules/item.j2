@@ -1,0 +1,126 @@
+{% macro to_do(to_do, url_prefix, csrf_token) %}
+<li class="to-do-item" id="to-do-item-{{ to_do.pk }}">
+	<div class="to-do-item--wrapper">
+		{% if not to_do.is_done and not to_do.has_failed %}
+			<input class="to-do-item--checkbox" id="check-to-do-{{ to_do.pk }}" type="checkbox">
+		{% endif %}
+		<label class="to-do-item--body">
+			<span class="to-do-item--label">{{ to_do.name }}</span>
+				{% with time=to_do.get_to_deadline_time() %}
+					<span class="to-do-item--badge-label--{{ time[0] }}">{{ time[1] }}</span>
+				{% endwith %}
+				<a class="adminator-href-button" href="{{ url('goals:'+url_prefix+'to_do', args=[to_do.pk]) }}">Open</a>
+		</label>
+	</div>
+	<div class="to-do-item--script">
+		<script type="text/javascript">
+			jQuery(function(){
+				$("#check-to-do-{{ to_do.pk }}").on("click", function(event){
+					$.ajax({
+						url : "{{ url('goals:'+url_prefix+'to_do_done', args=[to_do.pk]) }}",
+						type : "POST",
+						data : "csrfmiddlewaretoken={{ csrf_token }}&is_done=True",
+						success : function(data) {
+							if (data.valid) {
+								$("#to-do-item-{{ to_do.pk }}").fadeOut("slow");
+							} else {
+								$("#to-do-item-{{ to_do.pk }}").html(data.html);
+							}
+						},
+						error : function(data) {
+							$("#to-do-item-{{ to_do.pk }}").html("Ajax Error");
+						}
+					});
+				});
+			});
+		</script>
+	</div>
+</li>
+{% endmacro %}
+
+
+{% macro goal(goal, csrf_token) %}
+<div class="progress-item">
+	<div class="progress-item--top">
+		<h5 class="progress-item--title">{{ goal.name }}</h5>
+		<a class="adminator-href-button" href="{{ url('goals:goal', args=[goal.pk]) }}">Open</a>
+	</div>
+	<div class="progress-item--progress">
+		<div class="progress-item--progress-bar" style="width:{{ goal.progress }}%;"></div>
+	</div>
+</div>
+{% endmacro %}
+
+
+{% macro strategy(strategy, csrf_token) %}
+<div class="progress-item">
+	<div class="progress-item--top">
+		<h5 class="progress-item--title">{{ strategy.name }}</h5>
+		<a class="adminator-href-button" href="{{ url('goals:strategy', args=[strategy.pk]) }}">Open</a>
+	</div>
+	<div class="progress-item--progress">
+		<div class="progress-item--progress-bar" style="width:{{ strategy.progress }}%;"></div>
+	</div>
+</div>
+{% endmacro %}
+
+
+{% macro link(link) %}
+<div class="progress-item">
+	<div class="progress-item--top">
+		<h5 class="progress-item--title">{{ link.master_goal }} <= {{ link.sub_goal }}</h5>
+		<a class="adminator-href-button" href="{{ url('goals:link', args=[link.pk]) }}">Open</a>
+	</div>
+	<div class="progress-item--progress">
+		<div class="progress-item--progress-bar" style="width:{{ link.progress }}%;"></div>
+	</div>
+</div>
+{% endmacro %}
+
+
+
+{% macro progress_monitor(progress_monitor, csrf_token) %}
+<div class="progress-item">
+	<div class="progress-item--top">
+		<h5 class="progress-item--title">{{ progress_monitor.monitor }}</h5>
+		<button class="adminator-update-button" id="progress-monitor-{{ progress_monitor.pk }}-up">Up</button>
+		<button class="adminator-update-button" id="progress-monitor-{{ progress_monitor.pk }}-down">Down</button>
+		<a class="adminator-href-button ml-1" href="{{ url('goals:progress_monitor', args=[progress_monitor.pk]) }}">Open</a>
+	</div>
+	<div class="progress-item--progress">
+		<div class="progress-item--progress-bar" style="width:{{ progress_monitor.progress }}%;"></div>
+	</div>
+	<div class="progress-item--script">
+		<script type="text/javascript">
+			jQuery(function(){
+				$("#progress-monitor-{{ progress_monitor.pk }}-up").on("click", function(event){
+					$.ajax({
+						url : "{{ url('goals:progress_monitor_step', args=[progress_monitor.pk]) }}",
+						type : "POST",
+						data : "csrfmiddlewaretoken={{ csrf_token }}&step={{ progress_monitor.step + 1 }}",
+						success : function(data) {
+							window.location.reload()
+						},
+						error : function(data) {
+							$("#progress-monitor-up").html("Ajax Error");
+						}
+					})
+				})
+				$("#progress-monitor-{{ progress_monitor.pk }}-down").on("click", function(event){
+					$.ajax({
+						url : "{{ url('goals:progress_monitor_step', args=[progress_monitor.pk]) }}",
+						type : "POST",
+						data : "csrfmiddlewaretoken={{ csrf_token }}&step={{ progress_monitor.step - 1 }}",
+						success : function(data) {
+							window.location.reload()
+						},
+						error : function(data) {
+							$("#progress-monitor-down").html("Ajax Error");
+						}
+					})
+				})
+			});
+		</script>
+	</div>
+</div>
+{% endmacro %}

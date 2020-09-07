@@ -1,0 +1,10 @@
+<div class="masonry--item masonry--item-4">
+	<div class="adminator-box">
+		<div class="adminator-box--heading">
+			<a class="adminator-box--toggle" id="add-note-toggle" href="#add-note-target" data-toggle="collapse">Add Note</a>
+		</div>
+		<div class="adminator-box--content collapse" id="add-note-target">
+			{{ fg.onClickAjaxForm("add-note", url("notes:note_add")) }}
+		</div>
+	</div>
+</div>
