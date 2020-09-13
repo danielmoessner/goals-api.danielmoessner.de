@@ -1,0 +1,108 @@
+{% extends 'layout/base.html' %}
+
+{% block body %}
+<div id="vue-main" class="flex bg-gray-100 w-full flex-wrap">
+    <aside class="w-full md:w-1/4 lg:w-1/4 xl:w-1/6">
+        <left-navigation :navigation="navigation"></left-navigation>
+    </aside>
+    <main class="w-full md:w-3/4 lg:w-3/4 xl:w-5/6">
+        <top-navigation></top-navigation>
+        <div class="p-8">
+            {% block main %}
+
+            {% endblock main %}
+        </div>
+    </main>
+</div>
+{% csrf_token %}
+{% endblock body %}
+
+{% block vue %}
+{{ block.super }}
+<script>
+    Vue.mixin({
+        data: function () {
+            return {
+                csrf_token: document.querySelector('[name=csrfmiddlewaretoken]').value,
+            }
+        },
+        computed: {
+            headers: function () {
+                return {"X-CSRFTOKEN": this.csrf_token}
+            }
+        }
+    })
+    const navigationMixin = {
+        data: function () {
+            return {
+                navigation: [
+                    {
+                        name: "Todos",
+                        links: [
+                            {
+                                name: "Dashboard",
+                                url: "{% url 'todos:index' %}",
+                                icon: '<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>'
+                            },
+                            {
+                                name: "List",
+                                url: "#",
+                                icon: '<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>'
+                            },
+                        ]
+                    },
+                    {
+                        name: "Goals",
+                        links: [
+                            {
+                                name: "Dashboard",
+                                url: "{% url 'goals:index' %}",
+                                icon: '<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>'
+                            },
+                            {
+                                name: "Strategy",
+                                url: "{% url 'goals:strategy_main' %}",
+                                icon: '<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>'
+                            },
+                            {
+                                name: "Tree",
+                                url: "{% url 'goals:tree_view' %}",
+                                icon: '<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>'
+                            },
+                            {
+                                name: "Star",
+                                url: "{% url 'goals:star_view' %}",
+                                icon: '<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>'
+                            },
+                            {
+                                name: "Add",
+                                url: "#",
+                                icon: '<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>'
+                            },
+                            {
+                                name: "All",
+                                url: "#",
+                                icon: '<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>'
+                            }
+                        ]
+                    },
+                    {
+                        name: "Notes",
+                        links: [
+                            {
+                                name: "Dashboard",
+                                url: "{% url 'notes:index' %}",
+                                icon: '<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>'
+                            },
+                        ]
+                    }
+                ]
+            }
+        },
+        components: {
+            'left-navigation': httpVueLoader('/static/vue/left-navigation.vue'),
+            'top-navigation': httpVueLoader('/static/vue/top-navigation.vue')
+        }
+    }
+</script>
+{% endblock vue %}
