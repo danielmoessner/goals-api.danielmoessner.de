@@ -1,0 +1,116 @@
+{% extends 'layout/main.html' %}
+
+{% block title %}{{ object.name }} | Todos{% endblock %}
+
+{% block main %}
+
+<div class="flex items-start justify-between">
+    <h-one v-bind:text="toDoName">
+        <p class="text-lg font-normal tracking-normal mt-1"
+           v-bind:class="{ 'text-red-500': timeToDeadlineSeconds < 0 }" v-html="timeToDeadline">
+        </p>
+    </h-one>
+    <div class="flex items-center">
+        <update-button v-bind:link="'#'" v-bind:text="'Edit'"></update-button>
+        <delete-button v-bind:link="'#'" v-bind:text="'Delete'" class="ml-2"></delete-button>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
+    <general-box heading="General">
+        <p>Activate: <span v-html="todo.activate"></span></p>
+        <p>Deadline: <span v-html="todo.deadline"></span></p>
+        <p>Completed: <span v-html="todo.completed"></span></p>
+        <div class="flex justify-between items-center w-full">
+            <p>Archived: <span v-html="todo.is_archived"></span></p>
+            <form-button v-on:response="changed" v-bind:text="'Toggle'" v-bind:link="todoUrl"
+                         v-bind:data="{ 'is_archived': !todo.is_archived }"></form-button>
+        </div>
+        <hr class="mt-2 mb-2">
+        <div class="flex justify-between items-center w-full">
+            <p>Status: <span v-html="todo.status"></span></p>
+            <p>
+                <form-button v-on:response="changed" v-bind:text="'Set Active'" v-bind:link="todoUrl"
+                             v-bind:data="{ 'status': 'ACTIVE' }"></form-button>
+                <form-button v-on:response="changed" v-bind:text="'Set Done'" v-bind:link="todoUrl"
+                             v-bind:data="{ 'status': 'DONE' }"></form-button>
+                <form-button v-on:response="changed" v-bind:text="'Set Failed'" v-bind:link="todoUrl"
+                             v-bind:data="{ 'status': 'FAILED' }"></form-button>
+            </p>
+        </div>
+
+        <hr class="mt-2 mb-2">
+        <p>Duration: <span v-html="todo.duration"></span></p>
+    </general-box>
+    <general-box heading="Notes" v-if="todo.notes">
+        <p v-html="todo.notes"></p>
+    </general-box>
+</div>
+
+{% endblock main %}
+
+{% block vue %}
+{{ block.super }}
+<script type="module">
+    let app = new Vue({
+        el: "#vue-main",
+        mixins: [navigationMixin],
+        components: {
+            'h-one': httpVueLoader('/static/vue/h-one.vue'),
+            'general-box': httpVueLoader('/static/vue/general-box.vue'),
+            'update-button': httpVueLoader('/static/vue/update-button.vue'),
+            'delete-button': httpVueLoader('/static/vue/delete-button.vue'),
+            'form-button': httpVueLoader('/static/vue/form-button.vue')
+        },
+        data: function () {
+            return {
+                'todo': {}
+            }
+        },
+        mounted() {
+            fetch('/t/api/todos/{{ object.pk }}/')
+                .then(response => response.json())
+                .then(data => this.todo = data)
+        },
+        computed: {
+            toDoName() {
+                return this.todo.name || ''
+            },
+            todoUrl() {
+                return this.todo.url || ''
+            },
+            timeToDeadlineSeconds() {
+                if (this.todo.deadline === null || this.todo.is_done)
+                    return 0;
+                return (Date.parse(this.todo.deadline) - new Date()) / 1000
+            },
+            timeToDeadline: function () {
+                if (this.todo.deadline === null || this.todo.is_done)
+                    return "";
+                let delta = this.timeToDeadlineSeconds
+                let timeToDeadline = delta < 0 ? 'Overdue: ' : ''
+                // calculate (and subtract) whole days
+                let days = Math.floor(delta / 86400);
+                delta -= days * 86400;
+                // calculate (and subtract) whole hours
+                let hours = Math.floor(delta / 3600) % 24;
+                delta -= hours * 3600;
+                // calculate (and subtract) whole minutes
+                let minutes = Math.floor(delta / 60) % 60;
+                delta -= minutes * 60;
+                // return human readable time to deadline
+                timeToDeadline += days > 0 ? days + 'd ' : ''
+                timeToDeadline += hours > 0 ? hours + 'h ' : ''
+                timeToDeadline += minutes > 0 ? minutes + 'min ' : ''
+                timeToDeadline = timeToDeadline.slice(0, -1)
+                return timeToDeadline
+            }
+        },
+        methods: {
+            changed: function (data) {
+                this.todo = data;
+            },
+        }
+    })
+</script>
+{% endblock vue %}

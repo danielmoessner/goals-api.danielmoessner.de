@@ -38,9 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'filebrowser',
     'tinymce',
+    'rest_framework',
     'apps.users.apps.UsersConfig',
     'apps.core.apps.CoreConfig',
     'apps.goals.apps.GoalsConfig',
+    'apps.todos.apps.TodosConfig',
     'apps.notes.apps.NotesConfig'
 ]
 
@@ -59,7 +61,9 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -73,7 +77,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.jinja2.Jinja2',
         'DIRS': [
-            os.path.join(BASE_DIR, 'templates'),
+            os.path.join(BASE_DIR, 'jinja2'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -199,3 +203,9 @@ EMAIL_HOST = 'smtp.strato.de'
 EMAIL_HOST_USER = 'projekte@tortuga-webdesign.de'
 EMAIL_HOST_PASSWORD = get_secret('EMAIL_PWD')
 EMAIL_PORT = 587
+
+
+# HACK ATTACK: this allows Django template tags to span multiple lines.
+import re
+from django.template import base
+base.tag_re = re.compile(base.tag_re.pattern, re.DOTALL)

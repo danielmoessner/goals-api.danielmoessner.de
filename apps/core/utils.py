@@ -1,7 +1,22 @@
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.html import strip_tags
 from django.utils.text import slugify
 
 from django.conf import settings
+
+
+class FieldsetFormContextMixin:
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        if 'form' not in context:
+            raise ImproperlyConfigured(
+                'There needs to be a form in the context for the FieldsetFormContextMixin to work.')
+        fieldsets = None
+        form_class = self.get_form_class()
+        if 'fieldsets' in form_class.Meta.__dict__:
+            fieldsets = form_class.Meta.__dict__['fieldsets']
+        context['form'].__dict__['fieldsets'] = fieldsets
+        return context
 
 
 def print_df(df):

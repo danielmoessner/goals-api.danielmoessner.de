@@ -39,7 +39,7 @@
 						jQuery(function(){
 							$("#to-do-done").on("click", function(event){
 								$.ajax({
-									url : "{{ url('goals:'+to_do_prefix+'to_do_done', args=[to_do.pk]) }}",
+									url : "{{ url('todos:'+to_do_prefix+'to_do_done', args=[to_do.pk]) }}",
 									type : "POST",
 									data : "csrfmiddlewaretoken={{ csrf_token }}&is_done=True",
 									success : function(data) {
@@ -52,7 +52,7 @@
 							})
 							$("#to-do-failed").on("click", function(event){
 								$.ajax({
-									url : "{{ url('goals:'+to_do_prefix+'to_do_failed', args=[to_do.pk]) }}",
+									url : "{{ url('todos:'+to_do_prefix+'to_do_failed', args=[to_do.pk]) }}",
 									type : "POST",
 									data : "csrfmiddlewaretoken={{ csrf_token }}&has_failed=True",
 									success : function(data) {
@@ -65,7 +65,7 @@
 							})
 							$("#to-do-reset").on("click", function(event){
 								$.ajax({
-									url : "{{ url('goals:'+to_do_prefix+'to_do_failed', args=[to_do.pk]) }}",
+									url : "{{ url('todos:'+to_do_prefix+'to_do_failed', args=[to_do.pk]) }}",
 									type : "POST",
 									data : "csrfmiddlewaretoken={{ csrf_token }}&has_failed=False",
 									success : function(data) {
@@ -158,32 +158,12 @@
 
 
 <div class="masonry--item masonry--item-4">
-	<div class="adminator-box">
-		<h6 class="adminator-box--heading">Strategy Goal</h6>
-		<div class="adminator-box--content">
-			{{ ig.goal(goal, csrf_token) }} 
-		</div>
-	</div>
-</div>
-
-
-<div class="masonry--item masonry--item-4">
-	<div class="adminator-box">
-		<h6 class="adminator-box--heading">Strategy</h6>
-		<div class="adminator-box--content">
-			{{ ig.strategy(strategy, csrf_token) }}
-		</div>
-	</div>
-</div>
-
-
-<div class="masonry--item masonry--item-4">
     <div class="adminator-box">
         <div class="adminator-box--heading">
           <a class="adminator-box--toggle" id="edit-notes-toggle" href="#edit-notes-target" data-toggle="collapse">Edit Notes</a>
         </div>
         <div class="adminator-box--content collapse" id="edit-notes-target">
-          {{ fg.onClickForm("edit-notes", url("goals:to_do_notes", args=[to_do.pk])) }}
+          {{ fg.onClickForm("edit-notes", url("todos:to_do_notes", args=[to_do.pk])) }}
         </div>
     </div>
 </div>
@@ -195,7 +175,7 @@
           <a class="adminator-box--toggle" id="edit-to-do-toggle" href="#edit-to-do-target" data-toggle="collapse">Edit</a>
         </div>
         <div class="adminator-box--content collapse" id="edit-to-do-target">
-          {{ fg.onClickAjaxForm("edit-to-do", url("goals:"+to_do_prefix+"to_do_edit", args=[to_do.pk])) }}
+          {{ fg.onClickAjaxForm("edit-to-do", url("todos:"+to_do_prefix+"to_do_edit", args=[to_do.pk])) }}
         </div>
     </div>
 </div>
@@ -207,7 +187,7 @@
           <a class="adminator-box--toggle" id="delete-to-do-toggle" href="#delete-to-do-target" data-toggle="collapse">Delete</a>
         </div>
         <div class="adminator-box--content collapse" id="delete-to-do-target">
-          {{ fg.onClickForm("delete-to-do", url("goals:"+to_do_prefix+"to_do_delete", args=[to_do.pk])) }}
+          {{ fg.onClickForm("delete-to-do", url("todos:"+to_do_prefix+"to_do_delete", args=[to_do.pk])) }}
         </div>
     </div>
 </div>
@@ -220,7 +200,7 @@
 	          <a class="adminator-box--toggle" id="delete-to-do-list-toggle" href="#delete-to-do-list-target" data-toggle="collapse">Delete All</a>
 	        </div>
 	        <div class="adminator-box--content collapse" id="delete-to-do-list-target">
-	          {{ fg.onClickForm("delete-to-do-list", url("goals:repetitive_to_do_list_delete", args=[to_do.pk])) }}
+	          {{ fg.onClickForm("delete-to-do-list", url("todos:repetitive_to_do_list_delete", args=[to_do.pk])) }}
 	        </div>
 	    </div>
 	</div>

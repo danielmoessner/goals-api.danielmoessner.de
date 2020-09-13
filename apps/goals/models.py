@@ -542,7 +542,7 @@ class Strategy(models.Model):
 
     @staticmethod
     def get_strategies_user(user, strategy_filter, include_archived_strategies=False):
-        goals = Goal.get_goals_user(user, "ALL")
+        goals = Goal.get_goals_user(user, "ALL", include_archived_goals=include_archived_strategies)
         strategies = Strategy.get_strategies_goals(goals, strategy_filter, include_archived_strategies)
         return strategies
 

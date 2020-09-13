@@ -1,0 +1,19 @@
+<!doctype html>
+{% load static %}
+<html>
+<head>
+    <title>{% block title %}Mastergoal{% endblock title %}</title>
+    <link rel="icon" href="{% static 'img/logo.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'img/apple-logo.png' %}">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" href="{% static 'global.css' %}">
+    <script src="{% static 'global.js' %}"></script>
+    {% block head %}{% endblock head %}
+</head>
+<body>
+{% block body %}{% endblock body %}
+{% block vue %}{% endblock vue %}
+{% block scripts %}{% endblock scripts %}
+</body>
+</html>
