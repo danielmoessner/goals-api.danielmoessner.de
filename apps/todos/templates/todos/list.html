@@ -4,10 +4,13 @@
 
 {% block main %}
 
-<h-one v-bind:text="'All todos'"></h-one>
+<h-one text="All todos"></h-one>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <todo-box url="/t/api/normal-todos/" heading="Normal todos"></todo-box>
+    <todo-box url="/t/api/repetitive-todos/" heading="Repetitive todos"></todo-box>
+    <todo-box url="/t/api/never-ending-todos/" heading="Never ending todos"></todo-box>
+    <todo-box url="/t/api/pipeline-todos/" heading="Pipeline todos"></todo-box>
 </div>
 {% endblock main %}
 

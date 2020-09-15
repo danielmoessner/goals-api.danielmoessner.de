@@ -205,6 +205,12 @@ EMAIL_HOST_PASSWORD = get_secret('EMAIL_PWD')
 EMAIL_PORT = 587
 
 
+# Rest Framework
+REST_FRAMEWORK = {
+    'DATETIME_FORMAT': "%Y-%m-%dT%H:%M",
+}
+
+
 # HACK ATTACK: this allows Django template tags to span multiple lines.
 import re
 from django.template import base

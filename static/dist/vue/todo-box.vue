@@ -1,8 +1,8 @@
 <template>
-  <general-box v-bind:heading="heading">
-    <div :style="{ 'min-height': todosMinHeight }">
+  <general-box v-bind:heading="heading" :style="{ 'height': todosMinHeight }">
+    <div>
       <transition-group name="todo" tag="div" class="relative">
-        <to-do v-on:changed="todoChanged" v-for="todo in doneToDos" :key="todo.url" v-bind:todo="todo"
+        <to-do v-on:changed="todoChanged" v-for="todo in unarchivedTodos" :key="todo.url" v-bind:todo="todo"
                class="todo-item"></to-do>
       </transition-group>
     </div>
@@ -10,8 +10,12 @@
 </template>
 
 <script>
-export default {
+module.exports = {
   name: "TodoBox",
+  components: {
+    'general-box': httpVueLoader('/static/vue/general-box.vue'),
+    'to-do': httpVueLoader('/static/vue/to-do.vue')
+  },
   props: {
     url: {
       required: true,
@@ -29,7 +33,11 @@ export default {
   },
   computed: {
     todosMinHeight: function () {
-      return String(this.todos.length * 56 - 8) + 'px'
+      return String(8 * 56 - 8) + 'px'
+      return String(this.unarchivedTodos.length * 56 - 8) + 'px'
+    },
+    unarchivedTodos: function () {
+      return this.todos.filter(todo => !todo.is_archived)
     }
   },
   mounted() {
@@ -39,9 +47,9 @@ export default {
   },
   methods: {
     todoChanged: function (data) {
-      let index = this.toDos.findIndex(todo => todo.url === data.url)
+      let index = this.todos.findIndex(todo => todo.url === data.url)
       if (index !== -1) {
-        this.toDos.splice(index, 1, data)
+        this.todos.splice(index, 1, data)
       }
     }
   }

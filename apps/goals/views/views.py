@@ -10,20 +10,14 @@ from django.views.generic.edit import ModelFormMixin
 
 from apps.core.views import CustomAjaxFormMixin, CustomGetFormMixin
 from apps.goals.forms import StrategyForm
-from apps.goals.models import NeverEndingToDo
 from apps.goals.models import ProgressMonitor
-from apps.goals.models import RepetitiveToDo
-from apps.goals.models import PipelineToDo
-from apps.goals.models import NormalToDo
 from apps.goals.models import Strategy
-from apps.goals.models import ToDo
 from apps.goals.models import Link
 from apps.goals.models import Goal
 from apps.goals.utils import UserPassesProgressMonitorTestMixin
 from apps.goals.utils import UserPassesStrategyTestMixin
 from apps.goals.utils import UserPassesGoalTestMixin
 from apps.goals.utils import UserPassesLinkTestMixin
-from apps.goals.utils import UserPassesToDoTestMixin
 from apps.goals.views.form_views import FieldsetFormContextMixin
 
 
@@ -40,65 +34,6 @@ class SearchView(LoginRequiredMixin, TemplateView):
 
         context['goals'] = all_goals.filter(name__icontains=query)
         context['strategies'] = all_strategies.filter(name__icontains=query)
-        context['to_dos'] = ToDo \
-            .get_to_dos_strategies(all_strategies, NormalToDo, 'ALL') \
-            .filter(name__icontains=query)
-        context['never_ending_to_dos'] = ToDo \
-            .get_to_dos_strategies(all_strategies, NeverEndingToDo, 'ALL') \
-            .filter(name__icontains=query)
-        context['repetitive_to_dos'] = ToDo \
-            .get_to_dos_strategies(all_strategies, RepetitiveToDo, 'ALL') \
-            .filter(name__icontains=query)
-        context['pipeline_to_dos'] = ToDo \
-            .get_to_dos_strategies(all_strategies, PipelineToDo, 'ALL') \
-            .filter(name__icontains=query)
-        return context
-
-
-class TestView(LoginRequiredMixin, TemplateView):
-    template_name = "test.j2"
-
-
-class ToDosView(LoginRequiredMixin, TemplateView):
-    template_name = "goals/main/to_dos.j2"
-
-    def get_context_data(self, **kwargs):
-        context = super(ToDosView, self).get_context_data(**kwargs)
-        user = self.request.user
-        all_goals = user.goals.all()
-        if not self.request.user.show_archived_objects:
-            all_goals = all_goals.filter(is_archived=False)
-        all_strategies = Strategy.get_strategies_goals(all_goals, "ALL")
-
-        context['to_dos'] = ToDo.get_to_dos_strategies(
-            all_strategies,
-            NormalToDo,
-            user.normal_to_dos_choice,
-            delta=user.to_dos_delta,
-            include_archived_to_dos=self.request.user.show_archived_objects
-        )
-        context['repetitive_to_dos'] = ToDo.get_to_dos_strategies(
-            all_strategies,
-            RepetitiveToDo,
-            user.repetitive_to_dos_choice,
-            delta=user.to_dos_delta,
-            include_archived_to_dos=self.request.user.show_archived_objects
-        )
-        context['never_ending_to_dos'] = ToDo.get_to_dos_strategies(
-            all_strategies,
-            NeverEndingToDo,
-            user.never_ending_to_dos_choice,
-            delta=user.to_dos_delta,
-            include_archived_to_dos=self.request.user.show_archived_objects
-        )
-        context['pipeline_to_dos'] = ToDo.get_to_dos_strategies(
-            all_strategies,
-            PipelineToDo,
-            user.pipeline_to_dos_choice,
-            delta=user.to_dos_delta,
-            include_archived_to_dos=self.request.user.show_archived_objects
-        )
-
         return context
 
 
@@ -171,46 +106,6 @@ class LinkView(LoginRequiredMixin, UserPassesLinkTestMixin, DetailView):
     model = Link
 
 
-class ToDoView(LoginRequiredMixin, UserPassesToDoTestMixin, DetailView):
-    template_name = "goals/detail/to_do.j2"
-    model = ToDo
-
-    def get_context_data(self, **kwargs):
-        context = super(ToDoView, self).get_context_data(**kwargs)
-        context['strategy'] = self.object.strategy
-        context['goal'] = context['strategy'].goal
-        context['to_do'] = self.object
-        context['to_do_prefix'] = ''
-        return context
-
-
-class RepetitiveToDoView(ToDoView):
-    model = RepetitiveToDo
-
-    def get_context_data(self, **kwargs):
-        context = super(RepetitiveToDoView, self).get_context_data(**kwargs)
-        context['to_do_prefix'] = 'repetitive_'
-        return context
-
-
-class NeverEndingToDoView(ToDoView):
-    model = NeverEndingToDo
-
-    def get_context_data(self, **kwargs):
-        context = super(NeverEndingToDoView, self).get_context_data(**kwargs)
-        context['to_do_prefix'] = 'never_ending_'
-        return context
-
-
-class PipelineToDoView(ToDoView):
-    model = PipelineToDo
-
-    def get_context_data(self, **kwargs):
-        context = super(PipelineToDoView, self).get_context_data(**kwargs)
-        context['to_do_prefix'] = 'pipeline_'
-        return context
-
-
 class AllProgressMonitorsView(LoginRequiredMixin, ListView):
     template_name = 'goals/list/progress_monitors.j2'
     context_object_name = 'progress_monitors'
@@ -225,33 +120,6 @@ class AllLinksView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Link.get_links_user(self.request.user, "ALL", self.request.user.show_archived_objects)
-
-
-class AllToDosView(LoginRequiredMixin, TemplateView):
-    template_name = "goals/list/to_dos.j2"
-
-    def get_context_data(self, **kwargs):
-        context = super(AllToDosView, self).get_context_data(**kwargs)
-        all_strategies = Strategy.get_strategies_user(
-            self.request.user, 'ALL', self.request.user.show_archived_objects
-        )
-        context['to_dos'] = ToDo.get_to_dos_strategies(
-            all_strategies, NormalToDo, 'ALL',
-            include_archived_to_dos=self.request.user.show_archived_objects
-        )
-        context['repetitive_to_dos'] = ToDo.get_to_dos_strategies(
-            all_strategies, RepetitiveToDo, 'ALL',
-            include_archived_to_dos=self.request.user.show_archived_objects
-        )
-        context['never_ending_to_dos'] = ToDo.get_to_dos_strategies(
-            all_strategies, NeverEndingToDo, 'ALL',
-            include_archived_to_dos=self.request.user.show_archived_objects
-        )
-        context['pipeline_to_dos'] = ToDo.get_to_dos_strategies(
-            all_strategies, PipelineToDo, 'ALL',
-            include_archived_to_dos=self.request.user.show_archived_objects
-        )
-        return context
 
 
 ###
@@ -307,13 +175,6 @@ class DetailStrategy(LoginRequiredMixin, UserPassesStrategyTestMixin, DetailView
         context['goal'] = self.object.goal
         to_do_filter = Q(strategy=self.object)
         sao = self.request.user.show_archived_objects
-        context["repetitive_to_dos"] = ToDo.get_to_dos(RepetitiveToDo.objects.filter(to_do_filter), 'ALL',
-                                                       include_archived_to_dos=sao)
-        context["never_ending_to_dos"] = ToDo.get_to_dos(NeverEndingToDo.objects.filter(to_do_filter), 'ALL',
-                                                         include_archived_to_dos=sao)
-        context["pipeline_to_dos"] = ToDo.get_to_dos(PipelineToDo.objects.filter(to_do_filter), 'ALL',
-                                                     include_archived_to_dos=sao)
-        context["to_dos"] = ToDo.get_to_dos(NormalToDo.objects.filter(to_do_filter), 'ALL', include_archived_to_dos=sao)
         return context
 
 

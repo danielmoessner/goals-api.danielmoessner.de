@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full bg-white md:min-h-screen">
+  <div class="w-full bg-white md:min-h-screen sticky top-0">
     <div
         class="flex w-full px-4 py-4 bg-white justify-start md:justify-center bg-blue-900 rounded-br-lg md:rounded-r-lg"
         v-on:click="open = !open">

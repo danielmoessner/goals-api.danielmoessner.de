@@ -1,10 +1,10 @@
 <template>
   <div class="flex items-stretch border rounded-lg mb-2 last:mb-0 w-full justify-between bg-white h-12">
-    <div class="flex items-center pl-4">
+    <div class="flex items-center pl-4 w-9/12">
       <input v-on:change="change" v-model="checked" name="completed" value="true"
              class="w-4 h-4 mr-3 cursor-pointer flex-shrink-0" type="checkbox">
-      <div class="flex flex-col">
-        <span class="block text-gray-800 leading-tight" v-html="todo.name"></span>
+      <div class="flex flex-col max-w-full">
+        <span class="block text-gray-800 leading-tight truncate" v-html="todo.name"></span>
         <span class="block text-xs text-gray-800 leading-tight"
               v-bind:class="{ 'text-red-500': timeToDeadlineSeconds < 0 }" v-html="timeToDeadline"
               v-if="timeToDeadline"></span>
@@ -29,12 +29,6 @@ module.exports = {
     'navigation-button': httpVueLoader('/static/vue/navigation-button.vue')
   },
   computed: {
-    doneUrl: function () {
-      return '/t/todo/' + this.todo.pk + '/done/'
-    },
-    detailUrl: function () {
-      return '/t/todo/' + this.todo.pk + '/'
-    },
     timeToDeadlineSeconds() {
       if (this.todo.status !== 'ACTIVE')
         return 0;

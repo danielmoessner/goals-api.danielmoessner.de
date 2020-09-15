@@ -42,8 +42,6 @@ def td_none_filter():
 class ToDo(models.Model):
     name = models.CharField(max_length=300)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="to_dos")
-    is_done = models.BooleanField(default=False)
-    has_failed = models.BooleanField(default=False)
     activate = models.DateTimeField(null=True, blank=True)
     deadline = models.DateTimeField(null=True, blank=True)
     notes = models.TextField(null=True, blank=True)
@@ -79,7 +77,7 @@ class ToDo(models.Model):
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
     class Meta:
-        ordering = ('is_archived', 'deadline', 'is_done', 'has_failed', 'activate', 'name')
+        ordering = ('is_archived', 'deadline', 'status', 'activate', 'name')
 
     def __str__(self):
         return '{}: {} - {}'.format(
@@ -186,8 +184,9 @@ class ToDo(models.Model):
 
 
 class NormalToDo(ToDo):
-    def get_update_url(self):
-        return reverse_lazy('todos:normal_to_do_edit', args=[self.pk])
+    @property
+    def form_url(self):
+        return reverse_lazy('todos:normaltodo-form', args=[self.pk])
 
 
 class RepetitiveToDo(ToDo):
@@ -195,7 +194,10 @@ class RepetitiveToDo(ToDo):
     previous = models.OneToOneField('self', blank=True, null=True, on_delete=models.SET_NULL, related_name='next')
     repetitions = models.PositiveSmallIntegerField(default=None, null=True)
 
-    # whatever
+    @property
+    def form_url(self):
+        return reverse_lazy('todos:repetitivetodo-form', args=[self.pk])
+
     def save(self, *args, **kwargs):
         super(RepetitiveToDo, self).save(*args, **kwargs)
         if self.repetitions > 0 and self.get_next() is None:
@@ -212,9 +214,6 @@ class RepetitiveToDo(ToDo):
         super(RepetitiveToDo, self).delete(using, keep_parents)
 
     # getters
-    def get_update_url(self):
-        return reverse_lazy('todos:repetitive_to_do_edit', args=[self.pk])
-
     def get_json(self):
         dict_obj = model_to_dict(self)
         json_obj = json.dumps(dict_obj, cls=DjangoJSONEncoder)
@@ -280,6 +279,10 @@ class NeverEndingToDo(ToDo):
         if (self.status == 'DONE' or self.status == 'FAILED') and not self.next.all().exists():
             self.generate_next()
 
+    @property
+    def form_url(self):
+        return reverse_lazy('todos:neverendingtodo-form', args=[self.pk])
+
     # getters
     def get_update_url(self):
         return reverse_lazy('todos:never_ending_to_do_edit', args=[self.pk])
@@ -315,6 +318,10 @@ class NeverEndingToDo(ToDo):
 
 class PipelineToDo(ToDo):
     previous = models.ForeignKey(ToDo, null=True, on_delete=models.SET_NULL, related_name='pipeline_to_dos')
+
+    @property
+    def form_url(self):
+        return reverse_lazy('todos:pipelinetodo-form', args=[self.pk])
 
     # getters
     def get_update_url(self):

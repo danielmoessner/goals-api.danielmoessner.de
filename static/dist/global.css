@@ -21104,6 +21104,18 @@ Animations for Vue's transition-group
   opacity: 0;
 }
 
+/*
+Animations for the status infos in add-to-box
+*/
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
 @media (min-width: 640px) {
   .sm\:container {
     width: 100%;

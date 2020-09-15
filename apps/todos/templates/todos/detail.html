@@ -10,10 +10,6 @@
            v-bind:class="{ 'text-red-500': timeToDeadlineSeconds < 0 }" v-html="timeToDeadline">
         </p>
     </h-one>
-    <div class="flex items-center">
-        <update-button v-bind:link="'#'" v-bind:text="'Edit'"></update-button>
-        <delete-button v-bind:link="'#'" v-bind:text="'Delete'" class="ml-2"></delete-button>
-    </div>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
@@ -31,19 +27,30 @@
             <p>Status: <span v-html="todo.status"></span></p>
             <p>
                 <form-button v-on:response="changed" v-bind:text="'Set Active'" v-bind:link="todoUrl"
-                             v-bind:data="{ 'status': 'ACTIVE' }"></form-button>
+                             v-bind:data="{ 'status': 'ACTIVE' }"
+                             v-bind:style="{ 'visibility': todo.status === 'ACTIVE' ? 'hidden' : 'visible' }">
+                </form-button>
                 <form-button v-on:response="changed" v-bind:text="'Set Done'" v-bind:link="todoUrl"
-                             v-bind:data="{ 'status': 'DONE' }"></form-button>
+                             v-bind:data="{ 'status': 'DONE' }"
+                             v-bind:style="{ 'visibility': todo.status === 'DONE' ? 'hidden' : 'visible' }">
+                </form-button>
                 <form-button v-on:response="changed" v-bind:text="'Set Failed'" v-bind:link="todoUrl"
-                             v-bind:data="{ 'status': 'FAILED' }"></form-button>
+                             v-bind:data="{ 'status': 'FAILED' }"
+                             v-bind:style="{ 'visibility': todo.status === 'FAILED' ? 'hidden' : 'visible' }">
+                </form-button>
             </p>
         </div>
 
         <hr class="mt-2 mb-2">
         <p>Duration: <span v-html="todo.duration"></span></p>
+        <p>Repetitions: <span v-html="todo.repetitions"></span></p>
+        <p>Previous: <span v-html="todo.previous"></span></p>
     </general-box>
     <general-box heading="Notes" v-if="todo.notes">
         <p v-html="todo.notes"></p>
+    </general-box>
+    <general-box heading="Edit">
+        <rest-form method="PUT" v-on:response="changed" v-if="todo.form_url && todo.url" v-bind:url="todo.form_url" v-bind:submitUrl="todo.url"></rest-form>
     </general-box>
 </div>
 
@@ -60,7 +67,8 @@
             'general-box': httpVueLoader('/static/vue/general-box.vue'),
             'update-button': httpVueLoader('/static/vue/update-button.vue'),
             'delete-button': httpVueLoader('/static/vue/delete-button.vue'),
-            'form-button': httpVueLoader('/static/vue/form-button.vue')
+            'form-button': httpVueLoader('/static/vue/form-button.vue'),
+            'rest-form': httpVueLoader('/static/vue/rest-form.vue')
         },
         data: function () {
             return {
@@ -78,6 +86,9 @@
             },
             todoUrl() {
                 return this.todo.url || ''
+            },
+            todoFormUrl() {
+              return this.todo.form_url || ''
             },
             timeToDeadlineSeconds() {
                 if (this.todo.deadline === null || this.todo.is_done)
