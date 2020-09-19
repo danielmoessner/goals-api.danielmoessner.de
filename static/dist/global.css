@@ -21085,6 +21085,21 @@ video {
 }
 
 /*
+Vue Formulate Change the default look of general errors
+*/
+
+.formulate-form-errors {
+  margin-bottom: 0.75rem;
+}
+
+.formulate-form-error {
+  --text-opacity: 1;
+  color: #c53030;
+  color: rgba(197, 48, 48, var(--text-opacity));
+  font-size: 0.875rem;
+}
+
+/*
 Animations for Vue's transition-group
 */
 

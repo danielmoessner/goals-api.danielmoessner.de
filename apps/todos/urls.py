@@ -13,9 +13,9 @@ router.register(r'pipeline-todos', api.PipelineToDoViewSet)
 app_name = "todos"
 
 urlpatterns = [
-    path('', views.ToDosView.as_view(), name="index"),
+    # path('', views.ToDosView.as_view(), name="index"),
     path('api/', include(router.urls)),
-    path('all/', views.AllToDosView.as_view(), name="all"),
-    path('add', views.AddToDosView.as_view(), name='add'),
-    path('todo/<pk>/', views.ToDoView.as_view(), name="to_do"),
+    # path('all/', views.AllToDosView.as_view(), name="all"),
+    # path('add', views.AddToDosView.as_view(), name='add'),
+    # path('todo/<pk>/', views.ToDoView.as_view(), name="to_do"),
 ]

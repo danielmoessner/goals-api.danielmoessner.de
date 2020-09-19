@@ -1,88 +1,118 @@
-{% extends 'layout/main.html' %}
+{% extends 'layout/main.html' %} {% block title %}Dashboard | Todos{% endblock
+%} {% block main %}
 
-{% block title %}Dashboard | Todos{% endblock %}
-
-{% block main %}
-
-<h-one v-bind:text="'Dashboard'"></h-one>
+<h-one text="Dashboard"></h-one>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <general-box heading="Active todos" :style="{ 'height': toDosMinHeight }">
-        <div>
-            <transition-group name="todo" tag="div" id="to-dos-1" class="relative">
-                <to-do v-if="todo.status === 'ACTIVE'" v-on:changed="toDoChanged" v-for="todo in activeToDos"
-                       v-bind:key="todo.url" v-bind:todo="todo" class="todo-item"></to-do>
-            </transition-group>
-        </div>
-    </general-box>
-    <general-box heading="Todos done today" :style="{ 'height': toDosMinHeight }">
-        <div>
-            <transition-group name="todo" tag="div" id="to-dos-2" class="relative">
-                <to-do v-on:changed="toDoChanged" v-for="todo in doneToDos" :key="todo.url" v-bind:todo="todo"
-                       class="todo-item"></to-do>
-            </transition-group>
-        </div>
-    </general-box>
+  <general-box heading="Active todos" :style="{ 'height': toDosMinHeight }">
+    <div>
+      <transition-group name="todo" tag="div" id="to-dos-1" class="relative">
+        <to-do
+          v-if="todo.status === 'ACTIVE'"
+          v-on:changed="toDoChanged"
+          v-for="todo in activeToDos"
+          v-bind:key="todo.url"
+          v-bind:todo="todo"
+          class="todo-item"
+        ></to-do>
+      </transition-group>
+    </div>
+  </general-box>
+  <general-box heading="Todos done today" :style="{ 'height': toDosMinHeight }">
+    <div>
+      <transition-group name="todo" tag="div" id="to-dos-2" class="relative">
+        <to-do
+          v-on:changed="toDoChanged"
+          v-for="todo in doneToDos"
+          :key="todo.url"
+          v-bind:todo="todo"
+          class="todo-item"
+        ></to-do>
+      </transition-group>
+    </div>
+  </general-box>
+  <general-box heading="Add todo for this week">
+    <alert-box v-bind:message="this.message"></alert-box>
+    <add-week-todo-form v-on:response="created"></add-week-todo-form>
+  </general-box>
+  <general-box heading="Add todo for next week">
+    <alert-box v-bind:message="this.message2"></alert-box>
+    <add-week-todo-form
+      v-on:response="created2"
+      v-bind:weeks="1"
+      label="What is there to be done next week?"
+    ></add-week-todo-form>
+  </general-box>
 </div>
 
-{% endblock main %}
-
-{% block vue %}
-{{ block.super }}
+{% endblock main %} {% block vue %} {{ block.super }}
 <script type="module">
-    let app = new Vue({
-        el: "#vue-main",
-        mixins: [navigationMixin],
-        components: {
-            'general-box': httpVueLoader('/static/vue/general-box.vue'),
-            'h-one': httpVueLoader('/static/vue/h-one.vue'),
-            'to-do': httpVueLoader('/static/vue/to-do.vue'),
-        },
-        computed: {
-            allToDos: function () {
-                return this.toDos.concat(this.todayDoneToDos)
-            },
-            activeToDos: function () {
-                return this.allToDos.filter(toDo => toDo.status !== 'DONE')
-            },
-            doneToDos: function () {
-                return this.allToDos.filter(toDo => toDo.status === 'DONE')
-            },
-            toDosMinHeight: function () {
-                return String(6 * 56 - 8) + 'px'
-                // return String(this.allToDos.length * 56 - 8) + 'px'
-            }
-        },
-        data: function () {
-            return {
-                toDos: [],
-                todayDoneToDos: [],
-            }
-        },
-        mounted() {
-            this.fetch()
-        },
-        methods: {
-            fetch: function () {
-                fetch('/t/api/todos/main/')
-                    .then(response => response.json())
-                    .then(data => (this.toDos = data))
-                fetch('/t/api/todos/done_today/')
-                    .then(response => response.json())
-                    .then(data => (this.todayDoneToDos = data))
-            },
-            toDoChanged: function (data) {
-                let index = this.toDos.findIndex(toDo => toDo.url === data.url)
-                if (index !== -1) {
-                    this.toDos.splice(index, 1, data)
-                } else {
-                    index = this.todayDoneToDos.findIndex(toDo => toDo.url === data.url)
-                    if (index !== -1) {
-                        this.todayDoneToDos.splice(index, 1, data)
-                    }
-                }
-            },
-        },
-    });
+  let app = new Vue({
+    el: "#vue-main",
+    mixins: [navigationMixin],
+    components: {
+      "general-box": httpVueLoader("/static/vue/general-box.vue"),
+      "h-one": httpVueLoader("/static/vue/h-one.vue"),
+      "to-do": httpVueLoader("/static/vue/to-do.vue"),
+      "add-week-todo-form": httpVueLoader("/static/vue/add-week-todo-form.vue"),
+      "alert-box": httpVueLoader("/static/vue/alert-box.vue"),
+    },
+    computed: {
+      allToDos: function () {
+        return this.toDos.concat(this.todayDoneToDos);
+      },
+      activeToDos: function () {
+        return this.allToDos.filter((toDo) => toDo.status !== "DONE");
+      },
+      doneToDos: function () {
+        return this.allToDos.filter((toDo) => toDo.status === "DONE");
+      },
+      toDosMinHeight: function () {
+        return String(6 * 56 - 8) + "px";
+        // return String(this.allToDos.length * 56 - 8) + 'px'
+      },
+    },
+    data: function () {
+      return {
+        toDos: [],
+        todayDoneToDos: [],
+        message: "",
+        message2: "",
+      };
+    },
+    mounted() {
+      this.fetch();
+    },
+    methods: {
+      fetch: function () {
+        fetch("/t/api/todos/main/")
+          .then((response) => response.json())
+          .then((data) => (this.toDos = data));
+        fetch("/t/api/todos/done_today/")
+          .then((response) => response.json())
+          .then((data) => (this.todayDoneToDos = data));
+      },
+      toDoChanged: function (data) {
+        let index = this.toDos.findIndex((toDo) => toDo.url === data.url);
+        if (index !== -1) {
+          this.toDos.splice(index, 1, data);
+        } else {
+          index = this.todayDoneToDos.findIndex(
+            (toDo) => toDo.url === data.url
+          );
+          if (index !== -1) {
+            this.todayDoneToDos.splice(index, 1, data);
+          }
+        }
+      },
+      created: function (data) {
+        this.message = "Todo '" + data.name + "' created";
+        this.toDos.push(data);
+      },
+      created2: function (data) {
+        this.message2 = "Todo '" + data.name + "' created";
+      },
+    },
+  });
 </script>
 {% endblock vue %}

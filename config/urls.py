@@ -1,3 +1,4 @@
+from rest_framework.authtoken.views import obtain_auth_token
 from django.conf.urls.static import static
 from django.shortcuts import redirect
 from django.conf.urls import include
@@ -15,6 +16,7 @@ urlpatterns = [
     path('n/', include('apps.notes.urls')),
     path('filebrowser/', site.urls),
     path('tinymce/', include('tinymce.urls')),
+    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
     path('admin/', admin.site.urls),
 ]
 

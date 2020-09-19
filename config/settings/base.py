@@ -2,13 +2,11 @@ import os
 import json
 from django.core.exceptions import ImproperlyConfigured
 
-
 # Paths
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 APPS_DIR = os.path.join(BASE_DIR, "apps")
 TMP_DIR = os.path.join(BASE_DIR, 'tmp')
-
 
 # Secret settings
 
@@ -26,7 +24,6 @@ def get_secret(setting, secrets=secrets_json):
 
 SECRET_KEY = get_secret("SECRET_KEY")
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,7 +35,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'filebrowser',
     'tinymce',
+    'corsheaders',
     'rest_framework',
+    'rest_framework.authtoken',
     'apps.users.apps.UsersConfig',
     'apps.core.apps.CoreConfig',
     'apps.goals.apps.GoalsConfig',
@@ -48,6 +47,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -91,7 +91,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
 # Database
 
 DATABASES = {
@@ -101,14 +100,12 @@ DATABASES = {
     }
 }
 
-
 # User
 
 LOGIN_URL = 'users:sign_in'
 LOGIN_REDIRECT_URL = 'goals:index'
 LOGOUT_REDIRECT_URL = 'users:sign_in'
 AUTH_USER_MODEL = "users.CustomUser"
-
 
 # Password validation
 
@@ -127,7 +124,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 
 LANGUAGE_CODE = 'en-us'
@@ -139,7 +135,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 
@@ -154,7 +149,6 @@ STATIC_ROOT = os.path.join(TMP_DIR, 'static')
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(TMP_DIR, 'media')
-
 
 # tinymce config
 
@@ -189,12 +183,10 @@ TINYMCE_DEFAULT_CONFIG = {
     'convert_urls': True,
 }
 
-
 # filebrowser config
 
 FILEBROWSER_DIRECTORY = 'user_content/'
 DIRECTORY = ''
-
 
 # E-Mail
 
@@ -204,14 +196,24 @@ EMAIL_HOST_USER = 'projekte@tortuga-webdesign.de'
 EMAIL_HOST_PASSWORD = get_secret('EMAIL_PWD')
 EMAIL_PORT = 587
 
-
 # Rest Framework
+
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
     'DATETIME_FORMAT': "%Y-%m-%dT%H:%M",
 }
 
+# CORS Headers, so that we can make API calls from another app
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+    "https://goals.danielmoessner.de"
+]
 
 # HACK ATTACK: this allows Django template tags to span multiple lines.
 import re
 from django.template import base
+
 base.tag_re = re.compile(base.tag_re.pattern, re.DOTALL)

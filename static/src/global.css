@@ -5,6 +5,17 @@
 @import "tailwindcss/utilities";
 
 /*
+Vue Formulate Change the default look of general errors
+*/
+.formulate-form-errors {
+    @apply .mb-3;
+}
+.formulate-form-error {
+    @apply .text-red-700;
+    @apply .text-sm;
+}
+
+/*
 Animations for Vue's transition-group
 */
 .todo-item {
