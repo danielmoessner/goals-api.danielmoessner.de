@@ -54,9 +54,9 @@ class ToDo(models.Model):
     )
     status = models.CharField(choices=status_choices, max_length=20, default='ACTIVE')
 
-    @property
-    def detail_url(self):
-        return reverse_lazy('todos:to_do', args=[self.pk])
+    # @property
+    # def detail_url(self):
+    #     return reverse_lazy('todos:to_do', args=[self.pk])
 
     # general
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
@@ -184,9 +184,9 @@ class ToDo(models.Model):
 
 
 class NormalToDo(ToDo):
-    @property
-    def form_url(self):
-        return reverse_lazy('todos:normaltodo-form', args=[self.pk])
+        @property
+        def form_url(self):
+            return reverse_lazy('todos:normaltodo-form', args=[self.pk])
 
 
 class RepetitiveToDo(ToDo):

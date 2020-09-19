@@ -5,7 +5,7 @@ from apps.todos.serializers import ToDoSerializer, NormalToDoSerializer, Repetit
     NeverEndingToDoSerializer, PipelineToDoSerializer
 from apps.todos.models import ToDo, NormalToDo, RepetitiveToDo, NeverEndingToDo, PipelineToDo
 from apps.todos.utils import get_todo_in_its_proper_class
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from django.utils import timezone
 from datetime import timedelta
 
@@ -36,6 +36,7 @@ class FormAction:
 class ToDoViewSet(viewsets.ModelViewSet):
     serializer_class = ToDoSerializer
     queryset = ToDo.objects.none()
+    permission_classes = [permissions.IsAuthenticated]
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -159,6 +160,7 @@ class ToDoViewSet(viewsets.ModelViewSet):
 class NormalToDoViewSet(FormAction, viewsets.ModelViewSet):
     serializer_class = NormalToDoSerializer
     queryset = NormalToDo.objects.none()
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return ToDo.get_to_dos_user(
@@ -178,6 +180,7 @@ class NormalToDoViewSet(FormAction, viewsets.ModelViewSet):
 class RepetitiveToDoViewSet(FormAction, viewsets.ModelViewSet):
     serializer_class = RepetitiveToDoSerializer
     queryset = RepetitiveToDo.objects.none()
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return ToDo.get_to_dos_user(
@@ -197,6 +200,7 @@ class RepetitiveToDoViewSet(FormAction, viewsets.ModelViewSet):
 class NeverEndingToDoViewSet(FormAction, viewsets.ModelViewSet):
     serializer_class = NeverEndingToDoSerializer
     queryset = NeverEndingToDo.objects.none()
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return ToDo.get_to_dos_user(
@@ -216,6 +220,7 @@ class NeverEndingToDoViewSet(FormAction, viewsets.ModelViewSet):
 class PipelineToDoViewSet(FormAction, viewsets.ModelViewSet):
     serializer_class = PipelineToDoSerializer
     queryset = PipelineToDo.objects.none()
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return ToDo.get_to_dos_user(

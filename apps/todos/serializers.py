@@ -15,7 +15,6 @@ class AddUserMixin:
 
 class ToDoSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='todos:todo-detail')
-    detail_url = serializers.ReadOnlyField()
     id = serializers.ReadOnlyField()
 
     class Meta:
