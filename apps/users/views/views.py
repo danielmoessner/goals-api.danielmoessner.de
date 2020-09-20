@@ -1,6 +1,16 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.views import generic
+from rest_framework import generics
+from rest_framework.permissions import AllowAny
+from apps.users.serializers import CreateUserSerializer
+from apps.users.models import CustomUser
+
+
+class CreateUser(generics.CreateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = CreateUserSerializer
+    permission_classes = (AllowAny, )
 
 
 class SettingsView(LoginRequiredMixin, generic.TemplateView):

@@ -1,9 +1,9 @@
-from rest_framework.authtoken.views import obtain_auth_token
 from django.conf.urls.static import static
 from django.shortcuts import redirect
 from django.conf.urls import include
 from django.contrib import admin
 from .filebrowser import site
+from config.auth import obtain_auth_token
 from django.conf import settings
 from django.urls import path
 

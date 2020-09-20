@@ -1,5 +1,3 @@
-from django.utils import timezone
-
 from apps.todos.models import ToDo, NeverEndingToDo, RepetitiveToDo, PipelineToDo, NormalToDo
 from apps.todos.utils import get_todo_in_its_proper_class
 from rest_framework import serializers

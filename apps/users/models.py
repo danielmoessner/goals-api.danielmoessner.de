@@ -48,6 +48,11 @@ class CustomUser(AbstractUser):
         ("ORANGE", "Show all to dos that are active or orange or red."),
         ("NONE", "Show no to do's.")
     )
+    # make email the default login method
+    username = None
+    email = models.EmailField('E-Mail Address', unique=True)
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
     # general
     page_choice = models.CharField(max_length=10, choices=PAGE_CHOICES, default="DASHBOARD")
     show_archived_objects = models.BooleanField(default=False)
@@ -71,3 +76,7 @@ class CustomUser(AbstractUser):
     treeview_repetitivetodos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default='ALL')
     treeview_neverendingtodos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default='ALL')
     treeview_pipelinetodos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default='ALL')
+
+    class Meta:
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'

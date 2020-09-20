@@ -201,6 +201,7 @@ EMAIL_PORT = 587
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
     'DATETIME_FORMAT': "%Y-%m-%dT%H:%M",
 }
@@ -208,7 +209,6 @@ REST_FRAMEWORK = {
 # CORS Headers, so that we can make API calls from another app
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
     "https://goals.danielmoessner.de"
 ]
 

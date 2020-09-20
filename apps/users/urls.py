@@ -1,10 +1,18 @@
-from django.urls import path
-from .views import views
-from .views import form_views
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from apps.users import viewsets
+from apps.users.views import views
+from apps.users.views import form_views
+
+router = DefaultRouter()
+router.register(r'users', viewsets.UserViewSet)
 
 app_name = 'users'
+
 urlpatterns = [
     # user
+    path('api/', include(router.urls)),
+    path('api/register/', views.CreateUser.as_view(), name='register'),
     path('user/signup/', form_views.CustomUserSignUp.as_view(), name='user_sign_up'),
     path('user/login/', form_views.CustomUserSignIn.as_view(), name='user_sign_in'),
     path('user/signout/', form_views.SignOutView.as_view(), name='user_sign_out'),
