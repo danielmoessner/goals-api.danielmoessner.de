@@ -9,7 +9,6 @@ class CreateUserSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        print('already here')
         password = validated_data.pop('password')
         user = CustomUser(**validated_data)
         user.set_password(password)
@@ -20,7 +19,8 @@ class CreateUserSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='users:customuser-detail')
     id = serializers.ReadOnlyField()
-
+    email = serializers.EmailField(required=False)
+    
     class Meta:
         model = CustomUser
         # fields = '__all__'
