@@ -1,3 +1,5 @@
+from abc import ABC
+
 from rest_framework import serializers
 from apps.users.models import CustomUser
 
@@ -26,3 +28,8 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         # fields = '__all__'
         exclude = ['user_permissions', 'password', 'is_staff', 'is_superuser', 'last_login', 'is_active', 'date_joined',
                    'groups', 'first_name', 'last_name']
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)

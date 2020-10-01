@@ -13,6 +13,7 @@ urlpatterns = [
     # user
     path('api/', include(router.urls)),
     path('api/register/', views.CreateUser.as_view(), name='register'),
+    path('api/change-password/', views.ChangePasswordView.as_view(), name='change_password'),
     path('user/signup/', form_views.CustomUserSignUp.as_view(), name='user_sign_up'),
     path('user/login/', form_views.CustomUserSignIn.as_view(), name='user_sign_in'),
     path('user/signout/', form_views.SignOutView.as_view(), name='user_sign_out'),

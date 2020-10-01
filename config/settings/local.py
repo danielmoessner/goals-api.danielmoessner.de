@@ -4,7 +4,7 @@ from .base import *
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1"]
+ALLOWED_HOSTS = ["127.0.0.1", 'localhost']
 
 # Application definition
 
@@ -16,13 +16,7 @@ MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware', ]
 
 # Other
 
-INTERNAL_IPS = ["127.0.0.1", ]
-
-# Gulp
-
-# GULP_CWD = "'{}'".format(os.path.join(APPS_DIR, 'files'))
-# GULP_DEVELOP_COMMAND = 'gulp --cwd {}'.format(GULP_CWD)
-# GULP_PRODUCTION_COMMAND = 'gulp build --cwd {}'.format(GULP_CWD)  # to do
+INTERNAL_IPS = ["127.0.0.1"]
 
 # Cors to allow my fronted app to make requests
 

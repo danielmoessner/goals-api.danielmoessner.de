@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
 from django.forms.models import model_to_dict
 from django.urls import reverse_lazy
@@ -272,26 +273,32 @@ class RepetitiveToDo(ToDo):
 
 class NeverEndingToDo(ToDo):
     duration = models.DurationField()
-    previous = models.ForeignKey("self", blank=True, null=True, on_delete=models.SET_NULL, related_name="next")
+    previous = models.OneToOneField('self', blank=True, null=True, on_delete=models.SET_NULL, related_name='next')
+    blocked = models.BooleanField(default=False)
+
+    def delete(self, *args, **kwargs):
+        if self.previous is not None:
+            self.previous.blocked = True
+            self.previous.save()
+        super().delete(*args, **kwargs)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        if (self.status == 'DONE' or self.status == 'FAILED') and not self.next.all().exists():
+        if (self.status == 'DONE' or self.status == 'FAILED') and self.next_todo is None and self.blocked is False:
             self.generate_next()
+
+    @property
+    def next_todo(self):
+        try:
+            return self.next
+        except ObjectDoesNotExist:
+            return None
 
     @property
     def form_url(self):
         return reverse_lazy('todos:neverendingtodo-form', args=[self.pk])
 
     # getters
-    def get_update_url(self):
-        return reverse_lazy('todos:never_ending_to_do_edit', args=[self.pk])
-
-    def get_json(self):
-        dict_obj = model_to_dict(self)
-        json_obj = json.dumps(dict_obj, cls=DjangoJSONEncoder)
-        return json_obj
-
     def get_duration(self):
         if abs(self.duration).days == 0:
             duration = strfdelta(self.duration, "{hours}h {minutes}min")
@@ -302,7 +309,7 @@ class NeverEndingToDo(ToDo):
         return duration
 
     def get_next(self):
-        return self.next.first()
+        return self.next_todo
 
     def get_previous(self):
         return self.previous

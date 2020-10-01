@@ -7,7 +7,6 @@ from apps.todos.models import ToDo, NormalToDo, RepetitiveToDo, NeverEndingToDo,
 from apps.todos.utils import get_todo_in_its_proper_class
 from rest_framework import viewsets, permissions
 from django.utils import timezone
-from datetime import timedelta
 
 
 class FormAction:
@@ -211,8 +210,8 @@ class NeverEndingToDoViewSet(FormAction, viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         queryset = ToDo.get_to_dos_user(
             self.request.user, NeverEndingToDo, 'ALL',
-            include_archived_to_dos=self.request.user.show_archived_objects
-        )
+            include_archived_to_dos=request.user.show_archived_objects
+        ).prefetch_related('next')
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
