@@ -468,13 +468,6 @@ class Strategy(models.Model):
     class Meta:
         ordering = ('is_archived', 'progress', 'name')
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
-        # calc goal progress
-        self.goal.reset()
-        # clean up old stuff. in the past a to do that is set to done or failed was not archived.
-        self.to_dos.filter(Q(is_done=True) | Q(has_failed=True), Q(is_archived=False)).update(is_archived=True)
-
     def __str__(self):
         return str(self.name)
 

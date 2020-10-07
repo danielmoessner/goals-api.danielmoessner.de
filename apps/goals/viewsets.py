@@ -23,6 +23,20 @@ class GoalViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True, context={'request': request})
         return Response(serializer.data)
 
+    @action(detail=True, methods=['get'])
+    def subgoals(self, request, pk=None):
+        instance = self.get_object()
+        sub_goals = Goal.get_goals(instance.sub_goals.all(), 'ALL', self.request.user.show_archived_objects)
+        serializer = self.get_serializer(sub_goals, many=True, context={'request', request})
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['get'])
+    def mastergoals(self, request, pk=None):
+        instance = self.get_object()
+        master_goals = Goal.get_goals(instance.master_goals.all(), 'ALL', self.request.user.show_archived_objects)
+        serializer = self.get_serializer(master_goals, many=True, context={'request', request})
+        return Response(serializer.data)
+
     def get_queryset(self):
         return Goal.get_goals_user(
             self.request.user, 'ALL',

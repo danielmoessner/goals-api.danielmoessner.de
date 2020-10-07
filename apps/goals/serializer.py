@@ -23,29 +23,50 @@ class GoalSerializer(AddUserMixin, serializers.HyperlinkedModelSerializer):
 class StrategySerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='goals:strategy-detail')
     id = serializers.ReadOnlyField()
-    goal = serializers.HyperlinkedRelatedField(many=False, view_name='goals:goal-detail', read_only=True)
+    goal = serializers.HyperlinkedRelatedField(many=False, view_name='goals:goal-detail', queryset=Goal.objects.none())
 
     class Meta:
         model = Strategy
         exclude = []
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        user = self.context['request'].user
+        self.fields['goal'].queryset = Goal.get_goals_user(user, 'ALL',
+                                                           include_archived_goals=user.show_archived_objects)
+
 
 class MonitorSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='goals:progressmonitor-detail')
     id = serializers.ReadOnlyField()
-    goal = serializers.HyperlinkedRelatedField(many=False, view_name='goals:goal-detail', read_only=True)
+    goal = serializers.HyperlinkedRelatedField(many=False, view_name='goals:goal-detail', queryset=Goal.objects.none())
 
     class Meta:
         model = ProgressMonitor
         exclude = []
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        user = self.context['request'].user
+        self.fields['goal'].queryset = Goal.get_goals_user(user, 'ALL',
+                                                           include_archived_goals=user.show_archived_objects)
+
 
 class LinkSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='goals:link-detail')
     id = serializers.ReadOnlyField()
-    master_goal = serializers.HyperlinkedRelatedField(many=False, view_name='goals:goal-detail', read_only=True)
-    sub_goal = serializers.HyperlinkedRelatedField(many=False, view_name='goals:goal-detail', read_only=True)
+    master_goal = serializers.HyperlinkedRelatedField(many=False, view_name='goals:goal-detail',
+                                                      queryset=Goal.objects.none())
+    sub_goal = serializers.HyperlinkedRelatedField(many=False, view_name='goals:goal-detail',
+                                                   queryset=Goal.objects.none())
 
     class Meta:
         model = Link
         exclude = []
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        user = self.context['request'].user
+        queryset = Goal.get_goals_user(user, 'ALL', include_archived_goals=user.show_archived_objects)
+        self.fields['master_goal'].queryset = queryset
+        self.fields['sub_goal'].queryset = queryset
