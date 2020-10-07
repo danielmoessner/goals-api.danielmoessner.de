@@ -1,11 +1,22 @@
-from django.urls import path
+from rest_framework.routers import DefaultRouter
 
-from apps.goals.views import views
-from apps.goals.views import form_views
+from apps.goals.views import views, form_views
+from django.urls import path, include
+from apps.goals import viewsets
+
+router = DefaultRouter()
+router.register(r'goals', viewsets.GoalViewSet)
+router.register(r'strategies', viewsets.StrategyViewSet)
+router.register(r'monitors', viewsets.MonitorViewSet)
+router.register(r'links', viewsets.LinkViewSet)
+
+app_name = "goals"
+
 urlpatterns = [
     ###
     # Goal
     ###
+    path('api/', include(router.urls)),
     path('goal/list/', views.ListGoal.as_view(), name="all_goals_view"),
     path('goal/main/', views.MainGoal.as_view(), name="index"),
     path('goal/add/', form_views.CreateGoal.as_view(), name='goal_add'),
@@ -45,5 +56,3 @@ urlpatterns = [
     path('progressmonitor/<pk>', views.ProgressMonitorView.as_view(), name="progress_monitor"),
 ]
 
-
-app_name = "goals"
