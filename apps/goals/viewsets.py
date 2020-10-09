@@ -14,6 +14,16 @@ class GoalViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     @action(detail=False, methods=['get'])
+    def starred(self, request):
+        queryset = Goal.get_goals_user(
+            self.request.user,
+            'STAR',
+            include_archived_goals=self.request.user.show_archived_objects
+        )
+        serializer = self.get_serializer(queryset, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
     def main(self, request):
         queryset = Goal.get_goals_user(
             self.request.user,
@@ -27,14 +37,32 @@ class GoalViewSet(viewsets.ModelViewSet):
     def subgoals(self, request, pk=None):
         instance = self.get_object()
         sub_goals = Goal.get_goals(instance.sub_goals.all(), 'ALL', self.request.user.show_archived_objects)
-        serializer = self.get_serializer(sub_goals, many=True, context={'request', request})
+        serializer = self.get_serializer(sub_goals, many=True, context={'request': request})
         return Response(serializer.data)
 
     @action(detail=True, methods=['get'])
     def mastergoals(self, request, pk=None):
         instance = self.get_object()
         master_goals = Goal.get_goals(instance.master_goals.all(), 'ALL', self.request.user.show_archived_objects)
-        serializer = self.get_serializer(master_goals, many=True, context={'request', request})
+        serializer = self.get_serializer(master_goals, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['get'])
+    def strategies(self, request, pk=None):
+        instance = self.get_object()
+        strategies = instance.strategies.all()
+        if not request.user.show_archived_objects:
+            strategies = strategies.filter(is_archived=False)
+        serializer = StrategySerializer(strategies, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['get'])
+    def monitors(self, request, pk=None):
+        instance = self.get_object()
+        monitors = instance.progress_monitors.all()
+        if not request.user.show_archived_objects:
+            strategies = monitors.filter(is_archived=False)
+        serializer = MonitorSerializer(monitors, many=True, context={'request': request})
         return Response(serializer.data)
 
     def get_queryset(self):
@@ -62,6 +90,16 @@ class StrategyViewSet(viewsets.ModelViewSet):
         queryset = Strategy.get_strategies_user(
             self.request.user,
             self.request.user.strategy_main_choice,
+            include_archived_strategies=self.request.user.show_archived_objects
+        )
+        serializer = self.get_serializer(queryset, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def starred(self, request):
+        queryset = Strategy.get_strategies_user(
+            self.request.user,
+            'STAR',
             include_archived_strategies=self.request.user.show_archived_objects
         )
         serializer = self.get_serializer(queryset, many=True, context={'request': request})

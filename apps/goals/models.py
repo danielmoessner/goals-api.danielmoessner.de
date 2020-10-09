@@ -455,12 +455,12 @@ class Link(models.Model):
 class Strategy(models.Model):
     name = models.CharField(max_length=300)
     goal = models.ForeignKey(Goal, on_delete=models.CASCADE, related_name="strategies")
-    weight = models.SmallIntegerField(default=1)
+    weight = models.SmallIntegerField(default=1)  # remove
     description = models.TextField(null=True, blank=True)
-    rolling = models.DurationField(blank=True, null=True)
+    rolling = models.DurationField(blank=True, null=True)  # remove
     is_archived = models.BooleanField(default=False)
     # speed
-    progress = models.PositiveSmallIntegerField(default=0, blank=True)
+    progress = models.PositiveSmallIntegerField(default=0, blank=True)  # remove
     # user
     is_starred = models.BooleanField(default=False)
 
