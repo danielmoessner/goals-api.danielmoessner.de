@@ -1,10 +1,8 @@
-from datetime import timezone
-
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from apps.goals.serializer import GoalSerializer, LinkSerializer, StrategySerializer, MonitorSerializer
+from apps.goals.serializer import GoalSerializer, LinkSerializer, StrategySerializer, MonitorSerializer, \
+    RecursiveGoalSerializer
 from apps.goals.models import Goal, Strategy, Link, ProgressMonitor
-
 from rest_framework import viewsets, permissions
 
 
@@ -21,6 +19,23 @@ class GoalViewSet(viewsets.ModelViewSet):
             include_archived_goals=self.request.user.show_archived_objects
         )
         serializer = self.get_serializer(queryset, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def tree(self, request):
+        queryset = Goal.get_goals_user(
+            self.request.user,
+            self.request.user.treeview_goal_choice,
+            include_archived_goals=self.request.user.show_archived_objects
+        )
+        subgoal_pks = []
+        for goal in list(queryset):
+            for master_goal in list(goal.master_goals.all()):
+                if master_goal in queryset:
+                    subgoal_pks.append(goal.pk)
+                    break
+        queryset = queryset.exclude(pk__in=subgoal_pks)
+        serializer = RecursiveGoalSerializer(queryset, many=True, context={'request': request})
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'])

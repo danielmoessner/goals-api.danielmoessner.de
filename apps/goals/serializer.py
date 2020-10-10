@@ -70,3 +70,15 @@ class LinkSerializer(serializers.HyperlinkedModelSerializer):
         queryset = Goal.get_goals_user(user, 'ALL', include_archived_goals=user.show_archived_objects)
         self.fields['master_goal'].queryset = queryset
         self.fields['sub_goal'].queryset = queryset
+
+
+###
+# Tree
+###
+class RecursiveGoalSerializer(GoalSerializer):
+    def get_fields(self):
+        fields = super().get_fields()
+        fields['sub_goals'] = RecursiveGoalSerializer(many=True, context=self.context)
+        fields['strategies'] = StrategySerializer(many=True, context=self.context)
+        fields['progress_monitors'] = MonitorSerializer(many=True, context=self.context)
+        return fields
