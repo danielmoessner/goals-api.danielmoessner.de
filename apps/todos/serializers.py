@@ -29,6 +29,7 @@ class NormalToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerializer)
     url = serializers.HyperlinkedIdentityField(view_name='todos:normaltodo-detail')
     form_url = serializers.ReadOnlyField()
     id = serializers.ReadOnlyField()
+    type = serializers.ReadOnlyField(default='NORMAL')
 
     class Meta:
         model = NormalToDo
@@ -42,6 +43,7 @@ class NeverEndingToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerial
     form_url = serializers.ReadOnlyField()
     id = serializers.ReadOnlyField()
     next = serializers.HyperlinkedRelatedField(view_name='todos:neverendingtodo-detail', read_only=True)
+    type = serializers.ReadOnlyField(default='NEVER_ENDING')
 
     class Meta:
         model = NeverEndingToDo
@@ -58,6 +60,7 @@ class RepetitiveToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSeriali
                                                    required=False)
     form_url = serializers.ReadOnlyField()
     id = serializers.ReadOnlyField()
+    type = serializers.ReadOnlyField(default='REPETITIVE')
 
     class Meta:
         model = RepetitiveToDo
@@ -78,6 +81,7 @@ class PipelineToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerialize
     previous = serializers.HyperlinkedRelatedField(view_name='todos:todo-detail', queryset=ToDo.objects.none())
     form_url = serializers.ReadOnlyField()
     id = serializers.ReadOnlyField()
+    type = serializers.ReadOnlyField(default='PIPELINE')
 
     class Meta:
         model = PipelineToDo
