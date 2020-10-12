@@ -1,5 +1,5 @@
 from apps.users.models import CustomUser
-from django.db.models import Q, F
+from django.db.models import Q
 from django.utils import timezone
 from django.db import models
 
@@ -322,7 +322,7 @@ class ProgressMonitor(models.Model):
 
     @staticmethod
     def get_monitors_user(user, monitor_filter, included_archived_progress_monitors=False):
-        goals = Goal.get_goals_user(user, "ALL")
+        goals = Goal.get_goals_user(user, "ALL", include_archived_goals=included_archived_progress_monitors)
         monitors = ProgressMonitor.objects.filter(goal__in=goals)
         monitors = ProgressMonitor.get_monitors(monitors, monitor_filter, included_archived_progress_monitors)
         return monitors
