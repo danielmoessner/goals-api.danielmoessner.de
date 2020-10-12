@@ -1,9 +1,7 @@
 from apps.users.models import CustomUser
 from django.db.models import Q, F
-from apps.core.utils import strfdelta
 from django.utils import timezone
 from django.db import models
-from datetime import timedelta
 
 
 def g_all_filter():
@@ -92,11 +90,23 @@ class Goal(models.Model):
     # user
     is_starred = models.BooleanField(default=False)
 
+    # general
     class Meta:
-        ordering = ('is_archived', 'progress', 'deadline', 'name')
+        ordering = ('is_archived', 'name')
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        for goal in self.master_goals.all():
+            goal.reset()
+
+    def delete(self, *args, **kwargs):
+        goals = self.master_goals.all()
+        super().delete(*args, **kwargs)
+        for goal in goals:
+            goal.reset()
 
     # getters
     @staticmethod
@@ -127,25 +137,11 @@ class Goal(models.Model):
         goals = Goal.get_goals(goals, choice, include_archived_goals)
         return goals
 
-    def get_progress(self):
-        if self.progress == 100:
-            return 'achieved'
-        return str(self.progress) + '%'
-
-    def get_mastergoals(self):
-        return ', '.join([goal.name for goal in self.master_goals.all()])
-
-    def get_subgoals(self):
-        return ', '.join([goal.name for goal in self.sub_goals.all()])
-
-    def get_strategies(self):
-        return ', '.join([strategy.name for strategy in self.strategies.all()])
-
     def get_deadline(self, accuracy='s'):
         if self.deadline:
-            if accuracy is 'd':
+            if accuracy == 'd':
                 return timezone.localtime(self.deadline).strftime("%d.%m.%Y")
-            if accuracy is 's':
+            if accuracy == 's':
                 return timezone.localtime(self.deadline).strftime("%d.%m.%Y %H:%M:%S")
             return timezone.localtime(self.deadline).strftime("%d.%m.%Y")
         return ''
@@ -221,12 +217,6 @@ class Goal(models.Model):
             query = query | goal.strategies.all()
         return query
 
-    # def get_all_sub_todos(self):
-    #     query = ToDo.objects.none()
-    #     for strategy in self.get_all_sub_strategies():
-    #         query = query | strategy.to_dos.all()
-    #     return query
-
     def get_all_sub_links(self):
         query = self.sub_links.all()
         for goal in self.get_all_sub_goals():
@@ -246,14 +236,6 @@ class Goal(models.Model):
         for goal in self.master_goals.all():
             query = query | goal.get_all_mastergoals()
         return query
-
-    # def get_sub_to_dos(self):
-    #     to_dos = []
-    #     for strategy in self.strategies.all():
-    #         to_dos += strategy.get_unfinished_to_dos()
-    #     for goal in self.sub_goals.all():
-    #         to_dos += goal.get_sub_to_dos()
-    #     return to_dos
 
     def get_progress_calc(self):
         if not self.progress_monitors.exists():
@@ -305,7 +287,7 @@ class ProgressMonitor(models.Model):
     # general
     @property
     def progress(self):
-        return (float(self.step) / float(self.steps)) * 100 if self.steps != 0 else 100
+        return round((float(self.step) / float(self.steps)) * 100) if self.steps != 0 else 100
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
@@ -447,11 +429,6 @@ class Strategy(models.Model):
 
     def __str__(self):
         return str(self.name)
-
-    def delete(self, using=None, keep_parents=False):
-        goal = self.goal
-        super(Strategy, self).delete(using=using, keep_parents=keep_parents)
-        goal.reset()
 
     # getters
     @staticmethod

@@ -17,6 +17,8 @@ class GoalViewSet(viewsets.ModelViewSet):
             self.request.user,
             'STAR',
             include_archived_goals=self.request.user.show_archived_objects
+        ).prefetch_related(
+            'sub_goals'
         )
         serializer = self.get_serializer(queryset, many=True, context={'request': request})
         return Response(serializer.data)
@@ -42,6 +44,8 @@ class GoalViewSet(viewsets.ModelViewSet):
             self.request.user,
             self.request.user.goal_view_goal_choice,
             include_archived_goals=self.request.user.show_archived_objects
+        ).prefetch_related(
+            'sub_goals'
         )
         serializer = self.get_serializer(queryset, many=True, context={'request': request})
         return Response(serializer.data)
@@ -49,14 +53,22 @@ class GoalViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def subgoals(self, request, pk=None):
         instance = self.get_object()
-        sub_goals = Goal.get_goals(instance.sub_goals.all(), 'ALL', self.request.user.show_archived_objects)
+        sub_goals = Goal.get_goals(
+            instance.sub_goals.all(),
+            'ALL',
+            self.request.user.show_archived_objects
+        )
         serializer = self.get_serializer(sub_goals, many=True, context={'request': request})
         return Response(serializer.data)
 
     @action(detail=True, methods=['get'])
     def mastergoals(self, request, pk=None):
         instance = self.get_object()
-        master_goals = Goal.get_goals(instance.master_goals.all(), 'ALL', self.request.user.show_archived_objects)
+        master_goals = Goal.get_goals(
+            instance.master_goals.all(),
+            'ALL',
+            self.request.user.show_archived_objects
+        )
         serializer = self.get_serializer(master_goals, many=True, context={'request': request})
         return Response(serializer.data)
 
@@ -82,12 +94,16 @@ class GoalViewSet(viewsets.ModelViewSet):
         return Goal.get_goals_user(
             self.request.user, 'ALL',
             include_archived_goals=True
+        ).prefetch_related(
+            'sub_goals'
         )
 
     def list(self, request, *args, **kwargs):
         queryset = Goal.get_goals_user(
             self.request.user, 'ALL',
             include_archived_goals=self.request.user.show_archived_objects
+        ).prefetch_related(
+            'sub_goals', 'strategies', 'progress_monitors'
         )
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)

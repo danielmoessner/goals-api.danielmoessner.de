@@ -12,18 +12,11 @@ class AddUserMixin:
 
 class GoalSerializer(AddUserMixin, serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='goals:goal-detail')
-    sub_goals = serializers.HyperlinkedRelatedField(many=True, view_name='goals:goal-detail', read_only=True)
     id = serializers.ReadOnlyField()
 
     class Meta:
         model = Goal
-        exclude = ['user']
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        user = self.context['request'].user
-        queryset = Goal.get_goals_user(user, 'ALL', include_archived_goals=user.show_archived_objects)
-        self.fields['sub_goals'].queryset = queryset
+        exclude = ['user', 'sub_goals']
 
 
 class StrategySerializer(serializers.HyperlinkedModelSerializer):
@@ -46,6 +39,7 @@ class MonitorSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='goals:progressmonitor-detail')
     id = serializers.ReadOnlyField()
     goal = serializers.HyperlinkedRelatedField(many=False, view_name='goals:goal-detail', queryset=Goal.objects.none())
+    progress = serializers.ReadOnlyField()
 
     class Meta:
         model = ProgressMonitor
