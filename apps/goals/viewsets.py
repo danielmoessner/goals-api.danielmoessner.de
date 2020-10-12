@@ -27,13 +27,11 @@ class GoalViewSet(viewsets.ModelViewSet):
             self.request.user,
             self.request.user.treeview_goal_choice,
             include_archived_goals=self.request.user.show_archived_objects
-        )
+        ).prefetch_related('master_goals')
         subgoal_pks = []
         for goal in list(queryset):
-            for master_goal in list(goal.master_goals.all()):
-                if master_goal in queryset:
-                    subgoal_pks.append(goal.pk)
-                    break
+            if goal.master_goals.exists():
+                subgoal_pks.append(goal.pk)
         queryset = queryset.exclude(pk__in=subgoal_pks)
         serializer = RecursiveGoalSerializer(queryset, many=True, context={'request': request})
         return Response(serializer.data)

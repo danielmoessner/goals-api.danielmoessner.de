@@ -195,6 +195,27 @@ class Goal(models.Model):
         ) for monitor in list(ProgressMonitor.get_monitors(self.progress_monitors.all(), monitor_choice))]
         return data
 
+    def get_tree_subgoals(self, user):
+        queryset = self.sub_goals.all()
+        queryset = Goal.get_goals(
+            queryset,
+            user.treeview_goal_choice,
+            include_archived_goals=user.show_archived_objects
+        )
+        return queryset
+
+    def get_tree_monitors(self, user):
+        queryset = self.progress_monitors.all()
+        queryset = ProgressMonitor.get_monitors(queryset, user.treeview_monitor_choice,
+                                                included_archived_progress_monitors=user.show_archived_objects)
+        return queryset
+
+    def get_tree_strategies(self, user):
+        queryset = self.strategies.all()
+        queryset = Strategy.get_strategies(queryset, user.treeview_strategy_choice,
+                                           include_archived_strategies=user.show_archived_objects)
+        return queryset
+
     def get_class(self):
         result = min(8, max(1, int(8 * (self.progress + 10) / 100)))
         return result
