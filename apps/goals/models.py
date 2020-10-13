@@ -277,7 +277,7 @@ class Goal(models.Model):
 
 class ProgressMonitor(models.Model):
     goal = models.ForeignKey(Goal, on_delete=models.CASCADE, related_name='progress_monitors')
-    monitor = models.CharField(max_length=300)
+    name = models.CharField(max_length=300)
     weight = models.PositiveSmallIntegerField(default=1)
     steps = models.PositiveSmallIntegerField()
     step = models.PositiveSmallIntegerField(default=0, blank=True)
@@ -295,10 +295,10 @@ class ProgressMonitor(models.Model):
         self.goal.reset()
 
     class Meta:
-        ordering = ('is_archived', 'monitor', 'goal')
+        ordering = ('is_archived', 'name', 'goal')
 
     def __str__(self):
-        return self.monitor
+        return self.name
 
     def delete(self, using=None, keep_parents=False):
         goal = self.goal
@@ -340,7 +340,7 @@ class ProgressMonitor(models.Model):
 
     def get_tree(self):
         data = dict()
-        data['name'] = self.monitor
+        data['name'] = self.name
         data['progress'] = self.progress
         data['pk'] = self.pk
         return data
@@ -349,7 +349,7 @@ class ProgressMonitor(models.Model):
 class Link(models.Model):
     master_goal = models.ForeignKey(Goal, on_delete=models.CASCADE, related_name="sub_links")
     sub_goal = models.ForeignKey(Goal, on_delete=models.CASCADE, related_name="master_links")
-    weight = models.SmallIntegerField(default=1)  # TODO: make to a positive small integer field
+    weight = models.PositiveSmallIntegerField(default=1)
     is_archived = models.BooleanField(default=False)
 
     # general
