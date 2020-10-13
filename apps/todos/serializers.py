@@ -29,7 +29,10 @@ class NormalToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerializer)
     url = serializers.HyperlinkedIdentityField(view_name='todos:normaltodo-detail')
     form_url = serializers.ReadOnlyField()
     id = serializers.ReadOnlyField()
-    type = serializers.ReadOnlyField(default='NORMAL')
+    type = serializers.SerializerMethodField('get_type')
+
+    def get_type(self, todo):
+        return 'NORMAL'
 
     class Meta:
         model = NormalToDo
@@ -43,7 +46,10 @@ class NeverEndingToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerial
     form_url = serializers.ReadOnlyField()
     id = serializers.ReadOnlyField()
     next = serializers.HyperlinkedRelatedField(view_name='todos:neverendingtodo-detail', read_only=True)
-    type = serializers.ReadOnlyField(default='NEVER_ENDING')
+    type = serializers.SerializerMethodField('get_type')
+
+    def get_type(self, todo):
+        return 'NEVER_ENDING'
 
     class Meta:
         model = NeverEndingToDo
@@ -56,11 +62,15 @@ class NeverEndingToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerial
 class RepetitiveToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='todos:repetitivetodo-detail')
     previous = serializers.HyperlinkedRelatedField(view_name='todos:repetitivetodo-detail',
-                                                   queryset=RepetitiveToDo.objects.none(),
+                                                   read_only=True,
                                                    required=False)
     form_url = serializers.ReadOnlyField()
     id = serializers.ReadOnlyField()
-    type = serializers.ReadOnlyField(default='REPETITIVE')
+    type = serializers.SerializerMethodField('get_type')
+    next = serializers.HyperlinkedRelatedField(view_name='todos:repetitivetodo-detail', read_only=True)
+
+    def get_type(self, todo):
+        return 'REPETITIVE'
 
     class Meta:
         model = RepetitiveToDo
@@ -68,12 +78,6 @@ class RepetitiveToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSeriali
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['previous'].queryset = ToDo.get_to_dos_user(
-            self.context['request'].user,
-            RepetitiveToDo,
-            'ALL',
-            include_archived_to_dos=False
-        )
 
 
 class PipelineToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerializer):
@@ -81,7 +85,10 @@ class PipelineToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerialize
     previous = serializers.HyperlinkedRelatedField(view_name='todos:todo-detail', queryset=ToDo.objects.none())
     form_url = serializers.ReadOnlyField()
     id = serializers.ReadOnlyField()
-    type = serializers.ReadOnlyField(default='PIPELINE')
+    type = serializers.SerializerMethodField('get_type')
+
+    def get_type(self, todo):
+        return 'PIPELINE'
 
     class Meta:
         model = PipelineToDo
