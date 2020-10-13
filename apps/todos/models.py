@@ -1,12 +1,11 @@
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
+from django.core.exceptions import ObjectDoesNotExist
 from django.forms.models import model_to_dict
-from django.urls import reverse_lazy
-
 from apps.users.models import CustomUser
 from django.db.models import Q, F
 from apps.core.utils import strfdelta
 from django.utils import timezone
+from django.urls import reverse_lazy
 from django.db import models
 from datetime import timedelta
 import json
@@ -54,10 +53,6 @@ class ToDo(models.Model):
         ('FAILED', 'Failed')
     )
     status = models.CharField(choices=status_choices, max_length=20, default='ACTIVE')
-
-    # @property
-    # def detail_url(self):
-    #     return reverse_lazy('todos:to_do', args=[self.pk])
 
     # general
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
