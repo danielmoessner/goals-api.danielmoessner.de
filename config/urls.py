@@ -8,8 +8,7 @@ from django.conf import settings
 from django.urls import path
 
 urlpatterns = [
-    path('', lambda request: redirect('c/', permanent=False)),
-    path('c/', include('apps.core.urls')),
+    path('', lambda request: redirect('g/api/', permanent=False)),
     path('g/', include('apps.goals.urls')),
     path('t/', include('apps.todos.urls')),
     path('u/', include('apps.users.urls')),
