@@ -164,7 +164,7 @@ class LinkViewSet(viewsets.ModelViewSet):
         queryset = Link.get_links_user(
             self.request.user, 'ALL',
             include_archived_links=self.request.user.show_archived_objects
-        )
+        ).select_related('master_goal', 'sub_goal')
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 

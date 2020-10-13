@@ -349,7 +349,7 @@ class ProgressMonitor(models.Model):
 class Link(models.Model):
     master_goal = models.ForeignKey(Goal, on_delete=models.CASCADE, related_name="sub_links")
     sub_goal = models.ForeignKey(Goal, on_delete=models.CASCADE, related_name="master_links")
-    weight = models.SmallIntegerField(default=1)
+    weight = models.SmallIntegerField(default=1)  # TODO: make to a positive small integer field
     is_archived = models.BooleanField(default=False)
 
     # general

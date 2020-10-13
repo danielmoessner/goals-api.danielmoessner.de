@@ -59,8 +59,11 @@ class LinkSerializer(serializers.HyperlinkedModelSerializer):
                                                       queryset=Goal.objects.none())
     sub_goal = serializers.HyperlinkedRelatedField(many=False, view_name='goals:goal-detail',
                                                    queryset=Goal.objects.none())
+    mastergoal = GoalSerializer(read_only=True, source='master_goal')
+    subgoal = GoalSerializer(read_only=True, source='sub_goal')
 
     class Meta:
+        depth = 1
         model = Link
         exclude = []
 
@@ -75,12 +78,6 @@ class LinkSerializer(serializers.HyperlinkedModelSerializer):
 ###
 # Tree
 ###
-class RecursiveField(serializers.Serializer):
-    def to_representation(self, value):
-        serializer = self.parent.parent.__class__(value, context=self.context)
-        return serializer.data
-
-
 class RecursiveGoalSerializer(AddUserMixin, serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='goals:goal-detail')
     id = serializers.ReadOnlyField()
