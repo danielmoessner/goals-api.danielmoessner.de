@@ -8,8 +8,6 @@ router.register(r'strategies', viewsets.StrategyViewSet)
 router.register(r'monitors', viewsets.MonitorViewSet)
 router.register(r'links', viewsets.LinkViewSet)
 
-app_name = "goals"
-
 urlpatterns = [
     path('api/', include(router.urls)),
 ]

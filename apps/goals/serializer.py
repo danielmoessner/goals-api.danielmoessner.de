@@ -11,7 +11,7 @@ class AddUserMixin:
 
 
 class GoalSerializer(AddUserMixin, serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='goals:goal-detail')
+    url = serializers.HyperlinkedIdentityField(view_name='goal-detail')
     id = serializers.ReadOnlyField()
 
     class Meta:
@@ -20,9 +20,9 @@ class GoalSerializer(AddUserMixin, serializers.HyperlinkedModelSerializer):
 
 
 class StrategySerializer(serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='goals:strategy-detail')
+    url = serializers.HyperlinkedIdentityField(view_name='strategy-detail')
     id = serializers.ReadOnlyField()
-    goal = serializers.HyperlinkedRelatedField(many=False, view_name='goals:goal-detail', queryset=Goal.objects.none())
+    goal = serializers.HyperlinkedRelatedField(many=False, view_name='goal-detail', queryset=Goal.objects.none())
 
     class Meta:
         model = Strategy
@@ -36,9 +36,9 @@ class StrategySerializer(serializers.HyperlinkedModelSerializer):
 
 
 class MonitorSerializer(serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='goals:progressmonitor-detail')
+    url = serializers.HyperlinkedIdentityField(view_name='progressmonitor-detail')
     id = serializers.ReadOnlyField()
-    goal = serializers.HyperlinkedRelatedField(many=False, view_name='goals:goal-detail', queryset=Goal.objects.none())
+    goal = serializers.HyperlinkedRelatedField(many=False, view_name='goal-detail', queryset=Goal.objects.none())
     progress = serializers.ReadOnlyField()
 
     class Meta:
@@ -53,11 +53,11 @@ class MonitorSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class LinkSerializer(serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='goals:link-detail')
+    url = serializers.HyperlinkedIdentityField(view_name='link-detail')
     id = serializers.ReadOnlyField()
-    master_goal = serializers.HyperlinkedRelatedField(many=False, view_name='goals:goal-detail',
+    master_goal = serializers.HyperlinkedRelatedField(many=False, view_name='goal-detail',
                                                       queryset=Goal.objects.none())
-    sub_goal = serializers.HyperlinkedRelatedField(many=False, view_name='goals:goal-detail',
+    sub_goal = serializers.HyperlinkedRelatedField(many=False, view_name='goal-detail',
                                                    queryset=Goal.objects.none())
     mastergoal = GoalSerializer(read_only=True, source='master_goal')
     subgoal = GoalSerializer(read_only=True, source='sub_goal')
@@ -79,7 +79,7 @@ class LinkSerializer(serializers.HyperlinkedModelSerializer):
 # Tree
 ###
 class RecursiveGoalSerializer(AddUserMixin, serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='goals:goal-detail')
+    url = serializers.HyperlinkedIdentityField(view_name='goal-detail')
     id = serializers.ReadOnlyField()
     subgoals = serializers.SerializerMethodField('get_subgoals')
     monitors = serializers.SerializerMethodField('get_monitors')
