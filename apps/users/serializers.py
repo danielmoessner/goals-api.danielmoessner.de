@@ -17,7 +17,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='users:customuser-detail')
+    url = serializers.HyperlinkedIdentityField(view_name='customuser-detail')
     id = serializers.ReadOnlyField()
     email = serializers.EmailField(required=False)
     
