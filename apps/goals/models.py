@@ -99,11 +99,11 @@ class Goal(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        for goal in self.master_goals.all():
+        for goal in list(self.master_goals.all()):
             goal.reset()
 
     def delete(self, *args, **kwargs):
-        goals = self.master_goals.all()
+        goals = list(self.master_goals.all())
         super().delete(*args, **kwargs)
         for goal in goals:
             goal.reset()
@@ -137,43 +137,6 @@ class Goal(models.Model):
         goals = Goal.get_goals(goals, choice, include_archived_goals)
         return goals
 
-    def get_deadline(self, accuracy='s'):
-        if self.deadline:
-            if accuracy == 'd':
-                return timezone.localtime(self.deadline).strftime("%d.%m.%Y")
-            if accuracy == 's':
-                return timezone.localtime(self.deadline).strftime("%d.%m.%Y %H:%M:%S")
-            return timezone.localtime(self.deadline).strftime("%d.%m.%Y")
-        return ''
-
-    def get_tree(self,
-                 normaltodo_choice='ALL',
-                 repetitivetodo_choice='ALL',
-                 neverendingtodo_choice='ALL',
-                 pipelinetodo_choice='ALL',
-                 delta=None,
-                 goal_choice='ALL',
-                 strategy_choice='ALL',
-                 monitor_choice='ALL'):
-        data = dict()
-        data['name'] = self.name
-        data['progress'] = self.progress
-        data['pk'] = self.pk
-        data['subgoals'] = [goal.get_tree(
-            normaltodo_choice,
-            repetitivetodo_choice,
-            neverendingtodo_choice,
-            pipelinetodo_choice,
-            delta,
-            goal_choice,
-            strategy_choice,
-            monitor_choice) for goal in list(Goal.get_goals(self.sub_goals.all(), goal_choice))]
-        data['strategies'] = [strategy.get_tree() for strategy in
-                              list(Strategy.get_strategies(self.strategies.all(), strategy_choice))]
-        data['monitors'] = [monitor.get_tree(
-        ) for monitor in list(ProgressMonitor.get_monitors(self.progress_monitors.all(), monitor_choice))]
-        return data
-
     def get_tree_subgoals(self, user):
         queryset = self.sub_goals.all()
         queryset = Goal.get_goals(
@@ -194,10 +157,6 @@ class Goal(models.Model):
         queryset = Strategy.get_strategies(queryset, user.treeview_strategy_choice,
                                            include_archived_strategies=user.show_archived_objects)
         return queryset
-
-    def get_class(self):
-        result = min(8, max(1, int(8 * (self.progress + 10) / 100)))
-        return result
 
     def get_all_sub_goals(self):
         query = self.sub_goals.all()
@@ -238,38 +197,20 @@ class Goal(models.Model):
         return query
 
     def get_progress_calc(self):
-        if not self.progress_monitors.exists():
-            return self.get_sub_progress()
-        return self.get_milestone_progress() + (100 - self.get_milestone_progress()) * self.get_sub_progress() * .008
-
-    def get_milestone_progress(self):
         progress = 0
         weight = 0
 
-        for progress_monitor in self.progress_monitors.all():
-            progress += progress_monitor.progress
-            weight += progress_monitor.weight
+        for monitor in self.progress_monitors.all():
+            progress += monitor.progress * monitor.weight
+            weight += monitor.weight
 
-        return progress / weight if weight != 0 else 0
-
-    def get_sub_progress(self):
-        progress = 0
-        weight = 0
-
-        sub_links = self.sub_links.select_related('sub_goal').all()
-        for link in sub_links:
-            progress += link.weight * link.progress
+        for link in self.sub_links.all():
+            progress += link.progress * link.weight
             weight += link.weight
 
-        return progress / weight if weight != 0 else 0
+        return int(round(progress / weight))
 
     # setters
-    def set_starred(self):
-        Goal.objects.filter(pk=self.pk).update(is_starred=(not self.is_starred))
-
-    def set_archived(self):
-        Goal.objects.filter(pk=self.pk).update(is_archived=(not self.is_archived))
-
     def reset(self):
         self.progress = self.get_progress_calc()
         self.save()
@@ -290,6 +231,10 @@ class ProgressMonitor(models.Model):
         return round((float(self.step) / float(self.steps)) * 100) if self.steps != 0 else 100
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if self.step > self.steps:
+            self.step = self.steps
+        if self.step < 0:
+            self.step = 0
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
         # calculate the goals progress
         self.goal.reset()
@@ -361,7 +306,7 @@ class Link(models.Model):
         ordering = ('is_archived', 'master_goal')
 
     def __str__(self):
-        return str(self.master_goal) + " --> " + str(self.sub_goal)
+        return self.get_name()
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
@@ -459,21 +404,8 @@ class Strategy(models.Model):
         strategies = Strategy.get_strategies_goals(goals, strategy_filter, include_archived_strategies)
         return strategies
 
-    def get_tree(self):
-        data = dict()
-        data['name'] = self.name
-        data['pk'] = self.pk
-        return data
-
     def get_all_master_objects(self):
         objects = list()
         objects += [self.goal]
         objects += self.goal.get_all_master_objects()
         return objects
-
-    # setters
-    def set_starred(self):
-        Strategy.objects.filter(pk=self.pk).update(is_starred=(not self.is_starred))
-
-    def set_archived(self):
-        Strategy.objects.filter(pk=self.pk).update(is_archived=(not self.is_archived))
