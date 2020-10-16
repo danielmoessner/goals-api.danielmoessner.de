@@ -3,3 +3,4 @@ node_modules/**/*
 static/node_modules/**/*
 .idea/**/*
 **/__pycache__/**/*
+**/*.sqlite3
