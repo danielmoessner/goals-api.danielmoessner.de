@@ -1,8 +1,0 @@
-<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-<p>
-	{% if info %}{{ info }}<br>{% endif %}
-	Are you sure you want to delete the following objects? <br>
-	{% for object in objects %}
-		{{ object }}<br>
-	{% endfor %}
-</p>
