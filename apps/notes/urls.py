@@ -1,6 +1,6 @@
+from rest_framework.routers import DefaultRouter
 from django.urls import path, include
 from apps.notes import viewsets
-from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r'notes', viewsets.NoteViewSet)

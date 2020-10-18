@@ -1,8 +1,6 @@
+from apps.users.models import CustomUser
 from django.utils.html import strip_tags
 from django.db import models
-
-from apps.users.models import CustomUser
-
 from tinymce import HTMLField
 
 
