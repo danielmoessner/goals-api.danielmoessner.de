@@ -60,9 +60,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(BASE_DIR, 'templates')
-        ],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -71,19 +69,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-        },
-    },
-    {
-        'BACKEND': 'django.template.backends.jinja2.Jinja2',
-        'DIRS': [
-            os.path.join(BASE_DIR, 'jinja2'),
-        ],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'environment': 'config.jinja2.environment',
-            'context_processors': [
-                'django.contrib.auth.context_processors.auth',
-            ]
         },
     },
 ]
@@ -101,9 +86,6 @@ DATABASES = {
 
 # User
 
-LOGIN_URL = 'users:sign_in'
-LOGIN_REDIRECT_URL = 'goals:index'
-LOGOUT_REDIRECT_URL = 'users:sign_in'
 AUTH_USER_MODEL = "users.CustomUser"
 
 # Password validation
@@ -138,10 +120,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 
 STATIC_URL = '/static/'
-
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'static/dist'),
-# ]
 
 STATIC_ROOT = os.path.join(TMP_DIR, 'static')
 

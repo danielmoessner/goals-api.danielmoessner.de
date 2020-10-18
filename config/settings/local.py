@@ -8,8 +8,6 @@ ALLOWED_HOSTS = ["127.0.0.1", 'localhost']
 
 # Application definition
 
-# INSTALLED_APPS = ['django_gulp'] + INSTALLED_APPS
-
 INSTALLED_APPS += ['debug_toolbar', ]
 
 MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware', ]
