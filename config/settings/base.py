@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'apps.users.apps.UsersConfig',
-    'apps.core.apps.CoreConfig',
     'apps.goals.apps.GoalsConfig',
     'apps.todos.apps.TodosConfig',
     'apps.notes.apps.NotesConfig'

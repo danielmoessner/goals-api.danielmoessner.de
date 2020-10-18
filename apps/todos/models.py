@@ -3,7 +3,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.forms.models import model_to_dict
 from apps.users.models import CustomUser
 from django.db.models import Q, F
-from apps.core.utils import strfdelta
 from django.utils import timezone
 from django.urls import reverse_lazy
 from django.db import models
@@ -134,24 +133,6 @@ class ToDo(models.Model):
         delta = self.get_delta()
         return color, delta
 
-    def get_delta(self):
-        delta = ''
-        if self.is_done:
-            delta = 'done'
-        elif self.has_failed:
-            delta = 'failed'
-        elif self.deadline:
-            time_delta = self.deadline - timezone.now()
-            if abs(time_delta).days == 0:
-                delta = strfdelta(abs(time_delta), "{hours}h {minutes}min")
-            elif abs(time_delta).days == 1:
-                delta = strfdelta(abs(time_delta), "{days} day {hours}h {minutes}min")
-            else:
-                delta = strfdelta(abs(time_delta), "{days} days {hours}h {minutes}min")
-            if time_delta < timedelta():
-                delta = "Overdue: " + delta
-        return delta
-
     def get_color(self):
         color = 'blue'
         if self.is_done:
@@ -214,15 +195,6 @@ class RepetitiveToDo(ToDo):
         dict_obj = model_to_dict(self)
         json_obj = json.dumps(dict_obj, cls=DjangoJSONEncoder)
         return json_obj
-
-    def get_duration(self):
-        if abs(self.duration).days == 0:
-            duration = strfdelta(self.duration, "{hours}h {minutes}min")
-        elif abs(self.duration).days == 1:
-            duration = strfdelta(self.duration, "{days} day {hours}h {minutes}min")
-        else:
-            duration = strfdelta(self.duration, "{days} days {hours}h {minutes}min")
-        return duration
 
     def get_next(self):
         try:
@@ -294,15 +266,6 @@ class NeverEndingToDo(ToDo):
         return reverse_lazy('todos:neverendingtodo-form', args=[self.pk])
 
     # getters
-    def get_duration(self):
-        if abs(self.duration).days == 0:
-            duration = strfdelta(self.duration, "{hours}h {minutes}min")
-        elif abs(self.duration).days == 1:
-            duration = strfdelta(self.duration, "{days} day {hours}h {minutes}min")
-        else:
-            duration = strfdelta(self.duration, "{days} days {hours}h {minutes}min")
-        return duration
-
     def get_next(self):
         return self.next_todo
 
