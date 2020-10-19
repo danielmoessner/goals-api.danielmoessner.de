@@ -8,5 +8,9 @@ class Note(models.Model):
     user = models.ForeignKey(CustomUser, related_name='notes', on_delete=models.CASCADE)
     content = HTMLField()
 
+    @property
+    def name(self):
+        return strip_tags(self.content.split('\n', 1)[0][:50])
+
     def __str__(self):
         return strip_tags(self.content.split('\n', 1)[0][:50])
