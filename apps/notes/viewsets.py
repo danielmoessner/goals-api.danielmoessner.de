@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from apps.notes.models import Note
 from apps.notes.serializers import NoteSerializer
 
