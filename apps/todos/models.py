@@ -6,7 +6,6 @@ from django.db.models import Q, F
 from django.utils import timezone
 from django.urls import reverse_lazy
 from django.db import models
-from datetime import timedelta
 import json
 
 

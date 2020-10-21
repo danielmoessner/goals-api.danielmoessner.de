@@ -47,6 +47,8 @@ class NeverEndingToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerial
     id = serializers.ReadOnlyField()
     next = serializers.HyperlinkedRelatedField(view_name='todos:neverendingtodo-detail', read_only=True)
     type = serializers.SerializerMethodField('get_type')
+    activate = serializers.DateTimeField(required=True)
+    deadline = serializers.DateTimeField(required=True)
 
     def get_type(self, todo):
         return 'NEVER_ENDING'
@@ -68,6 +70,8 @@ class RepetitiveToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSeriali
     id = serializers.ReadOnlyField()
     type = serializers.SerializerMethodField('get_type')
     next = serializers.HyperlinkedRelatedField(view_name='todos:repetitivetodo-detail', read_only=True)
+    activate = serializers.DateTimeField(required=True)
+    deadline = serializers.DateTimeField(required=True)
 
     def get_type(self, todo):
         return 'REPETITIVE'
@@ -86,6 +90,7 @@ class PipelineToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerialize
     form_url = serializers.ReadOnlyField()
     id = serializers.ReadOnlyField()
     type = serializers.SerializerMethodField('get_type')
+    activate = serializers.ReadOnlyField()
 
     def get_type(self, todo):
         return 'PIPELINE'
