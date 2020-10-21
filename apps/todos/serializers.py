@@ -27,7 +27,6 @@ class ToDoSerializer(serializers.HyperlinkedModelSerializer):
 
 class NormalToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='todos:normaltodo-detail')
-    form_url = serializers.ReadOnlyField()
     id = serializers.ReadOnlyField()
     type = serializers.SerializerMethodField('get_type')
 
@@ -43,7 +42,6 @@ class NeverEndingToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerial
     url = serializers.HyperlinkedIdentityField(view_name='todos:neverendingtodo-detail')
     previous = serializers.HyperlinkedRelatedField(view_name='todos:neverendingtodo-detail',
                                                    read_only=True)
-    form_url = serializers.ReadOnlyField()
     id = serializers.ReadOnlyField()
     next = serializers.HyperlinkedRelatedField(view_name='todos:neverendingtodo-detail', read_only=True)
     type = serializers.SerializerMethodField('get_type')
@@ -66,7 +64,6 @@ class RepetitiveToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSeriali
     previous = serializers.HyperlinkedRelatedField(view_name='todos:repetitivetodo-detail',
                                                    read_only=True,
                                                    required=False)
-    form_url = serializers.ReadOnlyField()
     id = serializers.ReadOnlyField()
     type = serializers.SerializerMethodField('get_type')
     next = serializers.HyperlinkedRelatedField(view_name='todos:repetitivetodo-detail', read_only=True)
@@ -88,7 +85,6 @@ class RepetitiveToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSeriali
 class PipelineToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='todos:pipelinetodo-detail')
     previous = serializers.HyperlinkedRelatedField(view_name='todos:todo-detail', queryset=ToDo.objects.none())
-    form_url = serializers.ReadOnlyField()
     id = serializers.ReadOnlyField()
     type = serializers.SerializerMethodField('get_type')
     activate = serializers.ReadOnlyField()

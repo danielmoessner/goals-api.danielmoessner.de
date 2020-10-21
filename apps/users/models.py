@@ -71,11 +71,6 @@ class CustomUser(AbstractUser):
     treeview_goal_choice = models.CharField(max_length=10, choices=GOAL_CHOICES, default='ALL')
     treeview_monitor_choice = models.CharField(max_length=10, choices=PROGRESS_MONITOR_CHOICES, default='ALL')
     treeview_strategy_choice = models.CharField(max_length=10, choices=STRATEGY_CHOICES, default='ALL')
-    treeview_todos_delta = models.DurationField(blank=True, default=timedelta(days=7))
-    treeview_normaltodos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default='ALL')
-    treeview_repetitivetodos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default='ALL')
-    treeview_neverendingtodos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default='ALL')
-    treeview_pipelinetodos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default='ALL')
 
     class Meta:
         verbose_name = 'User'

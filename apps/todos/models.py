@@ -160,19 +160,13 @@ class ToDo(models.Model):
 
 
 class NormalToDo(ToDo):
-        @property
-        def form_url(self):
-            return reverse_lazy('todos:normaltodo-form', args=[self.pk])
+    pass
 
 
 class RepetitiveToDo(ToDo):
     duration = models.DurationField()
     previous = models.OneToOneField('self', blank=True, null=True, on_delete=models.SET_NULL, related_name='next')
-    repetitions = models.PositiveSmallIntegerField(default=None, null=True)  # make this field required TODO
-
-    @property
-    def form_url(self):
-        return reverse_lazy('todos:repetitivetodo-form', args=[self.pk])
+    repetitions = models.PositiveSmallIntegerField()
 
     def save(self, *args, **kwargs):
         super(RepetitiveToDo, self).save(*args, **kwargs)
@@ -260,10 +254,6 @@ class NeverEndingToDo(ToDo):
         except ObjectDoesNotExist:
             return None
 
-    @property
-    def form_url(self):
-        return reverse_lazy('todos:neverendingtodo-form', args=[self.pk])
-
     # getters
     def get_next(self):
         return self.next_todo
@@ -282,10 +272,6 @@ class NeverEndingToDo(ToDo):
 
 class PipelineToDo(ToDo):
     previous = models.ForeignKey(ToDo, null=True, on_delete=models.SET_NULL, related_name='pipeline_to_dos')
-
-    @property
-    def form_url(self):
-        return reverse_lazy('todos:pipelinetodo-form', args=[self.pk])
 
     # getters
     def get_update_url(self):
