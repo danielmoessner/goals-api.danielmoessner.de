@@ -168,7 +168,7 @@ class NormalToDo(ToDo):
 class RepetitiveToDo(ToDo):
     duration = models.DurationField()
     previous = models.OneToOneField('self', blank=True, null=True, on_delete=models.SET_NULL, related_name='next')
-    repetitions = models.PositiveSmallIntegerField(default=None, null=True)
+    repetitions = models.PositiveSmallIntegerField(default=None, null=True)  # make this field required TODO
 
     @property
     def form_url(self):
