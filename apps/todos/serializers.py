@@ -72,7 +72,7 @@ class RepetitiveToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSeriali
     next = serializers.HyperlinkedRelatedField(view_name='todos:repetitivetodo-detail', read_only=True)
     activate = serializers.DateTimeField(required=True)
     deadline = serializers.DateTimeField(required=True)
-    duration = serializers.DurationField(required=True)
+    repetitions = serializers.IntegerField(min_value=0, required=True)
 
     def get_type(self, todo):
         return 'REPETITIVE'
