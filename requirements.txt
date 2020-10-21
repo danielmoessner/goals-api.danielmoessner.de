@@ -6,7 +6,6 @@ django-filebrowser-no-grappelli==3.8.0
 django-tinymce4-lite==1.8.0
 djangorestframework==3.11.1
 isort==5.5.2
-Jinja2==2.11.2
 jsmin==2.2.2
 lazy-object-proxy==1.5.1
 MarkupSafe==1.1.1
