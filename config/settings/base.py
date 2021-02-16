@@ -186,5 +186,6 @@ REST_FRAMEWORK = {
 # CORS Headers, so that we can make API calls from another app
 
 CORS_ALLOWED_ORIGINS = [
-    "https://goals.danielmoessner.de"
+    "https://goals.danielmoessner.de",
+    "http://localhost:3000"
 ]

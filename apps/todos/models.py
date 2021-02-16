@@ -55,16 +55,15 @@ class ToDo(models.Model):
     # general
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         # set self to archived if done or failed
-        # if not self.is_archived and (self.status == 'DONE' or self.status == 'FAILED'):
-        #     self.is_archived = True
         if self.completed is None and (self.status == 'DONE' or self.status == 'FAILED'):
-            self.is_archived = True
             self.completed = timezone.now()
         if self.status == 'ACTIVE':
             self.completed = None
-        # activate pipeline to dos
+        # activate pipeline to dos TODO: this is buggy on multiple saves
         if self.status == 'DONE':
             self.pipeline_to_dos.update(activate=timezone.now())
+        elif self.status == 'FAILED':
+            self.pipeline_to_dos.update(status='FAILED')
         else:
             self.pipeline_to_dos.update(activate=None)
         # save

@@ -2,11 +2,11 @@ from rest_framework.decorators import action
 from rest_framework.renderers import HTMLFormRenderer
 from rest_framework.response import Response
 from apps.todos.serializers import ToDoSerializer, NormalToDoSerializer, RepetitiveToDoSerializer, \
-    NeverEndingToDoSerializer, PipelineToDoSerializer
+    NeverEndingToDoSerializer, PipelineToDoSerializer, RepetitiveToDoSerializerWithoutPrevious, \
+    PipelineToDoSerializerWithoutPrevious, NeverEndingToDoSerializerWithoutPrevious
 from apps.todos.models import ToDo, NormalToDo, RepetitiveToDo, NeverEndingToDo, PipelineToDo
 from apps.todos.utils import get_todo_in_its_proper_class
 from rest_framework import viewsets, permissions
-from django.utils import timezone
 
 
 class FormAction:
@@ -64,89 +64,31 @@ class ToDoViewSet(viewsets.ModelViewSet):
             include_archived_to_dos=True
         )
 
-    @action(detail=False, methods=['get'])
-    def main(self, request):
-        user = request.user
-        normal_to_dos = ToDo.get_to_dos_user(
-            user,
-            NormalToDo,
-            user.normal_to_dos_choice,
-            delta=user.to_dos_delta,
-            include_archived_to_dos=self.request.user.show_archived_objects
-        )
-        normal_to_dos_serializer = NormalToDoSerializer(normal_to_dos, many=True, context={'request': request})
-        repetitive_to_dos = ToDo.get_to_dos_user(
-            user,
-            RepetitiveToDo,
-            user.repetitive_to_dos_choice,
-            delta=user.to_dos_delta,
-            include_archived_to_dos=self.request.user.show_archived_objects
-        )
-        repetitive_to_dos_serializer = RepetitiveToDoSerializer(repetitive_to_dos, many=True,
-                                                                context={'request': request})
-        never_ending_to_dos = ToDo.get_to_dos_user(
-            user,
-            NeverEndingToDo,
-            user.never_ending_to_dos_choice,
-            delta=user.to_dos_delta,
-            include_archived_to_dos=self.request.user.show_archived_objects
-        )
-        never_ending_to_dos_serializer = NeverEndingToDoSerializer(never_ending_to_dos, many=True,
-                                                                   context={'request': request})
-        pipeline_to_dos = ToDo.get_to_dos_user(
-            user,
-            PipelineToDo,
-            user.pipeline_to_dos_choice,
-            delta=user.to_dos_delta,
-            include_archived_to_dos=self.request.user.show_archived_objects
-        )
-        pipeline_to_dos_serializer = PipelineToDoSerializer(pipeline_to_dos, many=True, context={'request': request})
-        data = (
-                normal_to_dos_serializer.data +
-                repetitive_to_dos_serializer.data +
-                never_ending_to_dos_serializer.data +
-                pipeline_to_dos_serializer.data
-        )
-        return Response(data)
-
-    @action(detail=False, methods=['get'])
-    def done_today(self, request):
-        queryset = ToDo.get_to_dos_user(
-            request.user,
-            ToDo,
-            'ALL',
-            include_archived_to_dos=True
-        ).filter(
-            completed__contains=timezone.now().date(),
-            status='DONE'
-        )
-        serializer = self.get_serializer(queryset, many=True, context={'request': request})
-        return Response(serializer.data)
-
-    @action(detail=False, methods=['get'])
-    def all(self, request):
+    def list(self, request, *args, **kwargs):
         normal_to_dos = ToDo.get_to_dos_user(
             self.request.user, NormalToDo, 'ALL',
             include_archived_to_dos=self.request.user.show_archived_objects
         )
         normal_to_dos_serializer = NormalToDoSerializer(normal_to_dos, many=True, context={'request': request})
+
         repetitive_to_dos = ToDo.get_to_dos_user(
             self.request.user, RepetitiveToDo, 'ALL',
             include_archived_to_dos=self.request.user.show_archived_objects
         )
-        repetitive_to_dos_serializer = RepetitiveToDoSerializer(repetitive_to_dos, many=True,
-                                                                context={'request': request})
+        repetitive_to_dos_serializer = RepetitiveToDoSerializerWithoutPrevious(repetitive_to_dos, many=True,
+                                                                               context={'request': request})
         never_ending_to_dos = ToDo.get_to_dos_user(
             self.request.user, NeverEndingToDo, 'ALL',
             include_archived_to_dos=self.request.user.show_archived_objects
         )
-        never_ending_to_dos_serializer = NeverEndingToDoSerializer(never_ending_to_dos, many=True,
-                                                                   context={'request': request})
+        never_ending_to_dos_serializer = NeverEndingToDoSerializerWithoutPrevious(never_ending_to_dos, many=True,
+                                                                                  context={'request': request})
         pipeline_to_dos = ToDo.get_to_dos_user(
             self.request.user, PipelineToDo, 'ALL',
             include_archived_to_dos=self.request.user.show_archived_objects
         )
-        pipeline_to_dos_serializer = PipelineToDoSerializer(pipeline_to_dos, many=True, context={'request': request})
+        pipeline_to_dos_serializer = PipelineToDoSerializerWithoutPrevious(pipeline_to_dos, many=True,
+                                                                           context={'request': request})
         data = (
                 normal_to_dos_serializer.data +
                 repetitive_to_dos_serializer.data +

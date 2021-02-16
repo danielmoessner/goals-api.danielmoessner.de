@@ -1,3 +1,5 @@
+from rest_framework.exceptions import ValidationError
+
 from apps.todos.models import ToDo, NeverEndingToDo, RepetitiveToDo, PipelineToDo, NormalToDo
 from apps.todos.utils import get_todo_in_its_proper_class
 from rest_framework import serializers
@@ -59,6 +61,15 @@ class NeverEndingToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerial
         super().__init__(*args, **kwargs)
 
 
+class NeverEndingToDoSerializerWithoutPrevious(NeverEndingToDoSerializer):
+    previous = None
+    next = None
+
+    class Meta:
+        model = NeverEndingToDo
+        exclude = ['user', 'previous']
+
+
 class RepetitiveToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='todos:repetitivetodo-detail')
     previous = serializers.HyperlinkedRelatedField(view_name='todos:repetitivetodo-detail',
@@ -82,15 +93,31 @@ class RepetitiveToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSeriali
         super().__init__(*args, **kwargs)
 
 
-class PipelineToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerializer):
+class RepetitiveToDoSerializerWithoutPrevious(RepetitiveToDoSerializer):
+    previous = None
+    next = None
+
+    class Meta:
+        exclude = ['previous']
+        model = RepetitiveToDo
+
+
+class PipelineToDoSerializerWithoutPrevious(AddUserMixin, serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='todos:pipelinetodo-detail')
-    previous = serializers.HyperlinkedRelatedField(view_name='todos:todo-detail', queryset=ToDo.objects.none())
     id = serializers.ReadOnlyField()
     type = serializers.SerializerMethodField('get_type')
     activate = serializers.ReadOnlyField()
 
+    class Meta:
+        model = PipelineToDo
+        exclude = ['previous', 'user']
+
     def get_type(self, todo):
         return 'PIPELINE'
+
+
+class PipelineToDoSerializer(PipelineToDoSerializerWithoutPrevious):
+    previous = serializers.HyperlinkedRelatedField(view_name='todos:todo-detail', queryset=ToDo.objects.none())
 
     class Meta:
         model = PipelineToDo
