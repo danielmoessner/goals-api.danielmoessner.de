@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
 from apps.todos.models import ToDo, NeverEndingToDo, RepetitiveToDo, PipelineToDo, NormalToDo
@@ -47,8 +48,8 @@ class NeverEndingToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerial
     id = serializers.ReadOnlyField()
     next = serializers.HyperlinkedRelatedField(view_name='todos:neverendingtodo-detail', read_only=True)
     type = serializers.SerializerMethodField('get_type')
-    activate = serializers.DateTimeField(required=True)
-    deadline = serializers.DateTimeField(required=True)
+    activate = serializers.DateTimeField(default=timezone.now)
+    deadline = serializers.DateTimeField(required=False, read_only=True)
 
     def get_type(self, todo):
         return 'NEVER_ENDING'

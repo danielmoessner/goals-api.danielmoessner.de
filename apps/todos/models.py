@@ -263,9 +263,8 @@ class NeverEndingToDo(ToDo):
     # generate
     def generate_next(self):
         now = timezone.now()
-        next_deadline = now + self.duration
-        next_activate = now
-        NeverEndingToDo.objects.create(name=self.name, user=self.user, previous=self, deadline=next_deadline,
+        next_activate = now + self.duration
+        NeverEndingToDo.objects.create(name=self.name, user=self.user, previous=self,
                                        activate=next_activate, duration=self.duration)
 
 
