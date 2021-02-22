@@ -1,40 +1,8 @@
-from django.core.serializers.json import DjangoJSONEncoder
 from django.core.exceptions import ObjectDoesNotExist
-from django.forms.models import model_to_dict
 from apps.users.models import CustomUser
-from django.db.models import Q, F
 from django.utils import timezone
-from django.urls import reverse_lazy
 from django.db import models
-import json
-
-
-def td_all_filter():
-    return Q()
-
-
-def td_unfinished_filter():
-    return Q(status='ACTIVE')
-
-
-def td_active_filter():
-    return Q(activate__lte=timezone.now(), status='ACTIVE')
-
-
-def td_overdue_filter():
-    return Q(deadline__lte=timezone.now(), status='ACTIVE')
-
-
-def td_delta_filter(delta):
-    return Q(deadline__lte=timezone.now() + delta, activate__lte=timezone.now(), status='ACTIVE')
-
-
-def td_orange_filter():
-    return Q(activate__lte=timezone.now(), status='ACTIVE')
-
-
-def td_none_filter():
-    return Q(pk=None)
+from datetime import timedelta
 
 
 class ToDo(models.Model):
@@ -43,7 +11,6 @@ class ToDo(models.Model):
     activate = models.DateTimeField(null=True, blank=True)
     deadline = models.DateTimeField(null=True, blank=True)
     notes = models.TextField(null=True, blank=True)
-    is_archived = models.BooleanField(default=False)
     completed = models.DateTimeField(null=True, blank=True)
     status_choices = (
         ('ACTIVE', 'Active'),
@@ -54,60 +21,37 @@ class ToDo(models.Model):
 
     # general
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        # set self to archived if done or failed
+        # set completed
         if self.completed is None and (self.status == 'DONE' or self.status == 'FAILED'):
             self.completed = timezone.now()
         if self.status == 'ACTIVE':
             self.completed = None
-        # activate pipeline to dos TODO: this is buggy on multiple saves
+        # activate pipeline to dos
         if self.status == 'DONE':
-            self.pipeline_to_dos.update(activate=timezone.now())
+            self.pipeline_to_dos.filter(activate=None).update(activate=timezone.now())
         elif self.status == 'FAILED':
-            self.pipeline_to_dos.update(status='FAILED')
-        else:
-            self.pipeline_to_dos.update(activate=None)
+            self.pipeline_to_dos.filter(activate=None).update(status='FAILED', activate=timezone.now())
         # save
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
     class Meta:
-        ordering = ('is_archived', 'deadline', 'status', 'activate', 'name')
+        ordering = ('deadline', 'status', 'activate', 'name')
 
     def __str__(self):
         return '{}: {} - {}'.format(
             self.name, self.get_activate(accuracy='medium'), self.get_deadline(accuracy='medium'))
 
     # getters
-    def get_json(self):
-        dict_obj = model_to_dict(self)
-        json_obj = json.dumps(dict_obj, cls=DjangoJSONEncoder)
-        return json_obj
-
     @staticmethod
-    def get_to_dos(to_dos, to_do_filter, delta=None, include_archived_to_dos=False):
-        if to_do_filter == "ALL":
-            to_dos = to_dos
-        elif to_do_filter == "ACTIVE":
-            to_dos = to_dos.filter(td_active_filter())
-        elif to_do_filter == "DELTA":
-            to_dos = to_dos.filter(td_delta_filter(delta))
-        elif to_do_filter == "OVERDUE":
-            to_dos = to_dos.filter(td_overdue_filter())
-        elif to_do_filter == "UNFINISHED":
-            to_dos = to_dos.filter(td_unfinished_filter())
-        elif to_do_filter == "ORANGE":
-            to_dos = to_dos.filter(deadline__lt=(F('deadline') - F('activate')) * .2 + timezone.now())
-        else:
-            to_dos = to_dos.objects.none()
-
-        if not include_archived_to_dos:
-            to_dos = to_dos.filter(is_archived=False)
-
+    def get_to_dos(to_dos, include_old_todos=False):
+        if not include_old_todos:
+            to_dos = to_dos.exclude(completed__lt=timezone.now() - timedelta(days=40))
         return to_dos
 
     @staticmethod
-    def get_to_dos_user(user, to_do_class, to_do_filter, delta=None, include_archived_to_dos=False):
+    def get_to_dos_user(user, to_do_class):
         all_to_dos = to_do_class.objects.filter(user=user)
-        to_dos = ToDo.get_to_dos(all_to_dos, to_do_filter, delta, include_archived_to_dos)
+        to_dos = ToDo.get_to_dos(all_to_dos, include_old_todos=user.show_old_todos)
         return to_dos
 
     def get_deadline(self, accuracy='high'):
@@ -126,37 +70,6 @@ class ToDo(models.Model):
                 return timezone.localtime(self.activate).strftime("%d.%m.%Y %H:%M")
         return 'none'
 
-    def get_to_deadline_time(self):
-        color = self.get_color()
-        delta = self.get_delta()
-        return color, delta
-
-    def get_color(self):
-        color = 'blue'
-        if self.is_done:
-            color = 'green'
-        elif self.has_failed:
-            color = 'yellow'
-        elif self.deadline:
-            if self.deadline < timezone.now():
-                color = 'red'
-            elif self.activate and (self.deadline - timezone.now()) < ((self.deadline - self.activate) * .2):
-                color = 'orange'
-            else:
-                color = 'green'
-        return color
-
-    def get_notes(self):
-        if self.notes:
-            return self.notes
-        return ''
-
-    def get_next(self):
-        return 'None'
-
-    def get_previous(self):
-        return 'None'
-
 
 class NormalToDo(ToDo):
     pass
@@ -166,6 +79,10 @@ class RepetitiveToDo(ToDo):
     duration = models.DurationField()
     previous = models.OneToOneField('self', blank=True, null=True, on_delete=models.SET_NULL, related_name='next')
     repetitions = models.PositiveSmallIntegerField()
+    blocked = models.BooleanField(default=False)
+
+    def __str__(self):
+        return '{} {}'.format(super().__str__(), self.repetitions)
 
     def save(self, *args, **kwargs):
         super(RepetitiveToDo, self).save(*args, **kwargs)
@@ -183,22 +100,12 @@ class RepetitiveToDo(ToDo):
         super(RepetitiveToDo, self).delete(using, keep_parents)
 
     # getters
-    def get_json(self):
-        dict_obj = model_to_dict(self)
-        json_obj = json.dumps(dict_obj, cls=DjangoJSONEncoder)
-        return json_obj
-
     def get_next(self):
         try:
             next_rtd = self.next
         except RepetitiveToDo.next.RelatedObjectDoesNotExist:
             next_rtd = None
         return next_rtd
-
-    def get_previous(self):
-        if self.previous:
-            return self.previous
-        return None
 
     def get_all_after(self):
         repetitive_to_dos = [self]
@@ -246,19 +153,13 @@ class NeverEndingToDo(ToDo):
         if (self.status == 'DONE' or self.status == 'FAILED') and self.next_todo is None and self.blocked is False:
             self.generate_next()
 
+    # getters
     @property
     def next_todo(self):
         try:
             return self.next
         except ObjectDoesNotExist:
             return None
-
-    # getters
-    def get_next(self):
-        return self.next_todo
-
-    def get_previous(self):
-        return self.previous
 
     # generate
     def generate_next(self):
@@ -270,18 +171,3 @@ class NeverEndingToDo(ToDo):
 
 class PipelineToDo(ToDo):
     previous = models.ForeignKey(ToDo, null=True, on_delete=models.SET_NULL, related_name='pipeline_to_dos')
-
-    # getters
-    def get_update_url(self):
-        return reverse_lazy('todos:pipeline_to_do_edit', args=[self.pk])
-
-    def get_json(self):
-        dict_obj = model_to_dict(self)
-        json_obj = json.dumps(dict_obj, cls=DjangoJSONEncoder)
-        return json_obj
-
-    def get_next(self):
-        return ', '.join([to_do.name for to_do in self.pipeline_to_dos.all()])
-
-    def get_previous(self):
-        return self.previous

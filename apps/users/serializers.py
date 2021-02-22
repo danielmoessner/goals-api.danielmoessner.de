@@ -31,3 +31,4 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
+    password_confirm = serializers.CharField(required=True)

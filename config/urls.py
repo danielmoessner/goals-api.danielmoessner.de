@@ -2,15 +2,20 @@ from django.conf.urls.static import static
 from django.shortcuts import redirect
 from django.conf.urls import include
 from django.contrib import admin
+from rest_framework.routers import DefaultRouter
+
 from .filebrowser import site
 from config.auth import obtain_auth_token
 from django.conf import settings
 from django.urls import path
+from apps.todos.urls import router as todos_router
+
+router = DefaultRouter()
+router.registry.extend(todos_router.registry)
 
 urlpatterns = [
-    path('', lambda request: redirect('g/api/', permanent=False)),
+    path('', include(router.urls)),
     path('g/', include('apps.goals.urls')),
-    path('t/', include('apps.todos.urls')),
     path('u/', include('apps.users.urls')),
     path('n/', include('apps.notes.urls')),
     path('filebrowser/', site.urls),

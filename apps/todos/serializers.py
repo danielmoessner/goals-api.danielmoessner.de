@@ -1,6 +1,4 @@
 from django.utils import timezone
-from rest_framework.exceptions import ValidationError
-
 from apps.todos.models import ToDo, NeverEndingToDo, RepetitiveToDo, PipelineToDo, NormalToDo
 from apps.todos.utils import get_todo_in_its_proper_class
 from rest_framework import serializers
@@ -15,7 +13,7 @@ class AddUserMixin:
 
 
 class ToDoSerializer(serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='todos:todo-detail')
+    url = serializers.HyperlinkedIdentityField(view_name='todo-detail')
     id = serializers.ReadOnlyField()
 
     class Meta:
@@ -29,7 +27,7 @@ class ToDoSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class NormalToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='todos:normaltodo-detail')
+    url = serializers.HyperlinkedIdentityField(view_name='normaltodo-detail')
     id = serializers.ReadOnlyField()
     type = serializers.SerializerMethodField('get_type')
 
@@ -42,11 +40,11 @@ class NormalToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerializer)
 
 
 class NeverEndingToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='todos:neverendingtodo-detail')
-    previous = serializers.HyperlinkedRelatedField(view_name='todos:neverendingtodo-detail',
+    url = serializers.HyperlinkedIdentityField(view_name='neverendingtodo-detail')
+    previous = serializers.HyperlinkedRelatedField(view_name='neverendingtodo-detail',
                                                    read_only=True)
     id = serializers.ReadOnlyField()
-    next = serializers.HyperlinkedRelatedField(view_name='todos:neverendingtodo-detail', read_only=True)
+    next = serializers.HyperlinkedRelatedField(view_name='neverendingtodo-detail', read_only=True)
     type = serializers.SerializerMethodField('get_type')
     activate = serializers.DateTimeField(default=timezone.now)
     deadline = serializers.DateTimeField(required=False, read_only=True)
@@ -72,13 +70,13 @@ class NeverEndingToDoSerializerWithoutPrevious(NeverEndingToDoSerializer):
 
 
 class RepetitiveToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='todos:repetitivetodo-detail')
-    previous = serializers.HyperlinkedRelatedField(view_name='todos:repetitivetodo-detail',
+    url = serializers.HyperlinkedIdentityField(view_name='repetitivetodo-detail')
+    previous = serializers.HyperlinkedRelatedField(view_name='repetitivetodo-detail',
                                                    read_only=True,
                                                    required=False)
     id = serializers.ReadOnlyField()
     type = serializers.SerializerMethodField('get_type')
-    next = serializers.HyperlinkedRelatedField(view_name='todos:repetitivetodo-detail', read_only=True)
+    next = serializers.HyperlinkedRelatedField(view_name='repetitivetodo-detail', read_only=True)
     activate = serializers.DateTimeField(required=True)
     deadline = serializers.DateTimeField(required=True)
     repetitions = serializers.IntegerField(min_value=0, required=True)
@@ -104,7 +102,7 @@ class RepetitiveToDoSerializerWithoutPrevious(RepetitiveToDoSerializer):
 
 
 class PipelineToDoSerializerWithoutPrevious(AddUserMixin, serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='todos:pipelinetodo-detail')
+    url = serializers.HyperlinkedIdentityField(view_name='pipelinetodo-detail')
     id = serializers.ReadOnlyField()
     type = serializers.SerializerMethodField('get_type')
     activate = serializers.ReadOnlyField()
@@ -118,7 +116,7 @@ class PipelineToDoSerializerWithoutPrevious(AddUserMixin, serializers.Hyperlinke
 
 
 class PipelineToDoSerializer(PipelineToDoSerializerWithoutPrevious):
-    previous = serializers.HyperlinkedRelatedField(view_name='todos:todo-detail', queryset=ToDo.objects.none())
+    previous = serializers.HyperlinkedRelatedField(view_name='todo-detail', queryset=ToDo.objects.none())
 
     class Meta:
         model = PipelineToDo
@@ -128,7 +126,5 @@ class PipelineToDoSerializer(PipelineToDoSerializerWithoutPrevious):
         super().__init__(*args, **kwargs)
         self.fields['previous'].queryset = ToDo.get_to_dos_user(
             self.context['request'].user,
-            ToDo,
-            'ALL',
-            include_archived_to_dos=False
+            ToDo
         )

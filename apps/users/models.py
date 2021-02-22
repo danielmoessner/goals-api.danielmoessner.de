@@ -39,33 +39,19 @@ class CustomUser(AbstractUser):
         ("STAR", "Show all starred strategies."),
         ("NONE", "Show no strategies.")
     )
-    TO_DO_CHOICES = (
-        ('ALL', "Show all to do's."),
-        ("ACTIVE", "Show all active to do's"),
-        ("UNFINISHED", "Show all unfinished to do's"),
-        ("DELTA", "Show all to dos that are active and with a deadline within the delta range."),
-        ("OVERDUE", "Show all to dos that are overdue."),
-        ("ORANGE", "Show all to dos that are active or orange or red."),
-        ("NONE", "Show no to do's.")
-    )
     # make email the default login method
     username = None
     email = models.EmailField('E-Mail Address', unique=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     # general
-    page_choice = models.CharField(max_length=10, choices=PAGE_CHOICES, default="DASHBOARD")
     show_archived_objects = models.BooleanField(default=False)
     # goal view
     goal_view_goal_choice = models.CharField(max_length=10, choices=GOAL_CHOICES, default='ALL')
     # strategy main
     strategy_main_choice = models.CharField(max_length=10, choices=STRATEGY_CHOICES, default='ALL')
-    # to do view
-    to_dos_delta = models.DurationField(blank=True, default=timedelta(days=7))
-    normal_to_dos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default='ALL')
-    repetitive_to_dos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default='ALL')
-    never_ending_to_dos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default='ALL')
-    pipeline_to_dos_choice = models.CharField(max_length=10, choices=TO_DO_CHOICES, default='ALL')
+    # to do
+    show_old_todos = models.BooleanField(default=False)
     # tree view
     treeview_goal_depth = models.PositiveSmallIntegerField(blank=True, null=True)
     treeview_goal_choice = models.CharField(max_length=10, choices=GOAL_CHOICES, default='ALL')

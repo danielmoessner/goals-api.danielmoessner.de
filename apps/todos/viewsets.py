@@ -1,5 +1,4 @@
 from rest_framework.decorators import action
-from rest_framework.renderers import HTMLFormRenderer
 from rest_framework.response import Response
 from apps.todos.serializers import ToDoSerializer, NormalToDoSerializer, RepetitiveToDoSerializer, \
     NeverEndingToDoSerializer, PipelineToDoSerializer, RepetitiveToDoSerializerWithoutPrevious, \
@@ -7,29 +6,6 @@ from apps.todos.serializers import ToDoSerializer, NormalToDoSerializer, Repetit
 from apps.todos.models import ToDo, NormalToDo, RepetitiveToDo, NeverEndingToDo, PipelineToDo
 from apps.todos.utils import get_todo_in_its_proper_class
 from rest_framework import viewsets, permissions
-
-
-class FormAction:
-    @action(detail=True, methods=['get'])
-    def form(self, request, pk):
-        instance = self.get_object()
-        renderer = HTMLFormRenderer()
-        renderer.template_pack = 'rest_framework/horizontal/'
-        form = renderer.render(self.get_serializer(instance).data)
-        data = {
-            'form': form
-        }
-        return Response(data)
-
-    @action(detail=False, methods=['get'])
-    def createform(self, request):
-        renderer = HTMLFormRenderer()
-        renderer.template_pack = 'rest_framework/horizontal/'
-        form = renderer.render(self.get_serializer().data)
-        data = {
-            'form': form
-        }
-        return Response(data)
 
 
 class ToDoViewSet(viewsets.ModelViewSet):
@@ -51,6 +27,13 @@ class ToDoViewSet(viewsets.ModelViewSet):
             raise Exception('No serializer was found.')
         return Response(serializer.data)
 
+    @action(methods=['get'], detail=False)
+    def state(self, request):
+        data = {
+            "status": self.request.user.to_dos.count() + self.request.user.to_dos.filter(activate=None).count()
+        }
+        return Response(data)
+
     def get_object(self):
         obj = super().get_object()
         obj = get_todo_in_its_proper_class(obj.pk)
@@ -59,33 +42,27 @@ class ToDoViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return ToDo.get_to_dos_user(
             self.request.user,
-            ToDo,
-            'ALL',
-            include_archived_to_dos=True
+            ToDo
         )
 
     def list(self, request, *args, **kwargs):
         normal_to_dos = ToDo.get_to_dos_user(
-            self.request.user, NormalToDo, 'ALL',
-            include_archived_to_dos=self.request.user.show_archived_objects
+            self.request.user, NormalToDo
         )
         normal_to_dos_serializer = NormalToDoSerializer(normal_to_dos, many=True, context={'request': request})
 
         repetitive_to_dos = ToDo.get_to_dos_user(
-            self.request.user, RepetitiveToDo, 'ALL',
-            include_archived_to_dos=self.request.user.show_archived_objects
+            self.request.user, RepetitiveToDo
         )
         repetitive_to_dos_serializer = RepetitiveToDoSerializerWithoutPrevious(repetitive_to_dos, many=True,
                                                                                context={'request': request})
         never_ending_to_dos = ToDo.get_to_dos_user(
-            self.request.user, NeverEndingToDo, 'ALL',
-            include_archived_to_dos=self.request.user.show_archived_objects
+            self.request.user, NeverEndingToDo
         )
         never_ending_to_dos_serializer = NeverEndingToDoSerializerWithoutPrevious(never_ending_to_dos, many=True,
                                                                                   context={'request': request})
         pipeline_to_dos = ToDo.get_to_dos_user(
-            self.request.user, PipelineToDo, 'ALL',
-            include_archived_to_dos=self.request.user.show_archived_objects
+            self.request.user, PipelineToDo
         )
         pipeline_to_dos_serializer = PipelineToDoSerializerWithoutPrevious(pipeline_to_dos, many=True,
                                                                            context={'request': request})
@@ -98,81 +75,73 @@ class ToDoViewSet(viewsets.ModelViewSet):
         return Response(data)
 
 
-class NormalToDoViewSet(FormAction, viewsets.ModelViewSet):
+class NormalToDoViewSet(viewsets.ModelViewSet):
     serializer_class = NormalToDoSerializer
     queryset = NormalToDo.objects.none()
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return ToDo.get_to_dos_user(
-            self.request.user, NormalToDo, 'ALL',
-            include_archived_to_dos=True
+            self.request.user, NormalToDo
         )
 
     def list(self, request, *args, **kwargs):
         queryset = ToDo.get_to_dos_user(
-            self.request.user, NormalToDo, 'ALL',
-            include_archived_to_dos=self.request.user.show_archived_objects
+            self.request.user, NormalToDo
         )
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
 
-class RepetitiveToDoViewSet(FormAction, viewsets.ModelViewSet):
+class RepetitiveToDoViewSet(viewsets.ModelViewSet):
     serializer_class = RepetitiveToDoSerializer
     queryset = RepetitiveToDo.objects.none()
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return ToDo.get_to_dos_user(
-            self.request.user, RepetitiveToDo, 'ALL',
-            include_archived_to_dos=True
+            self.request.user, RepetitiveToDo
         )
 
     def list(self, request, *args, **kwargs):
         queryset = ToDo.get_to_dos_user(
-            self.request.user, RepetitiveToDo, 'ALL',
-            include_archived_to_dos=self.request.user.show_archived_objects
+            self.request.user, RepetitiveToDo
         )
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
 
-class NeverEndingToDoViewSet(FormAction, viewsets.ModelViewSet):
+class NeverEndingToDoViewSet(viewsets.ModelViewSet):
     serializer_class = NeverEndingToDoSerializer
     queryset = NeverEndingToDo.objects.none()
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return ToDo.get_to_dos_user(
-            self.request.user, NeverEndingToDo, 'ALL',
-            include_archived_to_dos=True
+            self.request.user, NeverEndingToDo
         )
 
     def list(self, request, *args, **kwargs):
         queryset = ToDo.get_to_dos_user(
-            self.request.user, NeverEndingToDo, 'ALL',
-            include_archived_to_dos=request.user.show_archived_objects
-        ).prefetch_related('next')
+            self.request.user, NeverEndingToDo
+        )
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
 
-class PipelineToDoViewSet(FormAction, viewsets.ModelViewSet):
+class PipelineToDoViewSet(viewsets.ModelViewSet):
     serializer_class = PipelineToDoSerializer
     queryset = PipelineToDo.objects.none()
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return ToDo.get_to_dos_user(
-            self.request.user, PipelineToDo, 'ALL',
-            include_archived_to_dos=True
+            self.request.user, PipelineToDo
         )
 
     def list(self, request, *args, **kwargs):
         queryset = ToDo.get_to_dos_user(
-            self.request.user, PipelineToDo, 'ALL',
-            include_archived_to_dos=self.request.user.show_archived_objects
+            self.request.user, PipelineToDo
         )
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
