@@ -11,6 +11,13 @@ class GoalViewSet(viewsets.ModelViewSet):
     queryset = Goal.objects.none()
     permission_classes = [permissions.IsAuthenticated]
 
+    @action(methods=['get'], detail=False)
+    def state(self, request):
+        data = {
+            "state": self.request.user.goals.count()
+        }
+        return Response(data)
+
     @action(detail=False, methods=['get'])
     def starred(self, request):
         queryset = Goal.get_goals_user(
@@ -114,6 +121,13 @@ class StrategyViewSet(viewsets.ModelViewSet):
     queryset = Strategy.objects.none()
     permission_classes = [permissions.IsAuthenticated]
 
+    @action(methods=['get'], detail=False)
+    def state(self, request):
+        data = {
+            "state": Strategy.objects.filter(goal__in=self.request.user.goals.all()).count()
+        }
+        return Response(data)
+
     @action(detail=False, methods=['get'])
     def main(self, request):
         queryset = Strategy.get_strategies_user(
@@ -154,6 +168,13 @@ class LinkViewSet(viewsets.ModelViewSet):
     queryset = Link.objects.none()
     permission_classes = [permissions.IsAuthenticated]
 
+    @action(methods=['get'], detail=False)
+    def state(self, request):
+        data = {
+            "state": Link.objects.filter(master_goal__in=self.request.user.goals.all()).count()
+        }
+        return Response(data)
+
     def get_queryset(self):
         return Link.get_links_user(
             self.request.user, 'ALL',
@@ -173,6 +194,13 @@ class MonitorViewSet(viewsets.ModelViewSet):
     serializer_class = MonitorSerializer
     queryset = ProgressMonitor.objects.none()
     permission_classes = [permissions.IsAuthenticated]
+
+    @action(methods=['get'], detail=False)
+    def state(self, request):
+        data = {
+            "state": ProgressMonitor.objects.filter(goal__in=self.request.user.goals.all()).count()
+        }
+        return Response(data)
 
     def get_queryset(self):
         return ProgressMonitor.get_monitors_user(

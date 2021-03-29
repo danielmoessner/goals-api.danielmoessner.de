@@ -208,6 +208,9 @@ class Goal(models.Model):
             progress += link.progress * link.weight
             weight += link.weight
 
+        if weight == 0:
+            return 0
+
         return int(round(progress / weight))
 
     # setters
