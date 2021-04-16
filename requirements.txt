@@ -1,7 +1,7 @@
 astroid==2.4.2
 Django==2.2.16
 django-cors-headers==3.5.0
-django-debug-toolbar==2.2
+django-debug-toolbar==2.2.1
 django-filebrowser-no-grappelli==3.8.0
 django-tinymce4-lite==1.8.0
 djangorestframework==3.11.1
