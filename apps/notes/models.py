@@ -10,7 +10,7 @@ class Note(models.Model):
 
     @property
     def name(self):
-        return strip_tags(self.content.split('\n', 1)[0][:50])
+        return strip_tags(self.content.split('</', 1)[0])
 
     def __str__(self):
-        return strip_tags(self.content.split('\n', 1)[0][:50])
+        return strip_tags(self.content.split('</', 1)[0])

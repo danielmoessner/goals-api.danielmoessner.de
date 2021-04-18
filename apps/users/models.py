@@ -44,19 +44,19 @@ class CustomUser(AbstractUser):
     email = models.EmailField('E-Mail Address', unique=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
-    # general
+    # goals
     show_archived_objects = models.BooleanField(default=False)
     # goal view
-    goal_view_goal_choice = models.CharField(max_length=10, choices=GOAL_CHOICES, default='ALL')
+    goal_view_goal_choice = models.CharField(max_length=10, choices=GOAL_CHOICES, default='ALL') # remove
     # strategy main
-    strategy_main_choice = models.CharField(max_length=10, choices=STRATEGY_CHOICES, default='ALL')
+    strategy_main_choice = models.CharField(max_length=10, choices=STRATEGY_CHOICES, default='ALL') # remove
     # to do
     show_old_todos = models.BooleanField(default=False)
     # tree view
-    treeview_goal_depth = models.PositiveSmallIntegerField(blank=True, null=True)
-    treeview_goal_choice = models.CharField(max_length=10, choices=GOAL_CHOICES, default='ALL')
-    treeview_monitor_choice = models.CharField(max_length=10, choices=PROGRESS_MONITOR_CHOICES, default='ALL')
-    treeview_strategy_choice = models.CharField(max_length=10, choices=STRATEGY_CHOICES, default='ALL')
+    treeview_goal_depth = models.PositiveSmallIntegerField(blank=True, null=True) # remove
+    treeview_goal_choice = models.CharField(max_length=10, choices=GOAL_CHOICES, default='ALL')# remove
+    treeview_monitor_choice = models.CharField(max_length=10, choices=PROGRESS_MONITOR_CHOICES, default='ALL')# remove
+    treeview_strategy_choice = models.CharField(max_length=10, choices=STRATEGY_CHOICES, default='ALL')# remove
 
     class Meta:
         verbose_name = 'User'
