@@ -11,7 +11,7 @@ class Note(models.Model):
     updated = models.DateTimeField(auto_now=True, null=True)
 
     class Meta:
-        ordering = ['created']
+        ordering = ['updated']
 
     @property
     def name(self):
