@@ -18,6 +18,8 @@ class ToDo(models.Model):
         ('FAILED', 'Failed')
     )
     status = models.CharField(choices=status_choices, max_length=20, default='ACTIVE')
+    created = models.DateTimeField(auto_created=True, null=True)
+    updated = models.DateTimeField(auto_now=True, null=True)
 
     # general
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):

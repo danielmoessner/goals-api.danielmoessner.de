@@ -7,6 +7,11 @@ from tinymce import HTMLField
 class Note(models.Model):
     user = models.ForeignKey(CustomUser, related_name='notes', on_delete=models.CASCADE)
     content = HTMLField()
+    created = models.DateTimeField(auto_created=True, null=True)
+    updated = models.DateTimeField(auto_now=True, null=True)
+
+    class Meta:
+        ordering = ['created']
 
     @property
     def name(self):

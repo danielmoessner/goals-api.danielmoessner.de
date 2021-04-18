@@ -11,10 +11,10 @@ class Goal(models.Model):
     sub_goals = models.ManyToManyField(to='self', through='Link', symmetrical=False, related_name='master_goals')
     is_archived = models.BooleanField(default=False)
     addition = models.TextField(blank=True, null=True)
-    # speed
     progress = models.PositiveSmallIntegerField(default=0, blank=True)
-    # user
     is_starred = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_created=True, null=True)
+    updated = models.DateTimeField(auto_now=True, null=True)
 
     # general
     class Meta:
@@ -135,6 +135,8 @@ class ProgressMonitor(models.Model):
     step = models.PositiveSmallIntegerField(default=0, blank=True)
     notes = models.TextField(default='', blank=True)
     is_archived = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_created=True, null=True)
+    updated = models.DateTimeField(auto_now=True, null=True)
 
     # general
     @property
@@ -199,6 +201,8 @@ class Link(models.Model):
     sub_goal = models.OneToOneField(Goal, on_delete=models.CASCADE, related_name="master_links")
     weight = models.PositiveSmallIntegerField(default=1)
     is_archived = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_created=True, null=True)
+    updated = models.DateTimeField(auto_now=True, null=True)
 
     # general
     @property
@@ -264,8 +268,9 @@ class Strategy(models.Model):
     goal = models.ForeignKey(Goal, on_delete=models.CASCADE, related_name="strategies")
     description = models.TextField(null=True, blank=True)
     is_archived = models.BooleanField(default=False)
-    # user
     is_starred = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_created=True, null=True)
+    updated = models.DateTimeField(auto_now=True, null=True)
 
     # general
     class Meta:
