@@ -5,6 +5,7 @@ from apps.todos.urls import router as todos_router
 from apps.users.urls import router as users_router
 from apps.notes.urls import router as notes_router
 from apps.goals.urls import router as goals_router
+from apps.story.urls import router as story_router
 from django.contrib import admin
 from .filebrowser import site
 from django.conf import settings
@@ -15,6 +16,7 @@ router.registry.extend(todos_router.registry)
 router.registry.extend(users_router.registry)
 router.registry.extend(notes_router.registry)
 router.registry.extend(goals_router.registry)
+router.registry.extend(story_router.registry)
 
 urlpatterns = [
     path('', include(router.urls)),

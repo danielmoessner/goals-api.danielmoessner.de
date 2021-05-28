@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'apps.users.apps.UsersConfig',
     'apps.goals.apps.GoalsConfig',
     'apps.todos.apps.TodosConfig',
-    'apps.notes.apps.NotesConfig'
+    'apps.notes.apps.NotesConfig',
+    'apps.story.apps.StoryConfig',
 ]
 
 MIDDLEWARE = [
