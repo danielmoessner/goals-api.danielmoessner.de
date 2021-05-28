@@ -11,6 +11,8 @@ class AddUserMixin:
 
 
 class StorySerializer(AddUserMixin, serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField()
+
     class Meta:
         model = Story
         exclude = ['user']
