@@ -37,7 +37,7 @@ class ToDo(models.Model):
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
     class Meta:
-        ordering = ('deadline', 'status', 'activate', 'name')
+        ordering = ('status', 'name', 'deadline', 'activate')
 
     def __str__(self):
         return '{}: {} - {}'.format(
