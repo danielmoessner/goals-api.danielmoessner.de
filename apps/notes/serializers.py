@@ -18,3 +18,9 @@ class NoteSerializer(AddUserMixin, serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Note
         exclude = ['user']
+
+
+class NoteListSerializer(NoteSerializer):
+    class Meta:
+        model = Note
+        exclude = ['user', 'content']
