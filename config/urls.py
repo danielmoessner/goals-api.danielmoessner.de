@@ -1,4 +1,5 @@
 from django.conf.urls.static import static
+from apps.achievements.urls import router as achievements_router
 from rest_framework.routers import DefaultRouter
 from django.conf.urls import include
 from apps.todos.urls import router as todos_router
@@ -17,6 +18,7 @@ router.registry.extend(users_router.registry)
 router.registry.extend(notes_router.registry)
 router.registry.extend(goals_router.registry)
 router.registry.extend(story_router.registry)
+router.registry.extend(achievements_router.registry)
 
 urlpatterns = [
     path('', include(router.urls)),

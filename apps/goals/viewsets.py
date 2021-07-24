@@ -1,6 +1,6 @@
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from apps.goals.serializer import GoalSerializer, LinkSerializer, StrategySerializer, MonitorSerializer, \
+from apps.goals.serializers import GoalSerializer, LinkSerializer, StrategySerializer, MonitorSerializer, \
     RecursiveGoalSerializer
 from apps.goals.models import Goal, Strategy, Link, ProgressMonitor
 from rest_framework import viewsets, permissions

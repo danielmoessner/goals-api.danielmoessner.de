@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'apps.todos.apps.TodosConfig',
     'apps.notes.apps.NotesConfig',
     'apps.story.apps.StoryConfig',
+    'apps.achievements.apps.AchievementsConfig'
 ]
 
 MIDDLEWARE = [
