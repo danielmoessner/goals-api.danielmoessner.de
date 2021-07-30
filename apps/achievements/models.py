@@ -13,7 +13,7 @@ class Achievement(models.Model):
     class Meta:
         verbose_name = 'Achievement'
         verbose_name_plural = 'Achievements'
-        ordering = ['date']
+        ordering = ['-date']
 
     def __str__(self):
         return '{}'.format(self.title)
