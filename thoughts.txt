@@ -1,0 +1,3 @@
+what is the most code efficient way to structure a crud project with django?
+- do not separate backend and frontend
+- use django forms vs pydantic validation on functions and then custom form building
