@@ -1,6 +1,6 @@
 from apps.users.models import CustomUser
 from django.db import models
-from tinymce import HTMLField
+from tinymce.models import HTMLField
 
 
 class Story(models.Model):

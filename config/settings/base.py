@@ -191,3 +191,4 @@ CORS_ALLOWED_ORIGINS = [
     "https://goals.danielmoessner.de",
     "http://localhost:3000"
 ]
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

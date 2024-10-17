@@ -11,6 +11,7 @@ from django.contrib import admin
 from .filebrowser import site
 from django.conf import settings
 from django.urls import path
+from rest_framework.authtoken import views
 
 router = DefaultRouter()
 router.registry.extend(todos_router.registry)
@@ -21,6 +22,7 @@ router.registry.extend(story_router.registry)
 router.registry.extend(achievements_router.registry)
 
 urlpatterns = [
+    path('api-token-auth/', views.obtain_auth_token),
     path('', include(router.urls)),
     path('filebrowser/', site.urls),
     path('tinymce/', include('tinymce.urls')),
