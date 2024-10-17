@@ -73,6 +73,20 @@ is there a good way to seperate the get from the post? meaning i want to get the
 but on post just the id is submitted. but getting the instance select on get is not possible because the
 form just know the id.
 
+### success url
+
+should be used in the frontend and the request like ?success_url=...
+backend will give it back as context from the forms view.
+
+### cancel url
+
+should be used into the frontend and the request like ?cancel_url=...
+
+### user into form
+
+the user should be passed into the form automatically by the form view. and it
+instance form should not be used.
+
 ## use htmx on the frontend for higher interactivity
 
 if possible avoid any javascript on the frontend if it is required use it only for the most basic
