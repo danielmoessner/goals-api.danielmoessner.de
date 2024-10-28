@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="de">
+    {% load static %}
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="{% static 'img/favicon.png' %}">
+        <link rel="apple-touch-icon" href="{% static 'img/favicon.png' %}">
+        <title>
+            {% block title %}Goals{% endblock %}
+        </title>
+        {% block head %}
+        {% comment %} <link rel="stylesheet" href="{% static 'css/main.css' %}"> {% endcomment %}
+        <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+        {% endblock head %}
+    </head>
+    {% block body %}
+    <body class="min-h-screen py-8 bg-gray-100">
+        {% block main %}
+                <main class="container {% block max_width %}max-w-2xl{% endblock %} mx-auto bg-white rounded-sm shadow">
+                    {% block prose %}
+                        <div class="p-5 prose max-w-none">
+                            {% block content %}
+                            {% endblock content %}
+                        </div>
+                    {% endblock prose %}
+                    {% block prose_second %}{% endblock %}
+                </main>
+            {% endblock main %}
+    </body>
+    {% endblock body %}
+</html>

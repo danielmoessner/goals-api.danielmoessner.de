@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block prose %}
+<a href="{% url 'form' 'CreateTodo' %}?success={% url 'todos' %}">create</a>
+<uL class="px-5 list-disc list-inside">
+    {% for t in todos %}
+    <li class="flex space-x-2 [&_a]:text-blue-600">
+        <form class="flex mr-2" method="post" action="{% url 'form' 'ToggleTodo' %}?pk={{ t.pk }}&success={% url 'todos' %}">
+            {% csrf_token %}
+            <input type="checkbox" onChange="this.form.submit()" {% if t.is_done %}checked{% endif %} />
+        </form>
+
+        {{ t.name }}
+        <a href="{% url 'form' 'UpdateTodo' %}?pk={{ t.pk }}&success={% url 'todos' %}">U</a>
+        <a href="{% url 'form' 'DeleteTodo' %}?pk={{ t.pk }}&success={% url 'todos' %}">D</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

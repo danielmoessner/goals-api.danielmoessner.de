@@ -27,6 +27,7 @@ urlpatterns = [
     path('filebrowser/', site.urls),
     path('tinymce/', include('tinymce.urls')),
     path('admin/', admin.site.urls),
+    path("form/", include("apps.todos.urls")),
 ]
 
 if settings.DEBUG:

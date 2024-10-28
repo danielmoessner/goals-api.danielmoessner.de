@@ -1,0 +1,6 @@
+<a href="{% url 'todos' %}">todos</a>
+<form method="post" novalidate action="{{ request.get_full_path }}">
+{{ form.as_p }}
+{% csrf_token %}
+<button type="submit">submit</button>
+</form>

@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from django.core.exceptions import ObjectDoesNotExist
 from apps.users.models import CustomUser
 from django.utils import timezone
@@ -21,7 +22,28 @@ class ToDo(models.Model):
     created = models.DateTimeField(auto_created=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
 
-    # general
+    if TYPE_CHECKING:
+        pipeline_to_dos: models.QuerySet["PipelineToDo"]
+
+    class Meta:
+        ordering = ('status', "-completed", 'name', 'deadline', 'activate')
+
+    @staticmethod
+    def get_to_dos(to_dos, include_old_todos=False):
+        if not include_old_todos:
+            to_dos = to_dos.exclude(completed__lt=timezone.now() - timedelta(days=40))
+        return to_dos
+
+    @staticmethod
+    def get_to_dos_user(user, to_do_class):
+        all_to_dos = to_do_class.objects.filter(user=user)
+        to_dos = ToDo.get_to_dos(all_to_dos, include_old_todos=user.show_old_todos)
+        return to_dos
+    
+    @property
+    def is_done(self) -> bool:
+        return self.status == "DONE"
+
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         # set completed
         if self.completed is None and (self.status == 'DONE' or self.status == 'FAILED'):
@@ -36,25 +58,9 @@ class ToDo(models.Model):
         # save
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
-    class Meta:
-        ordering = ('status', 'name', 'deadline', 'activate')
-
     def __str__(self):
         return '{}: {} - {}'.format(
             self.name, self.get_activate(accuracy='medium'), self.get_deadline(accuracy='medium'))
-
-    # getters
-    @staticmethod
-    def get_to_dos(to_dos, include_old_todos=False):
-        if not include_old_todos:
-            to_dos = to_dos.exclude(completed__lt=timezone.now() - timedelta(days=40))
-        return to_dos
-
-    @staticmethod
-    def get_to_dos_user(user, to_do_class):
-        all_to_dos = to_do_class.objects.filter(user=user)
-        to_dos = ToDo.get_to_dos(all_to_dos, include_old_todos=user.show_old_todos)
-        return to_dos
 
     def get_deadline(self, accuracy='high'):
         if self.deadline:
@@ -71,6 +77,20 @@ class ToDo(models.Model):
             else:
                 return timezone.localtime(self.activate).strftime("%d.%m.%Y %H:%M")
         return 'none'
+    
+    def complete(self):
+        self.status = "DONE"
+        self.completed = timezone.now()
+
+    def reset(self):
+        self.status = "ACTIVE"
+        self.completed = None
+
+    def toggle(self):
+        if self.is_done:
+            self.reset()
+        else:
+            self.complete()
 
 
 class NormalToDo(ToDo):
@@ -82,6 +102,9 @@ class RepetitiveToDo(ToDo):
     previous = models.OneToOneField('self', blank=True, null=True, on_delete=models.SET_NULL, related_name='next')
     repetitions = models.PositiveSmallIntegerField()
     blocked = models.BooleanField(default=False)
+
+    if TYPE_CHECKING:
+        next: "RepetitiveToDo"
 
     def __str__(self):
         return '{} {}'.format(super().__str__(), self.repetitions)
@@ -99,7 +122,7 @@ class RepetitiveToDo(ToDo):
             self.repetitions = 0
             self.save()
             next_rtd.save()
-        super(RepetitiveToDo, self).delete(using, keep_parents)
+        return super(RepetitiveToDo, self).delete(using, keep_parents)
 
     # getters
     def get_next(self):
@@ -144,11 +167,14 @@ class NeverEndingToDo(ToDo):
     previous = models.OneToOneField('self', blank=True, null=True, on_delete=models.SET_NULL, related_name='next')
     blocked = models.BooleanField(default=False)
 
+    if TYPE_CHECKING:
+        next: "NeverEndingToDo"
+
     def delete(self, *args, **kwargs):
         if self.previous is not None:
             self.previous.blocked = True
             self.previous.save()
-        super().delete(*args, **kwargs)
+        return super().delete(*args, **kwargs)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
