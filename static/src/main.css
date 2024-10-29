@@ -1,0 +1,83 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer base {
+    body {
+        font-size: 15px;
+    }
+    
+    b {
+        font-weight: 600;
+    }
+}
+
+.django-form {
+    /* @apply -mt-4; */
+    input[type='radio'] {
+        @apply w-4 h-4 mb-1 mr-2 text-red-600 cursor-pointer border-form focus-visible:ring-red-500 focus-visible:ring-0;
+        box-shadow: none;
+    }
+    input[type='checkbox']{
+        @apply w-4 h-4 mb-1 mr-2 text-red-600 rounded cursor-pointer border-form focus-visible:ring-red-500 focus-visible:ring-0;
+        box-shadow: none;
+    }
+    input[type='text'], input[type='password'], input[type='email'], input[type='number'], textarea {
+        @apply px-3 py-2;
+    }
+    input[type='text'], input[type='password'], input[type='email'], input[type='number'], textarea, select, input[type='file'], input[type='date'] {
+        @apply px-3 py-2 border shadow-none border-form/50 ring-form focus:ring-1 focus:border-form focus:outline-none;
+    }
+    input[type='text'], input[type='password'], input[type='email'], input[type='number'], input[type='file'], input[type='date'] {
+        @apply block w-full mt-1 rounded-md sm:text-sm;
+    }
+    input:not([type='checkbox']):disabled {
+        @apply bg-gray-100 border-form;
+    }
+    textarea:disabled {
+        @apply bg-gray-100 border-form;
+    }
+    label {
+        @apply block text-sm font-normal text-gray-700 cursor-pointer;
+    }
+    label.required {
+        @apply font-medium;
+    }
+    .form-helptext ul {
+        @apply list-disc list-inside;
+    }
+    p {
+        @apply mt-4 text-base font-medium text-gray-900;
+    }
+    select {
+        @apply block w-full py-2 pl-3 pr-10 mt-1 text-base rounded-md sm:text-sm;
+    }
+    textarea {
+        @apply block w-full mt-1 rounded-md shadow-sm sm:text-sm;
+    }
+    .form-helptext {
+        @apply mt-0.5 text-sm font-normal text-gray-500;
+    }
+}
+
+/* .django-form--3-columns {
+    @apply flex flex-wrap md:-mx-3;
+    p {
+        @apply w-full md:w-1/2 md:px-3 xl:w-1/3;
+    }
+    p label {
+        @apply mt-6;
+    }
+} */
+
+/*.django-form--3-columns {*/
+/*    @apply grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3;*/
+/*    p {*/
+/*        @apply w-full;*/
+/*    }*/
+/*}*/
+
+a.disabled, button.disabled {
+    pointer-events: none;
+    @apply opacity-50;
+}
