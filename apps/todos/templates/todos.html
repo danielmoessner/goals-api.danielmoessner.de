@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 
 {% block prose %}
-<a href="{% url 'form' 'CreateTodo' %}?success={% url 'todos' %}">create</a>
-<uL class="px-5 list-disc list-inside">
+{% include 'nav.html' %}
+
+<uL class="p-5 list-disc list-inside">
     {% for t in todos %}
     <li class="flex space-x-2 [&_a]:text-blue-600">
         <form class="flex mr-2" method="post" action="{% url 'form' 'ToggleTodo' %}?pk={{ t.pk }}&success={% url 'todos' %}">

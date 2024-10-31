@@ -1,0 +1,21 @@
+<nav id="todos-nav" class="px-3 py-1 rounded-tsm text-slate-100 bg-slate-600">
+    <ul class="flex space-x-4">
+        <li>
+            <a href="{% url 'todos' %}">Todos</a>
+        </li>
+        <li>
+            <a href="{% url 'form' 'CreateTodo' %}?success={% url 'todos' %}">Create Todo</a>
+        </li>
+    </ul>
+</nav>
+<script>
+    const currentPath = window.location.pathname;
+    const navLinks = document.getElementById('todos-nav').getElementsByTagName('a');
+    for (let link of navLinks) {
+        console.log(currentPath, link.href)
+        const href = new URL(link.href)
+      if (href.pathname.startsWith(currentPath)) {
+        link.classList.add('underline');
+      }
+    }
+</script>
