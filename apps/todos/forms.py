@@ -5,6 +5,9 @@ from apps.todos.mixins import GetInstance
 from apps.todos.models import NormalToDo, ToDo
 from django.utils import timezone
 
+from apps.todos.utils import get_last_time_of_week
+
+
 class CreateTodo(GetInstance[NormalToDo], forms.ModelForm):
     class Meta:
         model = NormalToDo
@@ -16,7 +19,7 @@ class CreateTodo(GetInstance[NormalToDo], forms.ModelForm):
         self.fields["deadline"].widget = forms.DateTimeInput(
             attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
         )
-        self.fields["deadline"].initial = timezone.now() + timedelta(days=7)
+        self.fields["deadline"].initial = get_last_time_of_week()
 
     def ok(self):
         self.instance.activate = timezone.now()
