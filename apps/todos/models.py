@@ -199,6 +199,8 @@ class RepetitiveToDo(ToDo):
 
     # generate
     def generate_next(self):
+        assert self.deadline is not None
+        assert self.activate is not None
         next_deadline = self.deadline + self.duration
         if self.repetitions <= 0:
             return
