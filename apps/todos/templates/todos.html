@@ -3,17 +3,27 @@
 {% block prose %}
 {% include 'nav.html' %}
 
-<uL class="p-5 list-disc list-inside">
+<uL class="p-5 space-y-2 list-disc list-inside">
     {% for t in todos %}
-    <li class="flex space-x-2 [&_a]:text-blue-600">
+    <li class="flex relative items-center group [&_a]:text-blue-600">
         <form class="flex mr-2" method="post" action="{% url 'form' 'ToggleTodo' %}?pk={{ t.pk }}&success={% url 'todos' %}">
             {% csrf_token %}
             <input type="checkbox" onChange="this.form.submit()" {% if t.is_done %}checked{% endif %} />
         </form>
-
+        <div class="{% if t.is_overdue %}text-red-600{% endif %}">
+            <span class="block text-sm font-bold">
         {{ t.name }}
+        <a class="ml-3" href="{% url 'form' 'UpdateTodo' %}?pk={{ t.pk }}&success={% url 'todos' %}">U</a>
+        <a class="ml-1" href="{% url 'form' 'DeleteTodo' %}?pk={{ t.pk }}&success={% url 'todos' %}">D</a>
+    </span>
+    {% if t.due_in_str %}
+    <span class="block text-xs leading-none">{{ t.due_in_str }}</span>
+    {% endif %}
+    </div>
+    {% comment %} <div class="absolute top-0 bottom-0 left-0 flex items-center my-auto space-x-2 bg-white opacity-0 group-hover:opacity-100">
         <a href="{% url 'form' 'UpdateTodo' %}?pk={{ t.pk }}&success={% url 'todos' %}">U</a>
         <a href="{% url 'form' 'DeleteTodo' %}?pk={{ t.pk }}&success={% url 'todos' %}">D</a>
+    </div> {% endcomment %}
     </li>
     {% endfor %}
 </ul>

@@ -43,6 +43,46 @@ class ToDo(models.Model):
     @property
     def is_done(self) -> bool:
         return self.status == "DONE"
+    
+    @property
+    def due_in(self) -> timedelta:
+        if self.deadline is None:
+            return timedelta(days=0)
+        return self.deadline - timezone.now()
+
+    @property
+    def is_overdue(self) -> bool:
+        return self.due_in < timedelta(0)
+
+    @property
+    def due_in_str(self) -> str:
+        if self.is_done:
+            return ""
+        
+        if self.is_overdue:
+            return "Overdue"
+        
+        days, seconds = self.due_in.days, self.due_in.seconds
+        hours = seconds // 3600
+        minutes = (seconds % 3600) // 60
+        seconds = (seconds % 60)
+
+        parts = []
+        if days > 0:
+            parts.append(f"{days} Day{'s' if days > 1 else ''}")
+        if hours > 0:
+            parts.append(f"{hours} Hour{'s' if hours > 1 else ''}")
+        if minutes > 0:
+            parts.append(f"{minutes} Minute{'s' if minutes > 1 else ''}")
+        
+        if parts:
+            return ", ".join(parts) 
+        
+        if seconds:
+            return "Now"
+
+        return ""
+
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         # set completed
@@ -128,7 +168,7 @@ class RepetitiveToDo(ToDo):
     def get_next(self):
         try:
             next_rtd = self.next
-        except RepetitiveToDo.next.RelatedObjectDoesNotExist:
+        except ObjectDoesNotExist:
             next_rtd = None
         return next_rtd
 
