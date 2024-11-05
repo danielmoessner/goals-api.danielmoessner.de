@@ -51,7 +51,13 @@ class ToDo(models.Model):
         return self.deadline - timezone.now()
 
     @property
+    def is_active(self) -> bool:
+        return self.status == "ACTIVE"
+
+    @property
     def is_overdue(self) -> bool:
+        if not self.is_active:
+            return False
         return self.due_in < timedelta(0)
 
     @property
