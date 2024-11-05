@@ -31,7 +31,7 @@ class CreateTodo(GetInstance[NormalToDo], forms.ModelForm):
 class UpdateTodo(GetInstance[NormalToDo], forms.ModelForm):
     class Meta:
         model = NormalToDo
-        fields = ["name", "deadline", "notes"]
+        fields = ["name", "status", "notes", "activate", "deadline"]
 
     @staticmethod
     def get_instance(pk: str, **kwargs):
@@ -39,6 +39,12 @@ class UpdateTodo(GetInstance[NormalToDo], forms.ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields["activate"].widget = forms.DateTimeInput(
+            attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
+        )
+        self.fields["deadline"].widget = forms.DateTimeInput(
+            attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
+        )
 
     def ok(self) -> int:
         self.instance.save()
@@ -46,6 +52,9 @@ class UpdateTodo(GetInstance[NormalToDo], forms.ModelForm):
 
 
 class DeleteTodo(GetInstance[NormalToDo], forms.ModelForm):
+    text = "Are you sure you want to delete this todo?"
+    submit = "Delete"
+    
     class Meta:
         model = NormalToDo
         fields = []
