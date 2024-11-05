@@ -88,6 +88,7 @@ DATABASES = {
 
 # User
 
+LOGIN_URL = "/admin/login/"
 AUTH_USER_MODEL = "users.CustomUser"
 
 # Password validation
