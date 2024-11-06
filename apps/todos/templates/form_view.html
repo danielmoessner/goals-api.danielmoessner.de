@@ -3,6 +3,7 @@
 
 {% block prose %}
 {% include 'nav.html' %}
+{% include 'create_nav.html' %}
 <div class="p-5">
 <form method="post" class="django-form" novalidate action="{{ request.get_full_path }}">
 {{ form.as_p }}

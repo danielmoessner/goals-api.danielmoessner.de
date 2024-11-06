@@ -12,7 +12,7 @@ module.exports = {
                 '3xl': '1921px'
             },
             colors: {
-                form: "rgb(82, 82, 82)",
+                form: "#475569",
             }
         },
     },

@@ -1,0 +1,14 @@
+<nav id="create-nav" class="px-3 py-1 rounded-tsm text-slate-100 bg-slate-500">
+    <ul class="flex space-x-4">
+        <li>
+            <a 
+            class="{% if request.GET.variant == 'this_week' %}underline{% endif %}"
+            href="{% url 'form' 'CreateTodo' %}?success={% url 'todos' %}&variant=this_week">This Week</a>
+        </li>
+        <li>
+            <a 
+            class="{% if request.GET.variant == 'next_week' %}underline{% endif %}"
+            href="{% url 'form' 'CreateTodo' %}?success={% url 'todos' %}&variant=next_week">Next Week</a>
+        </li>
+    </ul>
+</nav>

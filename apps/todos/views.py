@@ -1,13 +1,16 @@
-from typing import Protocol
+from typing import Any, Protocol
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from apps.todos.forms import ToggleTodo, CreateTodo, DeleteTodo, UpdateTodo
 from apps.todos.models import NeverEndingToDo, NormalToDo, PipelineToDo, RepetitiveToDo, ToDo
 from django.contrib.auth.decorators import login_required
 
+from apps.users.models import CustomUser
+from django.contrib.auth.models import AbstractBaseUser, AnonymousUser
+
 
 class FormClass(Protocol):
-    def __init__(self, user, *args, **kwargs): ...
+    def __init__(self, user: CustomUser | AbstractBaseUser | AnonymousUser, opts: dict[str, Any], *args, **kwargs): ...
 
     def ok(self) -> int: ...
 
@@ -60,11 +63,8 @@ def form_view(request: HttpRequest, form_name: str) -> HttpResponse:
     data = None
     if request.method == "POST":
         data = request.POST.dict()
-    
-    get_instance = getattr(form_class, "get_instance", lambda *args, **kwargs: None)
-    instance = get_instance(**request.GET.dict())
 
-    form = form_class(request.user, data=data, instance=instance)
+    form = form_class(request.user, opts=request.GET.dict(), data=data)
     if request.method == "POST" and form.is_valid():
         ret = form.ok()
         success_url = success_url.replace("0", str(ret))

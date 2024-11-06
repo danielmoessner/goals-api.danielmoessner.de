@@ -4,7 +4,7 @@
             <a href="{% url 'todos' %}">Todos</a>
         </li>
         <li>
-            <a href="{% url 'form' 'CreateTodo' %}?success={% url 'todos' %}">Create Todo</a>
+            <a href="{% url 'form' 'CreateTodo' %}?success={% url 'todos' %}&variant=this_week">Create Todo</a>
         </li>
     </ul>
 </nav>
@@ -12,7 +12,6 @@
     const currentPath = window.location.pathname;
     const navLinks = document.getElementById('todos-nav').getElementsByTagName('a');
     for (let link of navLinks) {
-        console.log(currentPath, link.href)
         const href = new URL(link.href)
       if (href.pathname.startsWith(currentPath)) {
         link.classList.add('underline');
