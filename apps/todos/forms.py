@@ -14,9 +14,7 @@ OPTS = dict[str, Any]
 
 
 class CreateTodo(GetInstance[NormalToDo], forms.ModelForm):
-    script = """
-
-    """
+    nav = "create"
 
     class Meta:
         model = NormalToDo

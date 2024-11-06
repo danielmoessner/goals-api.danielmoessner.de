@@ -33,6 +33,9 @@ FORMS_DICT: dict[str, type[FormClass]] = {
     get_name(c): c for c in FORMS
 }
 
+NAVS = {
+    "create": "create_nav.html"
+}
 
 class GetFormError(Exception):
     pass
@@ -71,7 +74,9 @@ def form_view(request: HttpRequest, form_name: str) -> HttpResponse:
         return redirect(success_url)
     
     response = render(
-        request, "form_view.html", {"form": form, "cancel_url": cancel_url}
+        request, "form_view.html", {"form": form, 
+                                    "cancel_url": cancel_url, 
+                                    "nav": NAVS.get(getattr(form, "nav", ""), "")}
     )
     return response
 
