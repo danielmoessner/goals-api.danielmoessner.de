@@ -1,7 +1,7 @@
 from typing import Any, Protocol
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
-from apps.todos.forms import ToggleTodo, CreateTodo, DeleteTodo, UpdateTodo
+from apps.todos.forms import CreateNeverEndingTodo, ToggleTodo, CreateTodo, DeleteTodo, UpdateTodo
 from apps.todos.models import NeverEndingToDo, NormalToDo, PipelineToDo, RepetitiveToDo, ToDo
 from django.contrib.auth.decorators import login_required
 
@@ -27,6 +27,7 @@ FORMS: list[type[FormClass]] = [
     UpdateTodo,
     DeleteTodo,
     ToggleTodo,
+    CreateNeverEndingTodo,
 ]
 
 FORMS_DICT: dict[str, type[FormClass]] = {

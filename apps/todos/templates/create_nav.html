@@ -10,5 +10,10 @@
             class="{% if request.GET.variant == 'next_week' %}underline{% endif %}"
             href="{% url 'form' 'CreateTodo' %}?success={% url 'todos' %}&variant=next_week">Next Week</a>
         </li>
+        <li>
+            <a 
+            class="{% if 'CreateNeverEndingTodo' in request.get_full_path %}underline{% endif %}"
+            href="{% url 'form' 'CreateNeverEndingTodo' %}?success={% url 'todos' %}">Never Ending</a>
+        </li>
     </ul>
 </nav>

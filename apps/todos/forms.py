@@ -2,7 +2,7 @@ from typing import Any
 from django import forms
 
 from apps.todos.mixins import GetInstance
-from apps.todos.models import NormalToDo, ToDo
+from apps.todos.models import NeverEndingToDo, NormalToDo, ToDo
 from django.utils import timezone
 
 from apps.todos.utils import add_week, get_datetime_widget, get_last_time_of_week, get_start_of_week
@@ -39,6 +39,25 @@ class CreateTodo(GetInstance[NormalToDo], forms.ModelForm):
         self.instance.user = self.user
         self.instance.save()
         return self.instance.pk
+
+
+class CreateNeverEndingTodo(GetInstance[NeverEndingToDo], forms.ModelForm):
+    nav = "create"
+    text = "A never ending todo will reappear after the completion date + the duration time."
+    submit = "Create"
+
+    class Meta:
+        model = NeverEndingToDo
+        fields = ["name", "duration"]
+
+    def __init__(self, user: USER, opts: OPTS, *args, **kwargs):
+        assert isinstance(user, CustomUser)
+        self.user = user
+        super().__init__(*args, **kwargs)
+        self.fields["duration"].help_text = "Use 7d for 7 days"
+
+    def ok(self):
+        return 0
 
 
 class UpdateTodo(GetInstance[NormalToDo], forms.ModelForm):
