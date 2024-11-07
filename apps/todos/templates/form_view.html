@@ -8,7 +8,7 @@
 {% endif %}
 <div class="p-5">
 <form method="post" class="django-form" novalidate action="{{ request.get_full_path }}">
-{{ form.as_p }}
+{% include 'form_snippet.html' %}
 {% csrf_token %}
 <p class="">{{ form.text }}</p>
 <button type="submit">{{ form.submit|default:'Submit' }}</button>

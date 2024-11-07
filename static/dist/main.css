@@ -1161,6 +1161,10 @@ b {
   display: flex;
 }
 
+.hidden {
+  display: none;
+}
+
 .min-h-screen {
   min-height: 100vh;
 }
@@ -1264,9 +1268,19 @@ b {
   line-height: 1;
 }
 
+.text-gray-600 {
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
 .text-red-600 {
   --tw-text-opacity: 1;
   color: rgb(220 38 38 / var(--tw-text-opacity));
+}
+
+.text-red-700 {
+  --tw-text-opacity: 1;
+  color: rgb(185 28 28 / var(--tw-text-opacity));
 }
 
 .text-slate-100 {
@@ -1387,6 +1401,10 @@ b {
   input[type='text'], input[type='password'], input[type='datetime-local'], input[type='email'], input[type='number'], textarea, select, input[type='file'], input[type='date'] {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
+  }
+  input[type='text'], input[type='password'], input[type='datetime-local'], input[type='email'], input[type='number'], textarea, select, input[type='file'], input[type='date'] {
+    --tw-text-opacity: 1;
+    color: rgb(15 23 42 / var(--tw-text-opacity));
   }
   input[type='text'], input[type='password'], input[type='datetime-local'], input[type='email'], input[type='number'], textarea, select, input[type='file'], input[type='date'] {
     --tw-shadow: 0 0 #0000;
