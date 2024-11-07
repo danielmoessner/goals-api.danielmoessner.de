@@ -1,6 +1,7 @@
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from apps.todos.models import NeverEndingToDo, NormalToDo, RepetitiveToDo, PipelineToDo
+from apps.users.models import CustomUser
 
 
 def get_todo_in_its_proper_class(pk):
@@ -12,7 +13,7 @@ def get_todo_in_its_proper_class(pk):
         return RepetitiveToDo.objects.get(pk=pk)
     elif PipelineToDo.objects.filter(pk=pk).exists():
         return PipelineToDo.objects.get(pk=pk)
-    raise ObjectDoesNotExist
+    raise ObjectDoesNotExist()
 
 
 from datetime import datetime, timedelta
@@ -38,3 +39,23 @@ def get_datetime_widget():
     return forms.DateTimeInput(
             attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
         )
+
+
+def get_specific_todo(pk: int | str, user: CustomUser):
+    try:
+        return NormalToDo.objects.get(pk=pk, user=user)
+    except ObjectDoesNotExist:
+        pass
+    try:
+        return NeverEndingToDo.objects.get(pk=pk, user=user)
+    except ObjectDoesNotExist:
+        pass
+    try:
+        return RepetitiveToDo.objects.get(pk=pk, user=user)
+    except ObjectDoesNotExist:
+        pass
+    try:
+        return PipelineToDo.objects.get(pk=pk, user=user)
+    except ObjectDoesNotExist:
+        pass
+    raise ObjectDoesNotExist()

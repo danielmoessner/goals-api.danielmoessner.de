@@ -5,7 +5,7 @@ from apps.todos.mixins import GetInstance
 from apps.todos.models import NeverEndingToDo, NormalToDo, ToDo
 from django.utils import timezone
 
-from apps.todos.utils import add_week, get_datetime_widget, get_last_time_of_week, get_start_of_week
+from apps.todos.utils import add_week, get_datetime_widget, get_last_time_of_week, get_specific_todo, get_start_of_week
 from apps.users.models import CustomUser
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser
 
@@ -57,7 +57,10 @@ class CreateNeverEndingTodo(GetInstance[NeverEndingToDo], forms.ModelForm):
         self.fields["duration"].help_text = "Use 7d for 7 days"
 
     def ok(self):
-        return 0
+        self.instance.user = self.user
+        self.instance.activate = timezone.now()
+        self.instance.save()
+        return self.instance.pk
 
 
 class UpdateTodo(GetInstance[NormalToDo], forms.ModelForm):
@@ -103,7 +106,8 @@ class ToggleTodo(GetInstance[ToDo], forms.ModelForm):
         fields = []
 
     def __init__(self, user: USER, opts: OPTS, *args, **kwargs):
-        instance = UpdateTodo.get_instance(opts["pk"], user)
+        assert isinstance(user, CustomUser)
+        instance = get_specific_todo(pk=opts["pk"], user=user)
         super().__init__(*args, instance=instance, **kwargs)
     
     def ok(self) -> int:

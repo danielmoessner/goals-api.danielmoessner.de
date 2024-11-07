@@ -237,6 +237,12 @@ class NeverEndingToDo(ToDo):
         except ObjectDoesNotExist:
             return None
 
+    @property
+    def due_in_str(self):
+        days = self.duration.days
+        seconds = self.duration.seconds
+        return f"Reappears {days} days and {seconds} seconds after completion"
+
     # generate
     def generate_next(self):
         now = timezone.now()
