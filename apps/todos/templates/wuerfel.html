@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<main class="p-10">
+    <div class="flex items-center space-x-10">
+    <button class="block border-4 border-black rounded text-7xl bg-slate-200" onclick="roll()">ROLL DICE</button>
+    <p class="block"><span class="font-bold text-7xl" id="result"></span></p>
+</div>
+
+    <p class="mt-20">
+        Past Results: <br>
+        <span id="past"></span>
+    </p>
+    <script>
+        const result = document.querySelector("#result");
+        const pastResults = document.querySelector("#past");
+        const results = {};
+
+        document.addEventListener("keydown", roll);
+        
+        function rand6() {
+            return Math.floor(Math.random() * 6) + 1;
+        }
+
+        function setResult(n) {
+            result.innerHTML = n;
+        }
+
+        function setPastResults(d) {
+            pastResults.innerHTML = Object.keys(d).reduce((agg, k) => {
+                return agg + k + ": " + d[k] + "<br>";
+            }, "")
+        }
+
+        function run() {
+            const result = rand6();
+            results[result] = (results[result] || 0) + 1;
+            setResult(result);
+            setPastResults(results);
+        }
+
+        function roll() {
+            setResult("...");
+            setTimeout(run, 500);
+        }
+    </script>
+</main>
+{% endblock %}
