@@ -1,1 +1,1 @@
-px-3 py-1 rounded-tsm text-slate-100 bg-slate-500
+px-3 py-1 rounded-tsm text-slate-100

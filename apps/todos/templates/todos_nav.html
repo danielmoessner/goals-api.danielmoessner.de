@@ -1,24 +1,29 @@
-<nav id="todos-nav" class="{% include 'subnav.txt' %}">
+<nav id="todos-nav" class="{% include 'subnav.txt' %} bg-slate-600">
     <ul class="flex space-x-4">
         <li>
             <a 
-            class="{% if request.GET.kind == 'week' or request.GET.kind is None %}underline{% endif %}"
-            href="?kind=week">Week</a>
+            class="{% if request.resolver_match.url_name == 'todos' and request.GET.kind == 'week' %}underline{% endif %}"
+            href="{% url 'todos' %}?kind=week">Week</a>
         </li>
         <li>
             <a 
             class="{% if request.GET.kind == 'activated' %}underline{% endif %}"
-            href="?kind=activated">Activated</a>
+            href="{% url 'todos' %}?kind=activated">Activated</a>
         </li>
         <li>
             <a 
             class="{% if request.GET.kind == 'open' %}underline{% endif %}"
-            href="?kind=open">Open</a>
+            href="{% url 'todos' %}?kind=open">Open</a>
         </li>
         <li>
             <a 
             class="{% if request.GET.kind == 'all' %}underline{% endif %}"
-            href="?kind=all">All</a>
+            href="{% url 'todos' %}?kind=all">All</a>
+        </li>
+        <li>
+            <a
+            class="{% if 'Create' in request.get_full_path %}underline{% endif %}"
+            href="{% url 'form' 'CreateNormalTodo' %}?success={% url 'todos' %}&variant=this_week">Create Todo</a>
         </li>
     </ul>
 </nav>
