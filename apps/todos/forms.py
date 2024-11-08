@@ -13,7 +13,7 @@ USER = AbstractBaseUser | AnonymousUser | CustomUser
 OPTS = dict[str, Any]
 
 
-class CreateTodo(GetInstance[NormalTodo], forms.ModelForm):
+class CreateNormalTodo(GetInstance[NormalTodo], forms.ModelForm):
     nav = "create"
 
     class Meta:

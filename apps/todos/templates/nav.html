@@ -6,7 +6,7 @@
         <li>
             <a
             class="{% if 'Create' in request.get_full_path %}underline{% endif %}"
-            href="{% url 'form' 'CreateTodo' %}?success={% url 'todos' %}&variant=this_week">Create Todo</a>
+            href="{% url 'form' 'CreateNormalTodo' %}?success={% url 'todos' %}&variant=this_week">Create Todo</a>
         </li>
     </ul>
 </nav>

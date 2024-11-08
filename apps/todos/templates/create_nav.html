@@ -3,12 +3,12 @@
         <li>
             <a 
             class="{% if request.GET.variant == 'this_week' %}underline{% endif %}"
-            href="{% url 'form' 'CreateTodo' %}?success={% url 'todos' %}&variant=this_week">This Week</a>
+            href="{% url 'form' 'CreateNormalTodo' %}?success={% url 'todos' %}&variant=this_week">This Week</a>
         </li>
         <li>
             <a 
             class="{% if request.GET.variant == 'next_week' %}underline{% endif %}"
-            href="{% url 'form' 'CreateTodo' %}?success={% url 'todos' %}&variant=next_week">Next Week</a>
+            href="{% url 'form' 'CreateNormalTodo' %}?success={% url 'todos' %}&variant=next_week">Next Week</a>
         </li>
         <li>
             <a 
