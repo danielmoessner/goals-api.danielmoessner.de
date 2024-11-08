@@ -106,6 +106,11 @@ class CreatePipelineTodo(OptsUserInstance[PipelineTodo], forms.ModelForm):
         qs = Todo.objects.filter(status="ACTIVE", user=self.user).order_by("name")
         self.fields["previous"].queryset = qs # type: ignore
 
+    def ok(self) -> int:
+        self.instance.user = self.user
+        self.instance.save()
+        return self.instance.pk
+
 
 class UpdateRepetitiveTodo(OptsUserInstance[RepetitiveTodo], forms.ModelForm):
     class Meta:
