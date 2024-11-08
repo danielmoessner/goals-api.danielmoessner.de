@@ -5,7 +5,7 @@ from apps.todos.mixins import GetInstance
 from apps.todos.models import NeverEndingTodo, NormalTodo, RepetitiveTodo, Todo
 from django.utils import timezone
 
-from apps.todos.utils import add_week, get_datetime_widget, get_last_time_of_week, get_specific_todo, get_start_of_week, setup_duration_field
+from apps.todos.utils import add_week, get_datetime_widget, get_end_of_week, get_specific_todo, get_start_of_week, setup_duration_field
 from apps.users.models import CustomUser
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser
 
@@ -29,13 +29,12 @@ class CreateTodo(GetInstance[NormalTodo], forms.ModelForm):
         variant = opts.get("variant", "this_week")
         if variant == "this_week":
             self.fields["activate"].initial = get_start_of_week()
-            self.fields["deadline"].initial = get_last_time_of_week()
+            self.fields["deadline"].initial = get_end_of_week()
         elif variant == "next_week":
             self.fields["activate"].initial = add_week(get_start_of_week())
-            self.fields["deadline"].initial = add_week(get_last_time_of_week())
+            self.fields["deadline"].initial = add_week(get_end_of_week())
 
     def ok(self):
-        self.instance.activate = timezone.now()
         self.instance.user = self.user
         self.instance.save()
         return self.instance.pk

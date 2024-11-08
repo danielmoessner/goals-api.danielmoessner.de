@@ -2,8 +2,18 @@
     <ul class="flex space-x-4">
         <li>
             <a 
-            class="{% if request.GET.kind == 'activated' or request.GET.kind is None %}underline{% endif %}"
+            class="{% if request.GET.kind == 'week' or request.GET.kind is None %}underline{% endif %}"
+            href="?kind=week">Week</a>
+        </li>
+        <li>
+            <a 
+            class="{% if request.GET.kind == 'activated' %}underline{% endif %}"
             href="?kind=activated">Activated</a>
+        </li>
+        <li>
+            <a 
+            class="{% if request.GET.kind == 'open' %}underline{% endif %}"
+            href="?kind=open">Open</a>
         </li>
         <li>
             <a 

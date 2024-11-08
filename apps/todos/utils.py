@@ -18,7 +18,7 @@ def get_todo_in_its_proper_class(pk):
 
 from datetime import datetime, timedelta
 
-def get_last_time_of_week():
+def get_end_of_week():
     now = datetime.now()
     week_start = now - timedelta(days=now.weekday())
     end_of_week = (week_start + timedelta(days=6)).replace(hour=23, minute=59, second=59, microsecond=0)
