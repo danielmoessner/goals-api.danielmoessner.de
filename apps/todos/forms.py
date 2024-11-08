@@ -2,7 +2,7 @@ from typing import Any
 from django import forms
 
 from apps.todos.mixins import GetInstance
-from apps.todos.models import NeverEndingToDo, NormalToDo, ToDo
+from apps.todos.models import NeverEndingTodo, NormalTodo, Todo
 from django.utils import timezone
 
 from apps.todos.utils import add_week, get_datetime_widget, get_last_time_of_week, get_specific_todo, get_start_of_week
@@ -13,11 +13,11 @@ USER = AbstractBaseUser | AnonymousUser | CustomUser
 OPTS = dict[str, Any]
 
 
-class CreateTodo(GetInstance[NormalToDo], forms.ModelForm):
+class CreateTodo(GetInstance[NormalTodo], forms.ModelForm):
     nav = "create"
 
     class Meta:
-        model = NormalToDo
+        model = NormalTodo
         fields = ["name", "activate", "deadline"]
 
     def __init__(self, user: USER, opts: OPTS, *args, **kwargs):
@@ -41,20 +41,21 @@ class CreateTodo(GetInstance[NormalToDo], forms.ModelForm):
         return self.instance.pk
 
 
-class CreateNeverEndingTodo(GetInstance[NeverEndingToDo], forms.ModelForm):
+class CreateNeverEndingTodo(GetInstance[NeverEndingTodo], forms.ModelForm):
     nav = "create"
     text = "A never ending todo will reappear after the completion date + the duration time."
     submit = "Create"
 
     class Meta:
-        model = NeverEndingToDo
+        model = NeverEndingTodo
         fields = ["name", "duration"]
 
     def __init__(self, user: USER, opts: OPTS, *args, **kwargs):
         assert isinstance(user, CustomUser)
         self.user = user
         super().__init__(*args, **kwargs)
-        self.fields["duration"].help_text = "Ex.: 7 days"
+        self.fields["duration"].help_text = "Ex.: 7 9:30:10 for 7 days, 9 hours, 30 minutes and 10 seconds"
+        self.fields["duration"].initial = "0 00:00:00"
 
     def ok(self):
         self.instance.user = self.user
@@ -63,17 +64,16 @@ class CreateNeverEndingTodo(GetInstance[NeverEndingToDo], forms.ModelForm):
         return self.instance.pk
 
 
-class UpdateTodo(GetInstance[NormalToDo], forms.ModelForm):
+class UpdateNormalTodo(GetInstance[NormalTodo], forms.ModelForm):
     class Meta:
-        model = NormalToDo
-        fields = ["name", "status", "notes", "activate", "deadline"]
+        model = NormalTodo
+        fields = ["name", "status", "activate", "deadline"]
 
-    @staticmethod
-    def get_instance(pk: str, user: USER):
-        return NormalToDo.objects.get(pk=pk, user=user)
+    def get_instance(self, pk: str, user: USER):
+        return NormalTodo.objects.get(pk=pk, user=user)
 
     def __init__(self, user: USER, opts: OPTS, *args, **kwargs):
-        instance = UpdateTodo.get_instance(opts["pk"], user)
+        instance = self.get_instance(opts["pk"], user)
         super().__init__(*args, instance=instance, **kwargs)
         self.fields["activate"].widget = get_datetime_widget()
         self.fields["deadline"].widget = get_datetime_widget()
@@ -83,12 +83,30 @@ class UpdateTodo(GetInstance[NormalToDo], forms.ModelForm):
         return self.instance.pk
 
 
-class DeleteTodo(GetInstance[NormalToDo], forms.ModelForm):
+class UpdateNeverEndingTodo(GetInstance[NeverEndingTodo], forms.ModelForm):
+    class Meta:
+        model = NeverEndingTodo
+        fields = ["name", "status", "activate", "duration"]
+    
+    def get_instance(self, pk: str, user: USER):
+        return NeverEndingTodo.objects.get(pk=pk, user=user)
+    
+    def __init__(self, user: USER, opts: OPTS, *args, **kwargs):
+        instance = self.get_instance(opts["pk"], user)
+        super().__init__(*args, instance=instance, **kwargs)
+        self.fields["activate"].widget = get_datetime_widget()
+    
+    def ok(self) -> int:
+        self.instance.save()
+        return self.instance.pk
+
+
+class DeleteTodo(GetInstance[NormalTodo], forms.ModelForm):
     text = "Are you sure you want to delete this todo?"
     submit = "Delete"
 
     class Meta:
-        model = ToDo
+        model = Todo
         fields = []
     
     def __init__(self, user: USER, opts: OPTS, *args, **kwargs):
@@ -101,9 +119,9 @@ class DeleteTodo(GetInstance[NormalToDo], forms.ModelForm):
         return 0
 
 
-class ToggleTodo(GetInstance[ToDo], forms.ModelForm):
+class ToggleTodo(GetInstance[Todo], forms.ModelForm):
     class Meta:
-        model = ToDo
+        model = Todo
         fields = []
 
     def __init__(self, user: USER, opts: OPTS, *args, **kwargs):

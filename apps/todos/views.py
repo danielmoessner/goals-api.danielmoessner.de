@@ -1,8 +1,8 @@
 from typing import Any, Protocol
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
-from apps.todos.forms import CreateNeverEndingTodo, ToggleTodo, CreateTodo, DeleteTodo, UpdateTodo
-from apps.todos.models import NeverEndingToDo, NormalToDo, PipelineToDo, RepetitiveToDo, ToDo
+from apps.todos.forms import CreateNeverEndingTodo, ToggleTodo, CreateTodo, DeleteTodo, UpdateNeverEndingTodo, UpdateNormalTodo
+from apps.todos.models import NeverEndingTodo, NormalTodo, PipelineTodo, RepetitiveTodo, Todo
 from django.contrib.auth.decorators import login_required
 
 from apps.users.models import CustomUser
@@ -24,7 +24,8 @@ def get_name(cls: type[object]):
 # improve to import automatically
 FORMS: list[type[FormClass]] = [
     CreateTodo,
-    UpdateTodo,
+    UpdateNormalTodo,
+    UpdateNeverEndingTodo,
     DeleteTodo,
     ToggleTodo,
     CreateNeverEndingTodo,
@@ -86,11 +87,11 @@ def form_view(request: HttpRequest, form_name: str) -> HttpResponse:
 def todos(request: HttpRequest):
     todos = []
     kind = request.GET.get("kind", "activated")
-    for cls in [NormalToDo, PipelineToDo, NeverEndingToDo, RepetitiveToDo]:
+    for cls in [NormalTodo, PipelineTodo, NeverEndingTodo, RepetitiveTodo]:
         if kind == "activated":
-            todos += ToDo.get_to_dos_user(request.user, cls).filter(activate__lte=timezone.now())
+            todos += Todo.get_to_dos_user(request.user, cls).filter(activate__lte=timezone.now())
         else:
-            todos += ToDo.get_to_dos_user(request.user, cls)
+            todos += Todo.get_to_dos_user(request.user, cls)
     return render(
         request, "todos.html", {"todos": todos}
     )

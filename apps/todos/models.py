@@ -6,7 +6,7 @@ from django.db import models
 from datetime import timedelta
 
 
-class ToDo(models.Model):
+class Todo(models.Model):
     name = models.CharField(max_length=300)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="to_dos")
     activate = models.DateTimeField(null=True, blank=True)
@@ -23,7 +23,7 @@ class ToDo(models.Model):
     updated = models.DateTimeField(auto_now=True, null=True)
 
     if TYPE_CHECKING:
-        pipeline_to_dos: models.QuerySet["PipelineToDo"]
+        pipeline_to_dos: models.QuerySet["PipelineTodo"]
 
     class Meta:
         ordering = ('status', "-completed", 'name', 'deadline', 'activate')
@@ -37,13 +37,17 @@ class ToDo(models.Model):
     @staticmethod
     def get_to_dos_user(user, to_do_class):
         all_to_dos = to_do_class.objects.filter(user=user)
-        to_dos = ToDo.get_to_dos(all_to_dos, include_old_todos=user.show_old_todos)
+        to_dos = Todo.get_to_dos(all_to_dos, include_old_todos=user.show_old_todos)
         return to_dos
     
     @property
     def is_done(self) -> bool:
         return self.status == "DONE"
     
+    @property
+    def type(self) -> str:
+        return self.__class__.__name__
+
     @property
     def due_in(self) -> timedelta:
         if self.deadline is None:
@@ -139,24 +143,24 @@ class ToDo(models.Model):
             self.complete()
 
 
-class NormalToDo(ToDo):
+class NormalTodo(Todo):
     pass
 
 
-class RepetitiveToDo(ToDo):
+class RepetitiveTodo(Todo):
     duration = models.DurationField()
     previous = models.OneToOneField('self', blank=True, null=True, on_delete=models.SET_NULL, related_name='next')
     repetitions = models.PositiveSmallIntegerField()
     blocked = models.BooleanField(default=False)
 
     if TYPE_CHECKING:
-        next: "RepetitiveToDo"
+        next: "RepetitiveTodo"
 
     def __str__(self):
         return '{} {}'.format(super().__str__(), self.repetitions)
 
     def save(self, *args, **kwargs):
-        super(RepetitiveToDo, self).save(*args, **kwargs)
+        super(RepetitiveTodo, self).save(*args, **kwargs)
         if self.repetitions > 0 and self.get_next() is None:
             self.generate_next()
 
@@ -168,7 +172,7 @@ class RepetitiveToDo(ToDo):
             self.repetitions = 0
             self.save()
             next_rtd.save()
-        return super(RepetitiveToDo, self).delete(using, keep_parents)
+        return super(RepetitiveTodo, self).delete(using, keep_parents)
 
     # getters
     def get_next(self):
@@ -192,7 +196,7 @@ class RepetitiveToDo(ToDo):
         # return q
 
     def get_all_before(self):
-        q = RepetitiveToDo.objects.filter(pk=self.pk)
+        q = RepetitiveTodo.objects.filter(pk=self.pk)
         if self.previous:
             q = q | self.previous.get_all_before()
         return q
@@ -206,17 +210,17 @@ class RepetitiveToDo(ToDo):
             return
         next_activate = self.activate + self.duration
         repetitions = self.repetitions - 1
-        RepetitiveToDo.objects.create(name=self.name, user=self.user, previous=self, deadline=next_deadline,
+        RepetitiveTodo.objects.create(name=self.name, user=self.user, previous=self, deadline=next_deadline,
                                       activate=next_activate, repetitions=repetitions, duration=self.duration)
 
 
-class NeverEndingToDo(ToDo):
+class NeverEndingTodo(Todo):
     duration = models.DurationField()
     previous = models.OneToOneField('self', blank=True, null=True, on_delete=models.SET_NULL, related_name='next')
     blocked = models.BooleanField(default=False)
 
     if TYPE_CHECKING:
-        next: "NeverEndingToDo"
+        next: "NeverEndingTodo"
 
     def delete(self, *args, **kwargs):
         if self.previous is not None:
@@ -249,9 +253,9 @@ class NeverEndingToDo(ToDo):
     def generate_next(self):
         now = timezone.now()
         next_activate = now + self.duration
-        NeverEndingToDo.objects.create(name=self.name, user=self.user, previous=self,
+        NeverEndingTodo.objects.create(name=self.name, user=self.user, previous=self,
                                        activate=next_activate, duration=self.duration)
 
 
-class PipelineToDo(ToDo):
-    previous = models.ForeignKey(ToDo, null=True, on_delete=models.SET_NULL, related_name='pipeline_to_dos')
+class PipelineTodo(Todo):
+    previous = models.ForeignKey(Todo, null=True, on_delete=models.SET_NULL, related_name='pipeline_to_dos')

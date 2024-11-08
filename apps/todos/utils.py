@@ -1,18 +1,18 @@
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
-from apps.todos.models import NeverEndingToDo, NormalToDo, RepetitiveToDo, PipelineToDo
+from apps.todos.models import NeverEndingTodo, NormalTodo, RepetitiveTodo, PipelineTodo
 from apps.users.models import CustomUser
 
 
 def get_todo_in_its_proper_class(pk):
-    if NormalToDo.objects.filter(pk=pk).exists():
-        return NormalToDo.objects.get(pk=pk)
-    elif NeverEndingToDo.objects.filter(pk=pk).exists():
-        return NeverEndingToDo.objects.get(pk=pk)
-    elif RepetitiveToDo.objects.filter(pk=pk).exists():
-        return RepetitiveToDo.objects.get(pk=pk)
-    elif PipelineToDo.objects.filter(pk=pk).exists():
-        return PipelineToDo.objects.get(pk=pk)
+    if NormalTodo.objects.filter(pk=pk).exists():
+        return NormalTodo.objects.get(pk=pk)
+    elif NeverEndingTodo.objects.filter(pk=pk).exists():
+        return NeverEndingTodo.objects.get(pk=pk)
+    elif RepetitiveTodo.objects.filter(pk=pk).exists():
+        return RepetitiveTodo.objects.get(pk=pk)
+    elif PipelineTodo.objects.filter(pk=pk).exists():
+        return PipelineTodo.objects.get(pk=pk)
     raise ObjectDoesNotExist()
 
 
@@ -43,19 +43,19 @@ def get_datetime_widget():
 
 def get_specific_todo(pk: int | str, user: CustomUser):
     try:
-        return NormalToDo.objects.get(pk=pk, user=user)
+        return NormalTodo.objects.get(pk=pk, user=user)
     except ObjectDoesNotExist:
         pass
     try:
-        return NeverEndingToDo.objects.get(pk=pk, user=user)
+        return NeverEndingTodo.objects.get(pk=pk, user=user)
     except ObjectDoesNotExist:
         pass
     try:
-        return RepetitiveToDo.objects.get(pk=pk, user=user)
+        return RepetitiveTodo.objects.get(pk=pk, user=user)
     except ObjectDoesNotExist:
         pass
     try:
-        return PipelineToDo.objects.get(pk=pk, user=user)
+        return PipelineTodo.objects.get(pk=pk, user=user)
     except ObjectDoesNotExist:
         pass
     raise ObjectDoesNotExist()

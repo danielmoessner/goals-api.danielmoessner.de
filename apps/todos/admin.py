@@ -1,7 +1,7 @@
-from apps.todos.models import NormalToDo, NeverEndingToDo, PipelineToDo, RepetitiveToDo
+from apps.todos.models import NormalTodo, NeverEndingTodo, PipelineTodo, RepetitiveTodo
 from django.contrib import admin
 
-admin.site.register(NormalToDo)
-admin.site.register(NeverEndingToDo)
-admin.site.register(PipelineToDo)
-admin.site.register(RepetitiveToDo)
+admin.site.register(NormalTodo)
+admin.site.register(NeverEndingTodo)
+admin.site.register(PipelineTodo)
+admin.site.register(RepetitiveTodo)

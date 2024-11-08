@@ -1,5 +1,5 @@
 from django.utils import timezone
-from apps.todos.models import ToDo, NeverEndingToDo, RepetitiveToDo, PipelineToDo, NormalToDo
+from apps.todos.models import Todo, NeverEndingTodo, RepetitiveTodo, PipelineTodo, NormalTodo
 from apps.todos.utils import get_todo_in_its_proper_class
 from rest_framework import serializers
 
@@ -17,7 +17,7 @@ class ToDoSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
 
     class Meta:
-        model = ToDo
+        model = Todo
         exclude = ['user']
 
     def save(self, **kwargs):
@@ -35,7 +35,7 @@ class NormalToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerializer)
         return 'NORMAL'
 
     class Meta:
-        model = NormalToDo
+        model = NormalTodo
         exclude = ['user']
 
 
@@ -53,7 +53,7 @@ class NeverEndingToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSerial
         return 'NEVER_ENDING'
 
     class Meta:
-        model = NeverEndingToDo
+        model = NeverEndingTodo
         exclude = ['user']
 
     def __init__(self, *args, **kwargs):
@@ -65,7 +65,7 @@ class NeverEndingToDoSerializerWithoutPrevious(NeverEndingToDoSerializer):
     next = None
 
     class Meta:
-        model = NeverEndingToDo
+        model = NeverEndingTodo
         exclude = ['user', 'previous']
 
 
@@ -85,7 +85,7 @@ class RepetitiveToDoSerializer(AddUserMixin, serializers.HyperlinkedModelSeriali
         return 'REPETITIVE'
 
     class Meta:
-        model = RepetitiveToDo
+        model = RepetitiveTodo
         exclude = ['user']
 
     def __init__(self, *args, **kwargs):
@@ -98,7 +98,7 @@ class RepetitiveToDoSerializerWithoutPrevious(RepetitiveToDoSerializer):
 
     class Meta:
         exclude = ['previous']
-        model = RepetitiveToDo
+        model = RepetitiveTodo
 
 
 class PipelineToDoSerializerWithoutPrevious(AddUserMixin, serializers.HyperlinkedModelSerializer):
@@ -108,7 +108,7 @@ class PipelineToDoSerializerWithoutPrevious(AddUserMixin, serializers.Hyperlinke
     activate = serializers.ReadOnlyField()
 
     class Meta:
-        model = PipelineToDo
+        model = PipelineTodo
         exclude = ['previous', 'user']
 
     def get_type(self, todo):
@@ -116,15 +116,15 @@ class PipelineToDoSerializerWithoutPrevious(AddUserMixin, serializers.Hyperlinke
 
 
 class PipelineToDoSerializer(PipelineToDoSerializerWithoutPrevious):
-    previous = serializers.HyperlinkedRelatedField(view_name='todo-detail', queryset=ToDo.objects.none())
+    previous = serializers.HyperlinkedRelatedField(view_name='todo-detail', queryset=Todo.objects.none())
 
     class Meta:
-        model = PipelineToDo
+        model = PipelineTodo
         exclude = ['user']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['previous'].queryset = ToDo.get_to_dos_user(
+        self.fields['previous'].queryset = Todo.get_to_dos_user(
             self.context['request'].user,
-            ToDo
+            Todo
         )
