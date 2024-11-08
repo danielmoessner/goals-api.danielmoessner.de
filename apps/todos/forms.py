@@ -54,7 +54,7 @@ class CreateNeverEndingTodo(GetInstance[NeverEndingToDo], forms.ModelForm):
         assert isinstance(user, CustomUser)
         self.user = user
         super().__init__(*args, **kwargs)
-        self.fields["duration"].help_text = "Use 7d for 7 days"
+        self.fields["duration"].help_text = "Ex.: 7 days"
 
     def ok(self):
         self.instance.user = self.user
@@ -88,11 +88,12 @@ class DeleteTodo(GetInstance[NormalToDo], forms.ModelForm):
     submit = "Delete"
 
     class Meta:
-        model = NormalToDo
+        model = ToDo
         fields = []
     
     def __init__(self, user: USER, opts: OPTS, *args, **kwargs):
-        instance = UpdateTodo.get_instance(opts["pk"], user)
+        assert isinstance(user, CustomUser)
+        instance = get_specific_todo(pk=opts["pk"], user=user)
         super().__init__(*args, instance=instance, **kwargs)
 
     def ok(self) -> int:

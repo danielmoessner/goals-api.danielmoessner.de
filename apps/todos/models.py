@@ -111,17 +111,17 @@ class ToDo(models.Model):
     def get_deadline(self, accuracy='high'):
         if self.deadline:
             if accuracy == 'medium':
-                return timezone.localtime(self.deadline).strftime("%d.%m.%Y")
+                return (self.deadline).strftime("%d.%m.%Y")
             else:
-                return timezone.localtime(self.deadline).strftime("%d.%m.%Y %H:%M")
+                return (self.deadline).strftime("%d.%m.%Y %H:%M")
         return 'none'
 
     def get_activate(self, accuracy='high'):
         if self.activate:
             if accuracy == 'medium':
-                return timezone.localtime(self.activate).strftime("%d.%m.%Y")
+                return (self.activate).strftime("%d.%m.%Y")
             else:
-                return timezone.localtime(self.activate).strftime("%d.%m.%Y %H:%M")
+                return (self.activate).strftime("%d.%m.%Y %H:%M")
         return 'none'
     
     def complete(self):
@@ -239,6 +239,8 @@ class NeverEndingToDo(ToDo):
 
     @property
     def due_in_str(self):
+        if not self.is_active:
+            return ""
         days = self.duration.days
         seconds = self.duration.seconds
         return f"Reappears {days} days and {seconds} seconds after completion"

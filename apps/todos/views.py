@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 
 from apps.users.models import CustomUser
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser
-
+from django.utils import timezone
 
 class FormClass(Protocol):
     def __init__(self, user: CustomUser | AbstractBaseUser | AnonymousUser, opts: dict[str, Any], *args, **kwargs): ...
@@ -85,8 +85,12 @@ def form_view(request: HttpRequest, form_name: str) -> HttpResponse:
 @login_required
 def todos(request: HttpRequest):
     todos = []
+    kind = request.GET.get("kind", "activated")
     for cls in [NormalToDo, PipelineToDo, NeverEndingToDo, RepetitiveToDo]:
-        todos += ToDo.get_to_dos_user(request.user, cls)
+        if kind == "activated":
+            todos += ToDo.get_to_dos_user(request.user, cls).filter(activate__lte=timezone.now())
+        else:
+            todos += ToDo.get_to_dos_user(request.user, cls)
     return render(
         request, "todos.html", {"todos": todos}
     )

@@ -1,0 +1,14 @@
+<nav id="todos-nav" class="{% include 'subnav.txt' %}">
+    <ul class="flex space-x-4">
+        <li>
+            <a 
+            class="{% if request.GET.kind == 'activated' or request.GET.kind is None %}underline{% endif %}"
+            href="?kind=activated">Activated</a>
+        </li>
+        <li>
+            <a 
+            class="{% if request.GET.kind == 'all' %}underline{% endif %}"
+            href="?kind=all">All</a>
+        </li>
+    </ul>
+</nav>
