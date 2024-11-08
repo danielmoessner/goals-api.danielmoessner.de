@@ -2,7 +2,7 @@
     <ul class="flex space-x-4">
         <li>
             <a 
-            class="{% if request.resolver_match.url_name == 'todos' and request.GET.kind == 'week' %}underline{% endif %}"
+            class="{% if request.resolver_match.url_name == 'todos' and request.GET.kind is None or request.GET.kind == 'week' %}underline{% endif %}"
             href="{% url 'todos' %}?kind=week">Week</a>
         </li>
         <li>

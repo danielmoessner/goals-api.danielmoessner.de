@@ -1,17 +1,7 @@
 <nav id="todos-nav" class="px-3 py-1 rounded-tsm text-slate-100 bg-slate-700">
     <ul class="flex space-x-4">
-        <li>
+        <li class="{% if 'todo' in request.get_full_path %}underline{% endif %}">
             <a href="{% url 'todos' %}">Todos</a>
         </li>
     </ul>
 </nav>
-<script>
-    const currentPath = window.location.pathname;
-    const navLinks = document.getElementById('todos-nav').getElementsByTagName('a');
-    for (let link of navLinks) {
-        const href = new URL(link.href)
-      if (href.pathname.startsWith(currentPath)) {
-        link.classList.add('underline');
-      }
-    }
-</script>
