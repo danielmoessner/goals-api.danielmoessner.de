@@ -1217,6 +1217,10 @@ b {
   margin-left: calc(2.5rem * calc(1 - var(--tw-space-x-reverse)));
 }
 
+.overflow-hidden {
+  overflow: hidden;
+}
+
 .rounded-sm {
   border-radius: 0.125rem;
 }

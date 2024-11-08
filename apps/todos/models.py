@@ -203,11 +203,11 @@ class RepetitiveTodo(Todo):
 
     # generate
     def generate_next(self):
+        if self.repetitions <= 0:
+            return
         assert self.deadline is not None
         assert self.activate is not None
         next_deadline = self.deadline + self.duration
-        if self.repetitions <= 0:
-            return
         next_activate = self.activate + self.duration
         repetitions = self.repetitions - 1
         RepetitiveTodo.objects.create(name=self.name, user=self.user, previous=self, deadline=next_deadline,

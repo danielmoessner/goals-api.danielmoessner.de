@@ -15,5 +15,10 @@
             class="{% if 'CreateNeverEndingTodo' in request.get_full_path %}underline{% endif %}"
             href="{% url 'form' 'CreateNeverEndingTodo' %}?success={% url 'todos' %}">Never Ending</a>
         </li>
+        <li>
+            <a 
+            class="{% if 'CreateRepetitiveTodo' in request.get_full_path %}underline{% endif %}"
+            href="{% url 'form' 'CreateRepetitiveTodo' %}?success={% url 'todos' %}">Repetitive</a>
+        </li>
     </ul>
 </nav>

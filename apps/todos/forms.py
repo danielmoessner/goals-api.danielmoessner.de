@@ -2,10 +2,10 @@ from typing import Any
 from django import forms
 
 from apps.todos.mixins import GetInstance
-from apps.todos.models import NeverEndingTodo, NormalTodo, Todo
+from apps.todos.models import NeverEndingTodo, NormalTodo, RepetitiveTodo, Todo
 from django.utils import timezone
 
-from apps.todos.utils import add_week, get_datetime_widget, get_last_time_of_week, get_specific_todo, get_start_of_week
+from apps.todos.utils import add_week, get_datetime_widget, get_last_time_of_week, get_specific_todo, get_start_of_week, setup_duration_field
 from apps.users.models import CustomUser
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser
 
@@ -54,8 +54,7 @@ class CreateNeverEndingTodo(GetInstance[NeverEndingTodo], forms.ModelForm):
         assert isinstance(user, CustomUser)
         self.user = user
         super().__init__(*args, **kwargs)
-        self.fields["duration"].help_text = "Ex.: 7 9:30:10 for 7 days, 9 hours, 30 minutes and 10 seconds"
-        self.fields["duration"].initial = "0 00:00:00"
+        setup_duration_field(self.fields["duration"])
 
     def ok(self):
         self.instance.user = self.user
@@ -63,6 +62,47 @@ class CreateNeverEndingTodo(GetInstance[NeverEndingTodo], forms.ModelForm):
         self.instance.save()
         return self.instance.pk
 
+
+class CreateRepetitiveTodo(GetInstance[RepetitiveTodo], forms.ModelForm):
+    nav = "create"
+    submit = "Create"
+
+    class Meta:
+        model = RepetitiveTodo
+        fields = ["name", "duration", "repetitions"]
+    
+    def __init__(self, user: USER, opts: OPTS, *args, **kwargs):
+        assert isinstance(user, CustomUser)
+        self.user = user
+        super().__init__(*args, **kwargs)
+        setup_duration_field(self.fields["duration"])
+
+    def ok(self):
+        self.instance.user = self.user
+        self.instance.activate = timezone.now()
+        self.instance.deadline = timezone.now() + self.cleaned_data["duration"]
+        self.instance.save()
+        return self.instance.pk
+
+
+class UpdateRepetitiveTodo(GetInstance[RepetitiveTodo], forms.ModelForm):
+    class Meta:
+        model = RepetitiveTodo
+        fields = ["name", "status", "activate", "deadline", "repetitions"]
+
+    def get_instance(self, pk: str, user: USER):
+        return RepetitiveTodo.objects.get(pk=pk, user=user)
+
+    def __init__(self, user: USER, opts: OPTS, *args, **kwargs):
+        instance = self.get_instance(opts["pk"], user)
+        super().__init__(*args, instance=instance, **kwargs)
+        self.fields["activate"].widget = get_datetime_widget()
+        self.fields["deadline"].widget = get_datetime_widget()
+
+    def ok(self) -> int:
+        self.instance.save()
+        return self.instance.pk
+    
 
 class UpdateNormalTodo(GetInstance[NormalTodo], forms.ModelForm):
     class Meta:

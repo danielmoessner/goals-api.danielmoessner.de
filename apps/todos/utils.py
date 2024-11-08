@@ -59,3 +59,8 @@ def get_specific_todo(pk: int | str, user: CustomUser):
     except ObjectDoesNotExist:
         pass
     raise ObjectDoesNotExist()
+
+
+def setup_duration_field(field: forms.Field):
+    field.help_text = "Ex.: 7 9:30:10 for 7 days, 9 hours, 30 minutes and 10 seconds"
+    field.initial = "0 00:00:00"
