@@ -15,9 +15,9 @@
         {% endblock head %}
     </head>
     {% block body %}
-    <body class="min-h-screen py-8 bg-gray-100">
+    <body class="min-h-screen bg-gray-100 md:py-8">
         {% block main %}
-                <main class="container {% block max_width %}max-w-2xl{% endblock %} mx-auto bg-white rounded-sm shadow overflow-hidden">
+                <main class="container {% block max_width %}max-w-2xl{% endblock %} mx-auto bg-white md:rounded-sm shadow overflow-hidden">
                     {% block prose %}
                         <div class="p-5 prose max-w-none">
                             {% block content %}

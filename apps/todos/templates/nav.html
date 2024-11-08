@@ -3,5 +3,8 @@
         <li class="{% if 'todo' in request.get_full_path %}underline{% endif %}">
             <a href="{% url 'todos' %}">Todos</a>
         </li>
+        <li class="{% if 'achievements' in request.get_full_path %}underline{% endif %}">
+            <a href="{% url 'todos' %}">Achievements</a>
+        </li>
     </ul>
 </nav>
