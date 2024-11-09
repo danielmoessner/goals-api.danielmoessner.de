@@ -2,11 +2,13 @@
 
 
 {% block prose %}
+
 {% include 'nav.html' %}
-{% if nav %}
-{% include 'todos_nav.html' %}
-{% include nav %}
-{% endif %}
+
+{% for n in navs %}
+{% include n %}
+{% endfor %}
+
 <div class="p-5">
 <form method="post" class="django-form" novalidate action="{{ request.get_full_path }}">
 {% include 'form_snippet.html' %}

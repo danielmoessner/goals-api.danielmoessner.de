@@ -32,7 +32,7 @@ class OptsUserInstance(Generic[T]):
 
 
 class CreateNormalTodo(OptsUserInstance[NormalTodo], forms.ModelForm):
-    nav = "create"
+    navs = ["todos", "create"]
 
     class Meta:
         model = NormalTodo
@@ -56,7 +56,7 @@ class CreateNormalTodo(OptsUserInstance[NormalTodo], forms.ModelForm):
 
 
 class CreateNeverEndingTodo(OptsUserInstance[NeverEndingTodo], forms.ModelForm):
-    nav = "create"
+    navs = ["todos", "create"]
     text = "A never ending todo will reappear after the completion date + the duration time."
     submit = "Create"
 
@@ -75,7 +75,7 @@ class CreateNeverEndingTodo(OptsUserInstance[NeverEndingTodo], forms.ModelForm):
 
 
 class CreateRepetitiveTodo(OptsUserInstance[RepetitiveTodo], forms.ModelForm):
-    nav = "create"
+    navs = ["todos", "create"]
     submit = "Create"
 
     class Meta:
@@ -94,7 +94,7 @@ class CreateRepetitiveTodo(OptsUserInstance[RepetitiveTodo], forms.ModelForm):
 
 
 class CreatePipelineTodo(OptsUserInstance[PipelineTodo], forms.ModelForm):
-    nav = "create"
+    navs = ["todos", "create"]
     submit = "Create"
     text = "A pipeline todo activates once its previous todo completes"
 

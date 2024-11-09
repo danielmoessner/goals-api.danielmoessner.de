@@ -8,6 +8,8 @@ from apps.notes.urls import router as notes_router
 from apps.goals.urls import router as goals_router
 from apps.story.urls import router as story_router
 from django.contrib import admin
+
+from config.form import form_view
 from .filebrowser import site
 from django.conf import settings
 from django.urls import path
@@ -23,11 +25,13 @@ router.registry.extend(achievements_router.registry)
 
 urlpatterns = [
     path('api-token-auth/', views.obtain_auth_token),
-    path('', include(router.urls)),
     path('filebrowser/', site.urls),
     path('tinymce/', include('tinymce.urls')),
     path('admin/', admin.site.urls),
-    path("form/", include("apps.todos.urls")),
+    path("todos/", include("apps.todos.urls")),
+    path("achievements/", include("apps.achievements.urls")),
+     path("form/<str:form_name>/", form_view, name="form"),
+    path('', include(router.urls)),
 ]
 
 if settings.DEBUG:

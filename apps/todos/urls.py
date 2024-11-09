@@ -15,5 +15,4 @@ router.register(r'pipeline-todos', viewsets.PipelineToDoViewSet)
 urlpatterns = [
     path("todos/", views.todos, name="todos"),
     path("wuerfel/", lambda r: render(r, "wuerfel.html")),
-    path("<str:form_name>/", views.form_view, name="form"),
 ]
