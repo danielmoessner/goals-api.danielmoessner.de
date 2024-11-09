@@ -17,3 +17,7 @@ class Achievement(models.Model):
 
     def __str__(self):
         return '{}'.format(self.title)
+    
+    @property
+    def date_str(self):
+        return self.date.strftime("%d.%m.%Y")

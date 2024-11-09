@@ -1,17 +1,11 @@
-from typing import Any, Protocol
-from django.http import HttpRequest, HttpResponse
-from django.shortcuts import redirect, render
-from apps.todos.forms import CreateNeverEndingTodo, CreatePipelineTodo, CreateRepetitiveTodo, ToggleTodo, CreateNormalTodo, DeleteTodo, UpdateNeverEndingTodo, UpdateNormalTodo, UpdateRepetitiveTodo
+from django.http import HttpRequest
+from django.shortcuts import  render
 from apps.todos.models import NeverEndingTodo, NormalTodo, PipelineTodo, RepetitiveTodo, Todo
 from django.contrib.auth.decorators import login_required
 
 from apps.todos.utils import get_end_of_week, get_start_of_week
-from apps.users.models import CustomUser
 from django.db.models import Q
-from django.contrib.auth.models import AbstractBaseUser, AnonymousUser
 from django.utils import timezone
-
-
 
 
 @login_required

@@ -41,6 +41,11 @@ def get_datetime_widget():
         )
 
 
+def get_date_widget():
+    return forms.DateInput(
+        attrs={"type": "date"}, format="%Y-%m-%d"
+    )
+
 def get_specific_todo(pk: int | str, user: CustomUser):
     try:
         return NormalTodo.objects.get(pk=pk, user=user)
@@ -68,3 +73,7 @@ def setup_duration_field(field: forms.Field):
 
 def setup_datetime_field(field: forms.Field):
     field.widget = get_datetime_widget()
+
+
+def setup_date_field(field: forms.Field):
+    field.widget = get_date_widget()
