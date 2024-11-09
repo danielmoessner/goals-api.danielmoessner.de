@@ -113,6 +113,8 @@ class CreatePipelineTodo(OptsUserInstance[PipelineTodo], forms.ModelForm):
 
 
 class UpdateRepetitiveTodo(OptsUserInstance[RepetitiveTodo], forms.ModelForm):
+    navs = ["todos"]
+
     class Meta:
         model = RepetitiveTodo
         fields = ["name", "status", "activate", "deadline", "repetitions"]
@@ -130,6 +132,8 @@ class UpdateRepetitiveTodo(OptsUserInstance[RepetitiveTodo], forms.ModelForm):
     
 
 class UpdateNormalTodo(OptsUserInstance[NormalTodo], forms.ModelForm):
+    navs = ["todos"]
+
     class Meta:
         model = NormalTodo
         fields = ["name", "status", "activate", "deadline"]
@@ -147,6 +151,8 @@ class UpdateNormalTodo(OptsUserInstance[NormalTodo], forms.ModelForm):
 
 
 class UpdateNeverEndingTodo(OptsUserInstance[NeverEndingTodo], forms.ModelForm):
+    navs = ["todos"]
+
     class Meta:
         model = NeverEndingTodo
         fields = ["name", "status", "activate", "duration"]
@@ -163,6 +169,7 @@ class UpdateNeverEndingTodo(OptsUserInstance[NeverEndingTodo], forms.ModelForm):
 
 
 class DeleteTodo(OptsUserInstance[NormalTodo], forms.ModelForm):
+    navs = ["todos"]
     text = "Are you sure you want to delete this todo?"
     submit = "Delete"
 

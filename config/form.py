@@ -1,7 +1,7 @@
 from typing import Any, Protocol
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
-from apps.achievements.forms import CreateAchievement
+from apps.achievements.forms import CreateAchievement, DeleteAchievement, UpdateAchievement
 from apps.todos.forms import CreateNeverEndingTodo, CreatePipelineTodo, CreateRepetitiveTodo, ToggleTodo, CreateNormalTodo, DeleteTodo, UpdateNeverEndingTodo, UpdateNormalTodo, UpdateRepetitiveTodo
 from apps.users.models import CustomUser
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser
@@ -28,6 +28,8 @@ FORMS: list[type[FormClass]] = [
     UpdateRepetitiveTodo,
     CreatePipelineTodo,
     CreateAchievement,
+    UpdateAchievement,
+    DeleteAchievement,
 ]
 
 
