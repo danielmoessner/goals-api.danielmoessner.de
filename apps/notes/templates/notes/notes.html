@@ -8,7 +8,7 @@
     {% for n in notes %}
     <li class="flex relative items-center group [&_a]:text-blue-600">
         <div>
-        <span class="block text-sm font-bold">{{ a.name }}
+        <span class="block text-sm font-bold">{{ n.name }}
         <a class="ml-3" href="{% url 'form' 'UpdateNote' %}?pk={{ n.pk }}&success={% url 'notes' %}">U</a>
         <a class="ml-1" href="{% url 'form' 'DeleteNote' %}?pk={{ n.pk }}&success={% url 'notes' %}">D</a>
     </span>

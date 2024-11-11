@@ -22,4 +22,4 @@ class Note(models.Model):
         return self.updated.strftime("%d.%m.%Y")
 
     def __str__(self):
-        return strip_tags(self.content.split('</', 1)[0])
+        return self.name

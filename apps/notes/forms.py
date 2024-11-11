@@ -2,7 +2,7 @@ from django import forms
 from apps.notes.models import Note
 from apps.todos.forms import OptsUserInstance
 from apps.todos.utils import setup_date_field
-
+from tinymce.widgets import TinyMCE
 
 class CreateNote(OptsUserInstance[Note], forms.ModelForm):
     navs = ["notes"]
@@ -41,6 +41,7 @@ class DeleteNote(OptsUserInstance[Note], forms.ModelForm):
     class Meta:
         model = Note
         fields = []
+        widgets = {'content': TinyMCE(attrs={'cols': 80, 'rows': 30})}
 
     def get_instance(self):
         return Note.objects.get(pk=self.opts["pk"], user=self.user)
