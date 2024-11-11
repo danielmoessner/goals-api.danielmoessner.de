@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block prose %}
+{% include 'nav.html' %}
+{% include 'notes/nav.html' %}
+
+<uL class="p-5 space-y-2 list-disc list-inside">
+    {% for n in notes %}
+    <li class="flex relative items-center group [&_a]:text-blue-600">
+        <div>
+        <span class="block text-sm font-bold">{{ a.name }}
+        <a class="ml-3" href="{% url 'form' 'UpdateNote' %}?pk={{ n.pk }}&success={% url 'notes' %}">U</a>
+        <a class="ml-1" href="{% url 'form' 'DeleteNote' %}?pk={{ n.pk }}&success={% url 'notes' %}">D</a>
+    </span>
+    <span class="block text-xs leading-none">{{ n.last_update_str }}</span>
+</div>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

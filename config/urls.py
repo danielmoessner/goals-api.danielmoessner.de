@@ -30,6 +30,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("todos/", include("apps.todos.urls")),
     path("achievements/", include("apps.achievements.urls")),
+    path("notes/", include("apps.notes.urls")),
      path("form/<str:form_name>/", form_view, name="form"),
     path('', include(router.urls)),
 ]

@@ -1,0 +1,14 @@
+<nav class="{% include 'subnav.txt' %} bg-slate-600">
+    <ul class="flex space-x-4">
+        <li>
+            <a 
+            class="{% if request.resolver_match.url_name == 'notes' %}underline{% endif %}"
+            href="{% url 'notes' %}">All</a>
+        </li>
+        <li>
+            <a
+            class="{% if 'Create' in request.get_full_path %}underline{% endif %}"
+            href="{% url 'form' 'CreateNote' %}?success={% url 'notes' %}">Create</a>
+        </li>
+    </ul>
+</nav>

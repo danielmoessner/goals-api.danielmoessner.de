@@ -2,6 +2,7 @@ from typing import Any, Protocol
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from apps.achievements.forms import CreateAchievement, DeleteAchievement, UpdateAchievement
+from apps.notes.forms import CreateNote, DeleteNote, UpdateNote
 from apps.todos.forms import CreateNeverEndingTodo, CreatePipelineTodo, CreateRepetitiveTodo, ToggleTodo, CreateNormalTodo, DeleteTodo, UpdateNeverEndingTodo, UpdateNormalTodo, UpdateRepetitiveTodo
 from apps.users.models import CustomUser
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser
@@ -30,6 +31,9 @@ FORMS: list[type[FormClass]] = [
     CreateAchievement,
     UpdateAchievement,
     DeleteAchievement,
+    CreateNote,
+    UpdateNote,
+    DeleteNote,
 ]
 
 
@@ -37,6 +41,7 @@ NAVS = {
     "create": "create_nav.html",
     "todos": "todos_nav.html",
     "achievements": "achievements/nav.html",
+    "notes": "notes/nav.html",
 }
 
 
