@@ -1431,6 +1431,11 @@ b {
     width: 100%;
   }
   input[type='text'], input[type='password'], input[type='datetime-local'], input[type='email'], input[type='number'], textarea, select, input[type='file'], input[type='date'] {
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+  }
+  input[type='text'], input[type='password'], input[type='datetime-local'], input[type='email'], input[type='number'], textarea, select, input[type='file'], input[type='date'] {
     border-radius: 0.375rem;
   }
   input[type='text'], input[type='password'], input[type='datetime-local'], input[type='email'], input[type='number'], textarea, select, input[type='file'], input[type='date'] {

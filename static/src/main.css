@@ -22,7 +22,7 @@
         box-shadow: none;
     }
     input[type='text'], input[type='password'], input[type='datetime-local'], input[type='email'], input[type='number'], textarea, select, input[type='file'], input[type='date'] {
-        @apply block w-full px-3 py-2 mt-1 border rounded-md shadow-none text-slate-900 border-form/50 ring-form focus:ring-1 focus:border-form focus:outline-none sm:text-sm;
+        @apply block w-full px-3 py-2 mt-1 border rounded-md shadow-none appearance-none text-slate-900 border-form/50 ring-form focus:ring-1 focus:border-form focus:outline-none sm:text-sm;
     }
     input:not([type='checkbox']):disabled {
         @apply bg-gray-100 border-form;
