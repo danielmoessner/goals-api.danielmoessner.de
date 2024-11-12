@@ -1233,6 +1233,10 @@ b {
   overflow: hidden;
 }
 
+.overflow-visible {
+  overflow: visible;
+}
+
 .overflow-x-auto {
   overflow-x: auto;
 }
@@ -1376,6 +1380,18 @@ b {
   --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.outline {
+  outline-style: solid;
+}
+
+.outline-2 {
+  outline-width: 2px;
+}
+
+.outline-offset-2 {
+  outline-offset: 2px;
 }
 
 .django-form {
@@ -1715,6 +1731,18 @@ a.disabled, button.disabled {
   opacity: 0.5;
 }
 
+.focus\:outline:focus {
+  outline-style: solid;
+}
+
+.focus\:outline-2:focus {
+  outline-width: 2px;
+}
+
+.focus\:outline-slate-200:focus {
+  outline-color: #e2e8f0;
+}
+
 .group:hover .group-hover\:opacity-100 {
   opacity: 1;
 }
@@ -1827,6 +1855,15 @@ a.disabled, button.disabled {
   border-width: 2px;
 }
 
+.\[\&_li_a\]\:bg-white li a {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
+.\[\&_li_a\]\:bg-white\/20 li a {
+  background-color: rgb(255 255 255 / 0.2);
+}
+
 .\[\&_li_a\]\:px-5 li a {
   padding-left: 1.25rem;
   padding-right: 1.25rem;
@@ -1835,6 +1872,42 @@ a.disabled, button.disabled {
 .\[\&_li_a\]\:py-0\.5 li a {
   padding-top: 0.125rem;
   padding-bottom: 0.125rem;
+}
+
+.\[\&_li_a\]\:outline li a {
+  outline-style: solid;
+}
+
+.\[\&_li_a\]\:outline-2 li a {
+  outline-width: 2px;
+}
+
+.\[\&_li_a\]\:outline-offset-2 li a {
+  outline-offset: 2px;
+}
+
+.\[\&_li_a\]\:focus\:bg-white\/20:focus li a {
+  background-color: rgb(255 255 255 / 0.2);
+}
+
+.focus\:\[\&_li_a\]\:focus\:bg-white\/20:focus li a:focus {
+  background-color: rgb(255 255 255 / 0.2);
+}
+
+.focus\:\[\&_li_a\]\:bg-white\/20 li a:focus {
+  background-color: rgb(255 255 255 / 0.2);
+}
+
+.\[\&_li_a\]\:focus\:outline:focus li a {
+  outline-style: solid;
+}
+
+.\[\&_li_a\]\:focus\:outline-2:focus li a {
+  outline-width: 2px;
+}
+
+.\[\&_li_a\]\:focus\:outline-offset-2:focus li a {
+  outline-offset: 2px;
 }
 
 @media (min-width: 768px) {
@@ -1851,4 +1924,30 @@ a.disabled, button.disabled {
     padding-top: 0px;
     padding-bottom: 0px;
   }
+}
+
+.\[\&_ul\]\:flex ul {
+  display: flex;
+}
+
+.\[\&_ul\]\:max-w-full ul {
+  max-width: 100%;
+}
+
+.\[\&_ul\]\:space-x-4 ul > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(1rem * var(--tw-space-x-reverse));
+  margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)));
+}
+
+.\[\&_ul\]\:overflow-visible ul {
+  overflow: visible;
+}
+
+.\[\&_ul\]\:overflow-x-auto ul {
+  overflow-x: auto;
+}
+
+.\[\&_ul\]\:overflow-x-scroll ul {
+  overflow-x: scroll;
 }
