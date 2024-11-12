@@ -1,17 +1,19 @@
 {% extends 'base.html' %}
-
 {% block body %}
-<main class="p-10">
-    <div class="flex items-center space-x-10">
-    <button class="block border-4 border-black rounded text-7xl bg-slate-200" onclick="roll()">ROLL DICE</button>
-    <p class="block"><span class="font-bold text-7xl" id="result"></span></p>
-</div>
-
-    <p class="mt-20">
-        Past Results: <br>
-        <span id="past"></span>
-    </p>
-    <script>
+    <main class="p-10">
+        <div class="flex items-center space-x-10">
+            <button class="block border-4 border-black rounded text-7xl bg-slate-200"
+                    onclick="roll()">ROLL DICE</button>
+            <p class="block">
+                <span class="font-bold text-7xl" id="result"></span>
+            </p>
+        </div>
+        <p class="mt-20">
+            Past Results:
+            <br>
+            <span id="past"></span>
+        </p>
+        <script>
         const result = document.querySelector("#result");
         const pastResults = document.querySelector("#past");
         const results = {};
@@ -43,6 +45,6 @@
             setResult("...");
             setTimeout(run, 500);
         }
-    </script>
-</main>
+        </script>
+    </main>
 {% endblock %}

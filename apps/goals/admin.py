@@ -1,5 +1,6 @@
-from apps.goals.models import Goal, Strategy, ProgressMonitor, Link
 from django.contrib import admin
+
+from apps.goals.models import Goal, Link, ProgressMonitor, Strategy
 
 admin.site.register(Goal)
 admin.site.register(Strategy)

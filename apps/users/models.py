@@ -3,6 +3,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+
 class UserManager(BaseUserManager):
     def _create_user(self, email, password, **extra_fields):
         email = self.normalize_email(email)
@@ -31,8 +32,8 @@ class UserManager(BaseUserManager):
 class CustomUser(AbstractUser):
     # make email the default login method
     username = None
-    email = models.EmailField('E-Mail Address', unique=True)
-    USERNAME_FIELD = 'email'
+    email = models.EmailField("E-Mail Address", unique=True)
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
     objects = UserManager()
     # goals
@@ -41,5 +42,5 @@ class CustomUser(AbstractUser):
     show_old_todos = models.BooleanField(default=False)
 
     class Meta:
-        verbose_name = 'User'
-        verbose_name_plural = 'Users'
+        verbose_name = "User"
+        verbose_name_plural = "Users"

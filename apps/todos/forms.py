@@ -1,12 +1,27 @@
 from typing import Any, Generic, TypeVar
-from django import forms
 
-from apps.todos.models import NeverEndingTodo, NormalTodo, PipelineTodo, RepetitiveTodo, Todo
-from django.utils import timezone
-from django.db import models
-from apps.todos.utils import add_week, get_datetime_widget, get_end_of_week, get_specific_todo, get_start_of_week, setup_datetime_field, setup_duration_field
-from apps.users.models import CustomUser
+from django import forms
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser
+from django.db import models
+from django.utils import timezone
+
+from apps.todos.models import (
+    NeverEndingTodo,
+    NormalTodo,
+    PipelineTodo,
+    RepetitiveTodo,
+    Todo,
+)
+from apps.todos.utils import (
+    add_week,
+    get_datetime_widget,
+    get_end_of_week,
+    get_specific_todo,
+    get_start_of_week,
+    setup_datetime_field,
+    setup_duration_field,
+)
+from apps.users.models import CustomUser
 
 USER = AbstractBaseUser | AnonymousUser | CustomUser
 OPTS = dict[str, Any]
@@ -18,7 +33,7 @@ class OptsUserInstance(Generic[T]):
 
     def init(self):
         pass
-    
+
     def get_instance(self) -> models.Model | None:
         return None
 
@@ -81,7 +96,7 @@ class CreateRepetitiveTodo(OptsUserInstance[RepetitiveTodo], forms.ModelForm):
     class Meta:
         model = RepetitiveTodo
         fields = ["name", "duration", "repetitions"]
-    
+
     def init(self):
         setup_duration_field(self.fields["duration"])
 
@@ -104,7 +119,7 @@ class CreatePipelineTodo(OptsUserInstance[PipelineTodo], forms.ModelForm):
 
     def init(self):
         qs = Todo.objects.filter(status="ACTIVE", user=self.user).order_by("name")
-        self.fields["previous"].queryset = qs # type: ignore
+        self.fields["previous"].queryset = qs  # type: ignore
 
     def ok(self) -> int:
         self.instance.user = self.user
@@ -121,7 +136,7 @@ class UpdateRepetitiveTodo(OptsUserInstance[RepetitiveTodo], forms.ModelForm):
 
     def get_instance(self):
         return RepetitiveTodo.objects.get(pk=self.opts["pk"], user=self.user)
-    
+
     def init(self):
         setup_datetime_field(self.fields["activate"])
         setup_datetime_field(self.fields["deadline"])
@@ -129,7 +144,7 @@ class UpdateRepetitiveTodo(OptsUserInstance[RepetitiveTodo], forms.ModelForm):
     def ok(self) -> int:
         self.instance.save()
         return self.instance.pk
-    
+
 
 class UpdateNormalTodo(OptsUserInstance[NormalTodo], forms.ModelForm):
     navs = ["todos"]
@@ -156,13 +171,13 @@ class UpdateNeverEndingTodo(OptsUserInstance[NeverEndingTodo], forms.ModelForm):
     class Meta:
         model = NeverEndingTodo
         fields = ["name", "status", "activate", "duration"]
-    
+
     def get_instance(self):
         return NeverEndingTodo.objects.get(pk=self.opts["pk"], user=self.user)
 
     def init(self):
         setup_datetime_field(self.fields["activate"])
-    
+
     def ok(self) -> int:
         self.instance.save()
         return self.instance.pk
@@ -176,7 +191,7 @@ class DeleteTodo(OptsUserInstance[NormalTodo], forms.ModelForm):
     class Meta:
         model = Todo
         fields = []
-    
+
     def get_instance(self):
         return get_specific_todo(pk=self.opts["pk"], user=self.user)
 
@@ -189,7 +204,7 @@ class ToggleTodo(OptsUserInstance[Todo], forms.ModelForm):
     class Meta:
         model = Todo
         fields = []
-    
+
     def get_instance(self):
         return get_specific_todo(pk=self.opts["pk"], user=self.user)
 

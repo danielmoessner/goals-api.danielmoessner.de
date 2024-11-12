@@ -1,14 +1,17 @@
-from apps.users.models import CustomUser
 from django.db import models
+
+from apps.users.models import CustomUser
 
 
 class Goal(models.Model):
-    user = models.ForeignKey(CustomUser, related_name='goals', on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, related_name="goals", on_delete=models.CASCADE)
     name = models.CharField(max_length=300)
     why = models.TextField(blank=True, null=True)
     impact = models.TextField(blank=True, null=True)
     deadline = models.DateTimeField(null=True, blank=True)
-    sub_goals = models.ManyToManyField(to='self', through='Link', symmetrical=False, related_name='master_goals')
+    sub_goals = models.ManyToManyField(
+        to="self", through="Link", symmetrical=False, related_name="master_goals"
+    )
     is_archived = models.BooleanField(default=False)
     addition = models.TextField(blank=True, null=True)
     progress = models.PositiveSmallIntegerField(default=0, blank=True)
@@ -18,7 +21,7 @@ class Goal(models.Model):
 
     # general
     class Meta:
-        ordering = ('is_archived', 'name')
+        ordering = ("is_archived", "name")
 
     def __str__(self):
         return self.name
@@ -50,20 +53,22 @@ class Goal(models.Model):
     def get_tree_subgoals(self, user):
         queryset = self.sub_goals.all()
         queryset = Goal.get_goals(
-            queryset,
-            include_archived_goals=user.show_archived_objects
+            queryset, include_archived_goals=user.show_archived_objects
         )
         return queryset
 
     def get_tree_monitors(self, user):
         queryset = self.progress_monitors.all()
-        queryset = ProgressMonitor.get_monitors(queryset,
-                                                included_archived_progress_monitors=user.show_archived_objects)
+        queryset = ProgressMonitor.get_monitors(
+            queryset, included_archived_progress_monitors=user.show_archived_objects
+        )
         return queryset
 
     def get_tree_strategies(self, user):
         queryset = self.strategies.all()
-        queryset = Strategy.get_strategies(queryset, include_archived_strategies=user.show_archived_objects)
+        queryset = Strategy.get_strategies(
+            queryset, include_archived_strategies=user.show_archived_objects
+        )
         return queryset
 
     def get_all_sub_goals(self):
@@ -128,12 +133,14 @@ class Goal(models.Model):
 
 
 class ProgressMonitor(models.Model):
-    goal = models.ForeignKey(Goal, on_delete=models.CASCADE, related_name='progress_monitors')
+    goal = models.ForeignKey(
+        Goal, on_delete=models.CASCADE, related_name="progress_monitors"
+    )
     name = models.CharField(max_length=300)
     weight = models.PositiveSmallIntegerField(default=1)
     steps = models.PositiveSmallIntegerField()
     step = models.PositiveSmallIntegerField(default=0, blank=True)
-    notes = models.TextField(default='', blank=True)
+    notes = models.TextField(default="", blank=True)
     is_archived = models.BooleanField(default=False)
     created = models.DateTimeField(auto_created=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
@@ -141,19 +148,30 @@ class ProgressMonitor(models.Model):
     # general
     @property
     def progress(self):
-        return round((float(self.step) / float(self.steps)) * 100) if self.steps != 0 else 100
+        return (
+            round((float(self.step) / float(self.steps)) * 100)
+            if self.steps != 0
+            else 100
+        )
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(
+        self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
         if self.step > self.steps:
             self.step = self.steps
         if self.step < 0:
             self.step = 0
-        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
         # calculate the goals progress
         self.goal.reset()
 
     class Meta:
-        ordering = ('is_archived', 'name', 'goal')
+        ordering = ("is_archived", "name", "goal")
 
     def __str__(self):
         return self.name
@@ -172,9 +190,13 @@ class ProgressMonitor(models.Model):
 
     @staticmethod
     def get_monitors_user(user, included_archived_progress_monitors=False):
-        goals = Goal.get_goals_user(user, "ALL", include_archived_goals=included_archived_progress_monitors)
+        goals = Goal.get_goals_user(
+            user, "ALL", include_archived_goals=included_archived_progress_monitors
+        )
         monitors = ProgressMonitor.objects.filter(goal__in=goals)
-        monitors = ProgressMonitor.get_monitors(monitors, included_archived_progress_monitors)
+        monitors = ProgressMonitor.get_monitors(
+            monitors, included_archived_progress_monitors
+        )
         return monitors
 
     def get_all_master_objects(self):
@@ -186,19 +208,23 @@ class ProgressMonitor(models.Model):
     def get_notes(self):
         if self.notes:
             return self.notes
-        return ''
+        return ""
 
     def get_tree(self):
         data = dict()
-        data['name'] = self.name
-        data['progress'] = self.progress
-        data['pk'] = self.pk
+        data["name"] = self.name
+        data["progress"] = self.progress
+        data["pk"] = self.pk
         return data
 
 
 class Link(models.Model):
-    master_goal = models.ForeignKey(Goal, on_delete=models.CASCADE, related_name="sub_links")
-    sub_goal = models.OneToOneField(Goal, on_delete=models.CASCADE, related_name="master_links")
+    master_goal = models.ForeignKey(
+        Goal, on_delete=models.CASCADE, related_name="sub_links"
+    )
+    sub_goal = models.OneToOneField(
+        Goal, on_delete=models.CASCADE, related_name="master_links"
+    )
     weight = models.PositiveSmallIntegerField(default=1)
     is_archived = models.BooleanField(default=False)
     created = models.DateTimeField(auto_created=True, null=True)
@@ -210,13 +236,20 @@ class Link(models.Model):
         return self.sub_goal.progress
 
     class Meta:
-        ordering = ('is_archived', 'master_goal')
+        ordering = ("is_archived", "master_goal")
 
     def __str__(self):
         return self.get_name()
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+    def save(
+        self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
         # reset the master goal progress
         self.master_goal.reset()
 
@@ -260,7 +293,7 @@ class Link(models.Model):
         return self.sub_goal.get_all_sub_monitors()
 
     def get_name(self):
-        return self.master_goal.name + ' --> ' + self.sub_goal.name
+        return self.master_goal.name + " --> " + self.sub_goal.name
 
 
 class Strategy(models.Model):
@@ -274,7 +307,7 @@ class Strategy(models.Model):
 
     # general
     class Meta:
-        ordering = ('is_archived', 'name')
+        ordering = ("is_archived", "name")
 
     def __str__(self):
         return str(self.name)
@@ -296,7 +329,9 @@ class Strategy(models.Model):
 
     @staticmethod
     def get_strategies_user(user, include_archived_strategies=False):
-        goals = Goal.get_goals_user(user, "ALL", include_archived_goals=include_archived_strategies)
+        goals = Goal.get_goals_user(
+            user, "ALL", include_archived_goals=include_archived_strategies
+        )
         strategies = Strategy.get_strategies_goals(goals, include_archived_strategies)
         return strategies
 

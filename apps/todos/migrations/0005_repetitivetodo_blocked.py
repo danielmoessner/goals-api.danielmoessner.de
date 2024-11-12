@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('todos', '0004_auto_20210222_1421'),
+        ("todos", "0004_auto_20210222_1421"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='repetitivetodo',
-            name='blocked',
+            model_name="repetitivetodo",
+            name="blocked",
             field=models.BooleanField(default=False),
         ),
     ]

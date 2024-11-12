@@ -1,24 +1,24 @@
-from typing import TYPE_CHECKING
-from django.core.exceptions import ObjectDoesNotExist
-from apps.users.models import CustomUser
-from django.utils import timezone
-from django.db import models
 from datetime import timedelta
+from typing import TYPE_CHECKING
+
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
+from django.utils import timezone
+
+from apps.users.models import CustomUser
 
 
 class Todo(models.Model):
     name = models.CharField(max_length=300)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="to_dos")
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="to_dos"
+    )
     activate = models.DateTimeField(null=True, blank=True)
     deadline = models.DateTimeField(null=True, blank=True)
     notes = models.TextField(null=True, blank=True)
     completed = models.DateTimeField(null=True, blank=True)
-    status_choices = (
-        ('ACTIVE', 'Active'),
-        ('DONE', 'Done'),
-        ('FAILED', 'Failed')
-    )
-    status = models.CharField(choices=status_choices, max_length=20, default='ACTIVE')
+    status_choices = (("ACTIVE", "Active"), ("DONE", "Done"), ("FAILED", "Failed"))
+    status = models.CharField(choices=status_choices, max_length=20, default="ACTIVE")
     created = models.DateTimeField(auto_created=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
 
@@ -26,7 +26,7 @@ class Todo(models.Model):
         pipeline_to_dos: models.QuerySet["PipelineTodo"]
 
     class Meta:
-        ordering = ('status', "-completed", 'name', 'deadline', 'activate')
+        ordering = ("status", "-completed", "name", "deadline", "activate")
 
     @staticmethod
     def get_to_dos(to_dos, include_old_todos=False):
@@ -39,11 +39,11 @@ class Todo(models.Model):
         all_to_dos = to_do_class.objects.filter(user=user)
         to_dos = Todo.get_to_dos(all_to_dos, include_old_todos=user.show_old_todos)
         return to_dos
-    
+
     @property
     def is_done(self) -> bool:
         return self.status == "DONE"
-    
+
     @property
     def type(self) -> str:
         return self.__class__.__name__
@@ -68,14 +68,14 @@ class Todo(models.Model):
     def due_in_str(self) -> str:
         if self.is_done:
             return ""
-        
+
         if self.is_overdue:
             return "Overdue"
-        
+
         days, seconds = self.due_in.days, self.due_in.seconds
         hours = seconds // 3600
         minutes = (seconds % 3600) // 60
-        seconds = (seconds % 60)
+        seconds = seconds % 60
 
         parts = []
         if days > 0:
@@ -84,50 +84,63 @@ class Todo(models.Model):
             parts.append(f"{hours} Hour{'s' if hours > 1 else ''}")
         if minutes > 0:
             parts.append(f"{minutes} Minute{'s' if minutes > 1 else ''}")
-        
+
         if parts:
-            return ", ".join(parts) 
-        
+            return ", ".join(parts)
+
         if seconds:
             return "Now"
 
         return ""
 
-
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(
+        self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
         # set completed
-        if self.completed is None and (self.status == 'DONE' or self.status == 'FAILED'):
+        if self.completed is None and (
+            self.status == "DONE" or self.status == "FAILED"
+        ):
             self.completed = timezone.now()
-        if self.status == 'ACTIVE':
+        if self.status == "ACTIVE":
             self.completed = None
         # activate pipeline to dos
-        if self.status == 'DONE':
+        if self.status == "DONE":
             self.pipeline_to_dos.filter(activate=None).update(activate=timezone.now())
-        elif self.status == 'FAILED':
-            self.pipeline_to_dos.filter(activate=None).update(status='FAILED', activate=timezone.now())
+        elif self.status == "FAILED":
+            self.pipeline_to_dos.filter(activate=None).update(
+                status="FAILED", activate=timezone.now()
+            )
         # save
-        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
 
     def __str__(self):
-        return '{}: {} - {}'.format(
-            self.name, self.get_activate(accuracy='medium'), self.get_deadline(accuracy='medium'))
+        return "{}: {} - {}".format(
+            self.name,
+            self.get_activate(accuracy="medium"),
+            self.get_deadline(accuracy="medium"),
+        )
 
-    def get_deadline(self, accuracy='high'):
+    def get_deadline(self, accuracy="high"):
         if self.deadline:
-            if accuracy == 'medium':
+            if accuracy == "medium":
                 return (self.deadline).strftime("%d.%m.%Y")
             else:
                 return (self.deadline).strftime("%d.%m.%Y %H:%M")
-        return 'none'
+        return "none"
 
-    def get_activate(self, accuracy='high'):
+    def get_activate(self, accuracy="high"):
         if self.activate:
-            if accuracy == 'medium':
+            if accuracy == "medium":
                 return (self.activate).strftime("%d.%m.%Y")
             else:
                 return (self.activate).strftime("%d.%m.%Y %H:%M")
-        return 'none'
-    
+        return "none"
+
     def complete(self):
         self.status = "DONE"
         self.completed = timezone.now()
@@ -149,7 +162,9 @@ class NormalTodo(Todo):
 
 class RepetitiveTodo(Todo):
     duration = models.DurationField()
-    previous = models.OneToOneField('self', blank=True, null=True, on_delete=models.SET_NULL, related_name='next')
+    previous = models.OneToOneField(
+        "self", blank=True, null=True, on_delete=models.SET_NULL, related_name="next"
+    )
     repetitions = models.PositiveSmallIntegerField()
     blocked = models.BooleanField(default=False)
 
@@ -157,7 +172,7 @@ class RepetitiveTodo(Todo):
         next: "RepetitiveTodo"
 
     def __str__(self):
-        return '{} {}'.format(super().__str__(), self.repetitions)
+        return "{} {}".format(super().__str__(), self.repetitions)
 
     def save(self, *args, **kwargs):
         super(RepetitiveTodo, self).save(*args, **kwargs)
@@ -186,7 +201,9 @@ class RepetitiveTodo(Todo):
         repetitive_to_dos = [self]
         next_repetitive_to_do = self.get_next()
         if next_repetitive_to_do:
-            repetitive_to_dos = repetitive_to_dos + next_repetitive_to_do.get_all_after()
+            repetitive_to_dos = (
+                repetitive_to_dos + next_repetitive_to_do.get_all_after()
+            )
         return repetitive_to_dos
         # this code may throw a parser stack overflow
         # q = RepetitiveToDo.objects.filter(pk=self.pk)
@@ -210,13 +227,22 @@ class RepetitiveTodo(Todo):
         next_deadline = self.deadline + self.duration
         next_activate = self.activate + self.duration
         repetitions = self.repetitions - 1
-        RepetitiveTodo.objects.create(name=self.name, user=self.user, previous=self, deadline=next_deadline,
-                                      activate=next_activate, repetitions=repetitions, duration=self.duration)
+        RepetitiveTodo.objects.create(
+            name=self.name,
+            user=self.user,
+            previous=self,
+            deadline=next_deadline,
+            activate=next_activate,
+            repetitions=repetitions,
+            duration=self.duration,
+        )
 
 
 class NeverEndingTodo(Todo):
     duration = models.DurationField()
-    previous = models.OneToOneField('self', blank=True, null=True, on_delete=models.SET_NULL, related_name='next')
+    previous = models.OneToOneField(
+        "self", blank=True, null=True, on_delete=models.SET_NULL, related_name="next"
+    )
     blocked = models.BooleanField(default=False)
 
     if TYPE_CHECKING:
@@ -230,7 +256,11 @@ class NeverEndingTodo(Todo):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        if (self.status == 'DONE' or self.status == 'FAILED') and self.next_todo is None and self.blocked is False:
+        if (
+            (self.status == "DONE" or self.status == "FAILED")
+            and self.next_todo is None
+            and self.blocked is False
+        ):
             self.generate_next()
 
     # getters
@@ -253,9 +283,16 @@ class NeverEndingTodo(Todo):
     def generate_next(self):
         now = timezone.now()
         next_activate = now + self.duration
-        NeverEndingTodo.objects.create(name=self.name, user=self.user, previous=self,
-                                       activate=next_activate, duration=self.duration)
+        NeverEndingTodo.objects.create(
+            name=self.name,
+            user=self.user,
+            previous=self,
+            activate=next_activate,
+            duration=self.duration,
+        )
 
 
 class PipelineTodo(Todo):
-    previous = models.ForeignKey(Todo, null=True, on_delete=models.SET_NULL, related_name='pipeline_to_dos')
+    previous = models.ForeignKey(
+        Todo, null=True, on_delete=models.SET_NULL, related_name="pipeline_to_dos"
+    )

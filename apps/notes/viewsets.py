@@ -1,6 +1,7 @@
-from rest_framework import viewsets, permissions
+from rest_framework import permissions, viewsets
+
 from apps.notes.models import Note
-from apps.notes.serializers import NoteSerializer, NoteListSerializer
+from apps.notes.serializers import NoteListSerializer, NoteSerializer
 
 
 class NoteViewSet(viewsets.ModelViewSet):
@@ -9,7 +10,7 @@ class NoteViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
-        if self.action == 'list':
+        if self.action == "list":
             return NoteListSerializer
         return super().get_serializer_class()
 

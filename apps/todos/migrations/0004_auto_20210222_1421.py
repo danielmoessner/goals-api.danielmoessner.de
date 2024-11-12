@@ -6,16 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('todos', '0003_auto_20201021_1928'),
+        ("todos", "0003_auto_20201021_1928"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='todo',
-            options={'ordering': ('deadline', 'status', 'activate', 'name')},
+            name="todo",
+            options={"ordering": ("deadline", "status", "activate", "name")},
         ),
         migrations.RemoveField(
-            model_name='todo',
-            name='is_archived',
+            model_name="todo",
+            name="is_archived",
         ),
     ]

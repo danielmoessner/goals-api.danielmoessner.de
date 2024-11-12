@@ -1,4 +1,5 @@
-<nav id="todos-nav" class="{% include 'nav.txt' %} rounded-none md:rounded-t bg-slate-700">
+<nav id="todos-nav"
+     class="{% include 'nav.txt' %} rounded-none md:rounded-t bg-slate-700">
     <ul class="flex space-x-4">
         <li class="{% if 'todo' in request.get_full_path %}underline{% endif %}">
             <a href="{% url 'todos' %}">Todos</a>

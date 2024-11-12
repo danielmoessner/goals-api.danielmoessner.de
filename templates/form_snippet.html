@@ -10,7 +10,12 @@
     <p>
         <label for="id_{{ field.name }}"
                class="{% if field.field.required %}required{% endif %}">
-            {{ field.label }}{% if not field.field.required %} (optional):{% else %}:{% endif %}
+            {{ field.label }}
+            {% if not field.field.required %}
+                (optional):
+            {% else %}
+                :
+            {% endif %}
         </label>
         {{ field }}
         <div class="text-red-700">{{ field.errors }}</div>

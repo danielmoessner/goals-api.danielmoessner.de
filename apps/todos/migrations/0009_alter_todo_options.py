@@ -6,12 +6,14 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('todos', '0008_alter_todo_options_alter_todo_id'),
+        ("todos", "0008_alter_todo_options_alter_todo_id"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='todo',
-            options={'ordering': ('status', '-completed', 'name', 'deadline', 'activate')},
+            name="todo",
+            options={
+                "ordering": ("status", "-completed", "name", "deadline", "activate")
+            },
         ),
     ]

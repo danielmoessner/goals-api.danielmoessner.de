@@ -6,33 +6,33 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0002_auto_20201021_1929'),
+        ("users", "0002_auto_20201021_1929"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='customuser',
-            name='never_ending_to_dos_choice',
+            model_name="customuser",
+            name="never_ending_to_dos_choice",
         ),
         migrations.RemoveField(
-            model_name='customuser',
-            name='normal_to_dos_choice',
+            model_name="customuser",
+            name="normal_to_dos_choice",
         ),
         migrations.RemoveField(
-            model_name='customuser',
-            name='pipeline_to_dos_choice',
+            model_name="customuser",
+            name="pipeline_to_dos_choice",
         ),
         migrations.RemoveField(
-            model_name='customuser',
-            name='repetitive_to_dos_choice',
+            model_name="customuser",
+            name="repetitive_to_dos_choice",
         ),
         migrations.RemoveField(
-            model_name='customuser',
-            name='to_dos_delta',
+            model_name="customuser",
+            name="to_dos_delta",
         ),
         migrations.AddField(
-            model_name='customuser',
-            name='include_old_todos',
+            model_name="customuser",
+            name="include_old_todos",
             field=models.BooleanField(default=False),
         ),
     ]

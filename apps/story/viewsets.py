@@ -1,9 +1,9 @@
+from django.utils import timezone
+from rest_framework import permissions, viewsets
 from rest_framework.response import Response
 
-from apps.story.serializers import StorySerializer
 from apps.story.models import Story
-from rest_framework import viewsets, permissions, status
-from django.utils import timezone
+from apps.story.serializers import StorySerializer
 
 
 class StoryViewSet(viewsets.ModelViewSet):
@@ -11,13 +11,15 @@ class StoryViewSet(viewsets.ModelViewSet):
     queryset = Story.objects.none()
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = StorySerializer
-    http_method_names = ['get', 'post', 'delete', 'head', 'options', 'trace']
+    http_method_names = ["get", "post", "delete", "head", "options", "trace"]
 
     def get_queryset(self):
         return Story.objects.filter(user=self.request.user)
 
     def create(self, request, *args, **kwargs):
-        stories = Story.objects.filter(user=request.user, created__date=timezone.now().date())
+        stories = Story.objects.filter(
+            user=request.user, created__date=timezone.now().date()
+        )
         if stories.exists():
             serializer = self.get_serializer(stories.first(), data=request.data)
         else:

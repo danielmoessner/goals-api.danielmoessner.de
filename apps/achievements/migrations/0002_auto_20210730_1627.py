@@ -6,12 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('achievements', '0001_initial'),
+        ("achievements", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='achievement',
-            options={'ordering': ['date'], 'verbose_name': 'Achievement', 'verbose_name_plural': 'Achievements'},
+            name="achievement",
+            options={
+                "ordering": ["date"],
+                "verbose_name": "Achievement",
+                "verbose_name_plural": "Achievements",
+            },
         ),
     ]

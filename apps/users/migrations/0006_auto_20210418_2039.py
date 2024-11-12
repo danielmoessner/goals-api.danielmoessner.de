@@ -6,32 +6,32 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0005_remove_customuser_page_choice'),
+        ("users", "0005_remove_customuser_page_choice"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='customuser',
-            name='goal_view_goal_choice',
+            model_name="customuser",
+            name="goal_view_goal_choice",
         ),
         migrations.RemoveField(
-            model_name='customuser',
-            name='strategy_main_choice',
+            model_name="customuser",
+            name="strategy_main_choice",
         ),
         migrations.RemoveField(
-            model_name='customuser',
-            name='treeview_goal_choice',
+            model_name="customuser",
+            name="treeview_goal_choice",
         ),
         migrations.RemoveField(
-            model_name='customuser',
-            name='treeview_goal_depth',
+            model_name="customuser",
+            name="treeview_goal_depth",
         ),
         migrations.RemoveField(
-            model_name='customuser',
-            name='treeview_monitor_choice',
+            model_name="customuser",
+            name="treeview_monitor_choice",
         ),
         migrations.RemoveField(
-            model_name='customuser',
-            name='treeview_strategy_choice',
+            model_name="customuser",
+            name="treeview_strategy_choice",
         ),
     ]

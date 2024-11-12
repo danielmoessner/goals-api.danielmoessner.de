@@ -1,29 +1,24 @@
 <nav id="create-nav" class="{% include 'nav.txt' %} bg-slate-500">
     <ul class="flex space-x-4">
         <li>
-            <a 
-            class="{% if request.GET.variant == 'this_week' %}underline{% endif %}"
-            href="{% url 'form' 'CreateNormalTodo' %}?success={% url 'todos' %}&variant=this_week">This Week</a>
+            <a class="{% if request.GET.variant == 'this_week' %}underline{% endif %}"
+               href="{% url 'form' 'CreateNormalTodo' %}?success={% url 'todos' %}&variant=this_week">This Week</a>
         </li>
         <li>
-            <a 
-            class="{% if request.GET.variant == 'next_week' %}underline{% endif %}"
-            href="{% url 'form' 'CreateNormalTodo' %}?success={% url 'todos' %}&variant=next_week">Next Week</a>
+            <a class="{% if request.GET.variant == 'next_week' %}underline{% endif %}"
+               href="{% url 'form' 'CreateNormalTodo' %}?success={% url 'todos' %}&variant=next_week">Next Week</a>
         </li>
         <li>
-            <a 
-            class="{% if 'CreateNeverEndingTodo' in request.get_full_path %}underline{% endif %}"
-            href="{% url 'form' 'CreateNeverEndingTodo' %}?success={% url 'todos' %}">Never Ending</a>
+            <a class="{% if 'CreateNeverEndingTodo' in request.get_full_path %}underline{% endif %}"
+               href="{% url 'form' 'CreateNeverEndingTodo' %}?success={% url 'todos' %}">Never Ending</a>
         </li>
         <li>
-            <a 
-            class="{% if 'CreateRepetitiveTodo' in request.get_full_path %}underline{% endif %}"
-            href="{% url 'form' 'CreateRepetitiveTodo' %}?success={% url 'todos' %}">Repetitive</a>
+            <a class="{% if 'CreateRepetitiveTodo' in request.get_full_path %}underline{% endif %}"
+               href="{% url 'form' 'CreateRepetitiveTodo' %}?success={% url 'todos' %}">Repetitive</a>
         </li>
         <li>
-            <a 
-            class="{% if 'CreatePipelineTodo' in request.get_full_path %}underline{% endif %}"
-            href="{% url 'form' 'CreatePipelineTodo' %}?success={% url 'todos' %}">Pipeline</a>
+            <a class="{% if 'CreatePipelineTodo' in request.get_full_path %}underline{% endif %}"
+               href="{% url 'form' 'CreatePipelineTodo' %}?success={% url 'todos' %}">Pipeline</a>
         </li>
     </ul>
 </nav>

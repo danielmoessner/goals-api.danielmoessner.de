@@ -1,5 +1,6 @@
-from apps.users.models import CustomUser
 from django.db import models
+
+from apps.users.models import CustomUser
 
 
 class Achievement(models.Model):
@@ -11,13 +12,13 @@ class Achievement(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name = 'Achievement'
-        verbose_name_plural = 'Achievements'
-        ordering = ['-date']
+        verbose_name = "Achievement"
+        verbose_name_plural = "Achievements"
+        ordering = ["-date"]
 
     def __str__(self):
-        return '{}'.format(self.title)
-    
+        return "{}".format(self.title)
+
     @property
     def date_str(self):
         return self.date.strftime("%d.%m.%Y")

@@ -6,28 +6,28 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0001_initial'),
+        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='customuser',
-            name='treeview_neverendingtodos_choice',
+            model_name="customuser",
+            name="treeview_neverendingtodos_choice",
         ),
         migrations.RemoveField(
-            model_name='customuser',
-            name='treeview_normaltodos_choice',
+            model_name="customuser",
+            name="treeview_normaltodos_choice",
         ),
         migrations.RemoveField(
-            model_name='customuser',
-            name='treeview_pipelinetodos_choice',
+            model_name="customuser",
+            name="treeview_pipelinetodos_choice",
         ),
         migrations.RemoveField(
-            model_name='customuser',
-            name='treeview_repetitivetodos_choice',
+            model_name="customuser",
+            name="treeview_repetitivetodos_choice",
         ),
         migrations.RemoveField(
-            model_name='customuser',
-            name='treeview_todos_delta',
+            model_name="customuser",
+            name="treeview_todos_delta",
         ),
     ]

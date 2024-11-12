@@ -1,6 +1,7 @@
-from apps.achievements.serializers import AchievementSerializer
+from rest_framework import permissions, viewsets
+
 from apps.achievements.models import Achievement
-from rest_framework import viewsets, permissions
+from apps.achievements.serializers import AchievementSerializer
 
 
 class AchievementViewSet(viewsets.ModelViewSet):

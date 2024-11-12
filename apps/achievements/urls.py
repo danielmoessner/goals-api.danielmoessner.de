@@ -1,10 +1,12 @@
-from rest_framework.routers import DefaultRouter
-from apps.achievements import viewsets
 from django.urls import path
+from rest_framework.routers import DefaultRouter
+
+from apps.achievements import viewsets
+
 from . import views
 
 router = DefaultRouter()
-router.register('achievements', viewsets.AchievementViewSet)
+router.register("achievements", viewsets.AchievementViewSet)
 
 
 urlpatterns = [

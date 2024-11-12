@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class TodosConfig(AppConfig):
-    name = 'apps.todos'
+    name = "apps.todos"

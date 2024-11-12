@@ -1,20 +1,20 @@
 {% extends 'base.html' %}
-
 {% block prose %}
-{% include 'nav.html' %}
-{% include 'achievements/nav.html' %}
-
-<uL class="p-5 space-y-2 list-disc list-inside">
-    {% for a in achievements %}
-    <li class="flex relative items-center group [&_a]:text-blue-600">
-        <div>
-        <span class="block text-sm font-bold">{{ a.title }}
-        <a class="ml-3" href="{% url 'form' 'UpdateAchievement' %}?pk={{ a.pk }}&success={% url 'achievements' %}">U</a>
-        <a class="ml-1" href="{% url 'form' 'DeleteAchievement' %}?pk={{ a.pk }}&success={% url 'achievements' %}">D</a>
-    </span>
-    <span class="block text-xs leading-none">{{ a.date_str }}</span>
-</div>
-    </li>
-    {% endfor %}
-</ul>
+    {% include 'nav.html' %}
+    {% include 'achievements/nav.html' %}
+    <ul class="p-5 space-y-2 list-disc list-inside">
+        {% for a in achievements %}
+            <li class="flex relative items-center group [&_a]:text-blue-600">
+                <div>
+                    <span class="block text-sm font-bold">{{ a.title }}
+                        <a class="ml-3"
+                           href="{% url 'form' 'UpdateAchievement' %}?pk={{ a.pk }}&success={% url 'achievements' %}">U</a>
+                        <a class="ml-1"
+                           href="{% url 'form' 'DeleteAchievement' %}?pk={{ a.pk }}&success={% url 'achievements' %}">D</a>
+                    </span>
+                    <span class="block text-xs leading-none">{{ a.date_str }}</span>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
 {% endblock %}

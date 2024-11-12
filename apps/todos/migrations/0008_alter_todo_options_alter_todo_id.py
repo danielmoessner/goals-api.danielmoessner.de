@@ -6,17 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('todos', '0007_auto_20210724_1624'),
+        ("todos", "0007_auto_20210724_1624"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='todo',
-            options={'ordering': ('status', 'completed', 'name', 'deadline', 'activate')},
+            name="todo",
+            options={
+                "ordering": ("status", "completed", "name", "deadline", "activate")
+            },
         ),
         migrations.AlterField(
-            model_name='todo',
-            name='id',
-            field=models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID'),
+            model_name="todo",
+            name="id",
+            field=models.BigAutoField(
+                auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+            ),
         ),
     ]

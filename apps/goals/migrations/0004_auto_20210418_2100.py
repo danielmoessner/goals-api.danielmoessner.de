@@ -6,48 +6,48 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('goals', '0003_auto_20201021_1901'),
+        ("goals", "0003_auto_20201021_1901"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='goal',
-            name='created',
+            model_name="goal",
+            name="created",
             field=models.DateTimeField(auto_created=True, null=True),
         ),
         migrations.AddField(
-            model_name='goal',
-            name='updated',
+            model_name="goal",
+            name="updated",
             field=models.DateTimeField(auto_now=True, null=True),
         ),
         migrations.AddField(
-            model_name='link',
-            name='created',
+            model_name="link",
+            name="created",
             field=models.DateTimeField(auto_created=True, null=True),
         ),
         migrations.AddField(
-            model_name='link',
-            name='updated',
+            model_name="link",
+            name="updated",
             field=models.DateTimeField(auto_now=True, null=True),
         ),
         migrations.AddField(
-            model_name='progressmonitor',
-            name='created',
+            model_name="progressmonitor",
+            name="created",
             field=models.DateTimeField(auto_created=True, null=True),
         ),
         migrations.AddField(
-            model_name='progressmonitor',
-            name='updated',
+            model_name="progressmonitor",
+            name="updated",
             field=models.DateTimeField(auto_now=True, null=True),
         ),
         migrations.AddField(
-            model_name='strategy',
-            name='created',
+            model_name="strategy",
+            name="created",
             field=models.DateTimeField(auto_created=True, null=True),
         ),
         migrations.AddField(
-            model_name='strategy',
-            name='updated',
+            model_name="strategy",
+            name="updated",
             field=models.DateTimeField(auto_now=True, null=True),
         ),
     ]

@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('todos', '0002_auto_20201021_1857'),
+        ("todos", "0002_auto_20201021_1857"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='repetitivetodo',
-            name='repetitions',
+            model_name="repetitivetodo",
+            name="repetitions",
             field=models.PositiveSmallIntegerField(default=None),
             preserve_default=False,
         ),

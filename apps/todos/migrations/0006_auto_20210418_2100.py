@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('todos', '0005_repetitivetodo_blocked'),
+        ("todos", "0005_repetitivetodo_blocked"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='todo',
-            name='created',
+            model_name="todo",
+            name="created",
             field=models.DateTimeField(auto_created=True, null=True),
         ),
         migrations.AddField(
-            model_name='todo',
-            name='updated',
+            model_name="todo",
+            name="updated",
             field=models.DateTimeField(auto_now=True, null=True),
         ),
     ]
