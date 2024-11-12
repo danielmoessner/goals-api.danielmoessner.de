@@ -1767,6 +1767,10 @@ a.disabled, button.disabled {
     border-bottom-left-radius: 0.25rem;
   }
 
+  .md\:\!bg-transparent {
+    background-color: transparent !important;
+  }
+
   .md\:py-8 {
     padding-top: 2rem;
     padding-bottom: 2rem;
@@ -1886,6 +1890,10 @@ a.disabled, button.disabled {
   outline-offset: 2px;
 }
 
+.hover\:\[\&_li_a\]\:bg-white\/20 li a:hover {
+  background-color: rgb(255 255 255 / 0.2);
+}
+
 .\[\&_li_a\]\:focus\:bg-white\/20:focus li a {
   background-color: rgb(255 255 255 / 0.2);
 }
@@ -1910,9 +1918,17 @@ a.disabled, button.disabled {
   outline-offset: 2px;
 }
 
+.focus-visible\:\[\&_li_a\]\:bg-white\/20 li a:focus-visible {
+  background-color: rgb(255 255 255 / 0.2);
+}
+
 @media (min-width: 768px) {
   .md\:\[\&_li_a\]\:border-none li a {
     border-style: none;
+  }
+
+  .md\:\[\&_li_a\]\:\!bg-transparent li a {
+    background-color: transparent !important;
   }
 
   .md\:\[\&_li_a\]\:px-0 li a {
