@@ -1,1 +1,1 @@
-px-3 py-1 rounded-tsm text-slate-100
+px-3 py-2 md:py-1 rounded-tsm text-slate-100 [&_li_a]:whitespace-nowrap md:[&_li_a]:px-0 md:[&_li_a]:py-0 [&_li_a]:px-5 [&_li_a]:py-0.5 [&_li_a]:inline-block [&_li_a]:rounded [&_li_a]:border-2 md:[&_li_a]:border-none

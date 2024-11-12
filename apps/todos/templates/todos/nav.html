@@ -1,5 +1,5 @@
 <nav id="todos-nav" class="{% include 'subnav.txt' %} bg-slate-600">
-    <ul class="flex space-x-4">
+    <ul class="flex max-w-full space-x-4 overflow-x-scroll">
         <li>
             <a 
             class="{% if request.resolver_match.url_name == 'todos' and request.GET.kind is None or request.GET.kind == 'week' %}underline{% endif %}"
