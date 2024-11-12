@@ -39,7 +39,7 @@ FORMS: list[type[FormClass]] = [
 
 NAVS = {
     "create": "create_nav.html",
-    "todos": "todos_nav.html",
+    "todos": "todos/nav.html",
     "achievements": "achievements/nav.html",
     "notes": "notes/nav.html",
 }
