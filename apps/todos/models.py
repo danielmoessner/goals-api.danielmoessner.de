@@ -41,6 +41,17 @@ class Todo(models.Model):
         return to_dos
 
     @property
+    def completed_sort(self):
+        if not self.completed:
+            if self.deadline:
+                return 10 * int(self.deadline.strftime("%Y%m%d"))
+            if self.activate:
+                return 10 * 88888888
+                return 10 * int(self.activate.strftime("%Y%m%d"))
+            return 99999999
+        return 100 * int(self.completed.strftime("%Y%m%d"))
+
+    @property
     def is_done(self) -> bool:
         return self.status == "DONE"
 

@@ -12,11 +12,12 @@ from apps.todos.models import (
     Todo,
 )
 from apps.todos.utils import get_end_of_week, get_start_of_week
+from apps.utils.functional import list_sort
 
 
 @login_required
 def todos(request: HttpRequest):
-    todos = []
+    todos: list[Todo] = []
     kind = request.GET.get("kind", "week")
     for cls in [NormalTodo, PipelineTodo, NeverEndingTodo, RepetitiveTodo]:
         f = Q()
@@ -33,4 +34,5 @@ def todos(request: HttpRequest):
             f = Q(status="ACTIVE")
 
         todos += Todo.get_to_dos_user(request.user, cls).filter(f)
+    todos = list_sort(todos, lambda t: t.completed_sort)
     return render(request, "todos.html", {"todos": todos})
