@@ -9,5 +9,6 @@ router = DefaultRouter()
 router.register(r"stories", viewsets.StoryViewSet)
 
 urlpatterns = [
-    path("story/", views.storyv, name="story"),
+    path("story/", views.latest, name="story"),
+    path("older/", views.older, name="older"),
 ]

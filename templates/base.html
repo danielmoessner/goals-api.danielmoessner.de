@@ -17,13 +17,13 @@
         <body class="min-h-screen bg-gray-100 md:py-8">
             {% block main %}
                 <main class="container {% block max_width %}max-w-2xl{% endblock %} mx-auto bg-white rounded-b-sm md:rounded-b shadow">
+                    {% block nav %}{% endblock %}
                     {% block prose %}
-                        {% block nav %}{% endblock %}
                         <div class="p-5 prose-sm prose max-w-none">
                             {% block content %}
                             {% endblock content %}
                         </div>
-                    {% endblock prose %}
+                    {% endblock %}
                     {% block prose_second %}{% endblock %}
                 </main>
             {% endblock main %}

@@ -20,3 +20,7 @@ class Story(models.Model):
 
     def __str__(self):
         return "{}: {}".format(self.created.strftime("%Y-%m-%d"), self.user.email)
+
+    @property
+    def date_str(self):
+        return self.created.strftime("%d.%m.%Y %H:%M")

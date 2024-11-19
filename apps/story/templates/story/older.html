@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block nav %}
+    {% include 'nav.html' %}
+    {% include 'story/nav.html' %}
+{% endblock %}
+{% block prose %}
+    <div class="p-5 prose-sm prose">
+        {% if story %}
+            {% include 'story/symbols/body.html' %}
+            <hr class="my-2">
+        {% endif %}
+        <div class="">
+            <ul class="pl-0 my-0 list-disc list-inside">
+                {% for s in stories %}
+                    <li>
+                        <a href="{% url 'older' %}?show={{ s.pk }}">{{ s.date_str }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}

@@ -5,7 +5,7 @@ from apps.todos.forms import OptsUserInstance
 
 
 class UpdateStory(OptsUserInstance[Story], forms.ModelForm):
-    navs = ["notes"]
+    navs = ["story"]
 
     class Meta:
         model = Story
