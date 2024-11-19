@@ -1,0 +1,12 @@
+<nav class="{% include 'nav.txt' %} bg-slate-600">
+    <ul class="flex space-x-4">
+        <li>
+            <a class="{% if request.resolver_match.url_name == 'story' %}underline{% endif %}"
+               href="{% url 'story' %}">Latest</a>
+        </li>
+        <li>
+            <a class="{% if 'Update' in request.get_full_path %}underline{% endif %}"
+               href="{% url 'form' 'UpdateStory' %}?success={% url 'story' %}">Update Story</a>
+        </li>
+    </ul>
+</nav>

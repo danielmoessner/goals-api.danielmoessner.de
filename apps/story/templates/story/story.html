@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
-{% block prose %}
+{% block nav %}
     {% include 'nav.html' %}
     {% include 'story/nav.html' %}
-    <h2>What Is</h2>
-    <p>{{ story.what_is }}</p>
-    <h2>What Should Be</h2>
-    <p>{{ story.what_should_be }}</p>
+{% endblock %}
+{% block content %}
+        <h2>What Is</h2>
+        {{ story.what_is|safe }}
+        <h2>What Should Be</h2>
+        {{ story.what_should_be|safe }}
 {% endblock %}

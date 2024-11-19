@@ -10,6 +10,7 @@ from apps.achievements.forms import (
     UpdateAchievement,
 )
 from apps.notes.forms import CreateNote, DeleteNote, UpdateNote
+from apps.story.forms import UpdateStory
 from apps.todos.forms import (
     CreateNeverEndingTodo,
     CreateNormalTodo,
@@ -56,6 +57,7 @@ FORMS: list[type[FormClass]] = [
     CreateNote,
     UpdateNote,
     DeleteNote,
+    UpdateStory,
 ]
 
 
@@ -64,6 +66,7 @@ NAVS = {
     "todos": "todos/nav.html",
     "achievements": "achievements/nav.html",
     "notes": "notes/nav.html",
+    "story": "story/nav.html",
 }
 
 

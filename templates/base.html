@@ -18,7 +18,8 @@
             {% block main %}
                 <main class="container {% block max_width %}max-w-2xl{% endblock %} mx-auto bg-white rounded-b-sm md:rounded-b shadow">
                     {% block prose %}
-                        <div class="p-5 prose max-w-none">
+                        {% block nav %}{% endblock %}
+                        <div class="p-5 prose-sm prose max-w-none">
                             {% block content %}
                             {% endblock content %}
                         </div>
