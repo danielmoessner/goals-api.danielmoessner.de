@@ -10,5 +10,8 @@
         <li class="{% if 'notes' in request.get_full_path %}underline{% endif %}">
             <a href="{% url 'notes' %}">Notes</a>
         </li>
+        <li class="{% if 'story' in request.get_full_path %}underline{% endif %}">
+            <a href="{% url 'story' %}">Story</a>
+        </li>
     </ul>
 </nav>

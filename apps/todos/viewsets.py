@@ -29,17 +29,17 @@ class ToDoViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        if type(instance) == NormalTodo:
+        if type(instance) is NormalTodo:
             serializer = NormalToDoSerializer(instance, context={"request": request})
-        elif type(instance) == RepetitiveTodo:
+        elif type(instance) is RepetitiveTodo:
             serializer = RepetitiveToDoSerializer(
                 instance, context={"request": request}
             )
-        elif type(instance) == NeverEndingTodo:
+        elif type(instance) is NeverEndingTodo:
             serializer = NeverEndingToDoSerializer(
                 instance, context={"request": request}
             )
-        elif type(instance) == PipelineTodo:
+        elif type(instance) is PipelineTodo:
             serializer = PipelineToDoSerializer(instance, context={"request": request})
         else:
             raise Exception("No serializer was found.")

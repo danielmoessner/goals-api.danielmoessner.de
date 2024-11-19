@@ -1,20 +1,20 @@
-from .base import *
+from .base import *  # noqa: F403
 
 DEBUG = True
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
-INSTALLED_APPS += [
+INSTALLED_APPS += [  # noqa: F405
     "debug_toolbar",
 ]
 
-MIDDLEWARE += [
+MIDDLEWARE += [  # noqa: F405
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 INTERNAL_IPS = ["127.0.0.1"]
 
-CORS_ALLOWED_ORIGINS += [
+CORS_ALLOWED_ORIGINS += [  # noqa: F405
     "http://localhost:8080",
     "http://192.168.1.66:8080",
     "http://localhost:8081",

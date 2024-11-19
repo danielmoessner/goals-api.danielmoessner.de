@@ -32,6 +32,7 @@ urlpatterns = [
     path("todos/", include("apps.todos.urls")),
     path("achievements/", include("apps.achievements.urls")),
     path("notes/", include("apps.notes.urls")),
+    path("story/", include("apps.story.urls")),
     path("form/<str:form_name>/", form_view, name="form"),
     path("", include(router.urls)),
 ]

@@ -1,7 +1,12 @@
+from typing import TYPE_CHECKING
+
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+
+if TYPE_CHECKING:
+    from apps.story.models import Story
 
 
 class UserManager(BaseUserManager):
@@ -35,11 +40,14 @@ class CustomUser(AbstractUser):
     email = models.EmailField("E-Mail Address", unique=True)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
-    objects = UserManager()
+    objects = UserManager()  # type: ignore
     # goals
     show_archived_objects = models.BooleanField(default=False)
     # todos
     show_old_todos = models.BooleanField(default=False)
+
+    if TYPE_CHECKING:
+        stories: models.QuerySet[Story]
 
     class Meta:
         verbose_name = "User"

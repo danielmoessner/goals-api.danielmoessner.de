@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -15,9 +17,6 @@ def get_todo_in_its_proper_class(pk):
     elif PipelineTodo.objects.filter(pk=pk).exists():
         return PipelineTodo.objects.get(pk=pk)
     raise ObjectDoesNotExist()
-
-
-from datetime import datetime, timedelta
 
 
 def get_end_of_week():
