@@ -12,7 +12,7 @@ from apps.notes.urls import router as notes_router
 from apps.story.urls import router as story_router
 from apps.todos.urls import router as todos_router
 from apps.users.urls import router as users_router
-from config.form import form_view
+from config.form import form_view, global_form_view
 
 from .filebrowser import site
 
@@ -35,6 +35,7 @@ urlpatterns = [
     path("story/", include("apps.story.urls")),
     path("users/", include("apps.users.urls")),
     path("form/<str:form_name>/", form_view, name="form"),
+    path("global-form/<str:form_name>/", global_form_view, name="global_form"),
     path("", include(router.urls)),
 ]
 

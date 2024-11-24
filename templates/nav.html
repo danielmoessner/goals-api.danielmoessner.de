@@ -14,7 +14,7 @@
             <a href="{% url 'story' %}">Story</a>
         </li>
         <li class="!ml-auto {% if 'users' in request.get_full_path %}underline{% endif %}">
-            <a href="{% url 'change_email' %}">Settings</a>
+            <a href="{% url 'form' 'ChangeEmail' %}">Settings</a>
         </li>
         <li>
             <form action="{% url 'admin:logout' %}" method="post">

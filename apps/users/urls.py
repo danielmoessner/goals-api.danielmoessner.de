@@ -10,9 +10,7 @@ router.register(r"users", viewsets.UserViewSet)
 
 
 urlpatterns = [
-    path("login/", views.LoginView.as_view(), name="login"),
     path("logout/", views.LogoutView.as_view(), name="logout"),
-    path("register/", views.CustomRegisterView.as_view(), name="register_user"),
     path(
         "register/success/",
         views.CustomRegisterDoneView.as_view(),
@@ -23,9 +21,8 @@ urlpatterns = [
         views.CustomRegisterConfirmEmailView.as_view(),
         name="register_confirm_email",
     ),
-    path("email-change/", views.ChangeEmailView.as_view(), name="change_email"),
     path(
-        "email-change/abgesendet/",
+        "email-change/sent/",
         views.ChangeEmailDoneView.as_view(),
         name="change_email_done",
     ),
@@ -35,17 +32,9 @@ urlpatterns = [
         name="change_email_confirm",
     ),
     path(
-        "password-change/", views.ChangePasswordView.as_view(), name="change_password"
-    ),
-    path(
         "password-change/success/",
         views.ChangePasswordDoneView.as_view(),
         name="change_password_done",
-    ),
-    path(
-        "password-forgotten/",
-        views.CustomPasswordResetView.as_view(),
-        name="password_reset",
     ),
     path(
         "password-forgotten/done/",

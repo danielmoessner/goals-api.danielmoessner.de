@@ -1,9 +1,9 @@
-{% extends 'users/register_user_1.html' %}
+{% extends 'users/base.html' %}
 {% block title %}E-Mail Confirmed{% endblock %}
 {% block inside %}
     {% if validlink %}
         <p>
-            Your email was confirmed. You can login now: <a href="{% url 'login' %}">To the login</a>.
+            Your email was confirmed. You can login now: <a class="a" href="{% url 'global_form' 'Login' %}">To the login</a>.
         </p>
     {% endif %}
     {% if not validlink %}

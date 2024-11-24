@@ -1,5 +1,6 @@
 from typing import Any, Protocol
 
+from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
@@ -21,6 +22,14 @@ from apps.todos.forms import (
     UpdateNeverEndingTodo,
     UpdateNormalTodo,
     UpdateRepetitiveTodo,
+)
+from apps.users.forms import (
+    ChangeEmail,
+    ChangePassword,
+    Login,
+    Register,
+    ResetPassword,
+    SetPassword,
 )
 from apps.users.models import CustomUser
 from apps.utils.functional import list_map
@@ -58,6 +67,12 @@ FORMS: list[type[FormClass]] = [
     UpdateNote,
     DeleteNote,
     UpdateStory,
+    Login,
+    Register,
+    ResetPassword,
+    SetPassword,
+    ChangeEmail,
+    ChangePassword,
 ]
 
 
@@ -95,7 +110,9 @@ def get_navs(form: FormClass) -> list[str]:
     return list_map(getattr(form, "navs", []), lambda n: NAVS.get(n, ""))
 
 
-def form_view(request: HttpRequest, form_name: str) -> HttpResponse:
+def form_view(
+    request: HttpRequest, form_name: str, template_name="form_view.html"
+) -> HttpResponse:
     if request.method not in ["GET", "POST"]:
         return HttpResponse("only get and post allowed", 400)
 
@@ -112,15 +129,24 @@ def form_view(request: HttpRequest, form_name: str) -> HttpResponse:
     if request.method == "POST":
         data = request.POST.dict()
 
-    form = form_class(request.user, opts=request.GET.dict(), data=data)
+    form = form_class(request.user, opts=request.GET.dict(), request=request, data=data)
     if request.method == "POST" and form.is_valid():
         ret = form.ok()
+        success = getattr(form, "success", None)
+        if success:
+            return redirect(success)
         success_url = success_url.replace("0", str(ret))
         return redirect(success_url)
 
     response = render(
         request,
-        "form_view.html",
+        template_name,
         {"form": form, "cancel_url": cancel_url, "navs": get_navs(form)},
     )
     return response
+
+
+def global_form_view(request: HttpRequest, form_name: str) -> HttpResponse:
+    if request.user.is_authenticated:
+        return redirect(settings.LOGIN_REDIRECT_URL)
+    return form_view(request, form_name, "global_form_view.html")

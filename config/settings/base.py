@@ -124,9 +124,9 @@ MEDIA_URL = "/media/"
 
 MEDIA_ROOT = os.path.join(TMP_DIR, "media")
 
-LOGIN_URL = "/users/login/"
+LOGIN_URL = "/global-form/Login/"
 LOGIN_REDIRECT_URL = "/todos/todos/"
-LOGOUT_REDIRECT_URL = "/users/login/"
+LOGOUT_REDIRECT_URL = "/global-form/Login/"
 
 TINYMCE_DEFAULT_CONFIG = {
     "height": 360,

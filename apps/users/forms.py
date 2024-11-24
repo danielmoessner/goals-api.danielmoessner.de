@@ -2,6 +2,7 @@ from base64 import urlsafe_b64encode
 
 from django import forms
 from django.conf import settings
+from django.contrib.auth import login as auth_login
 from django.contrib.auth.forms import (
     AuthenticationForm,
     PasswordChangeForm,
@@ -11,23 +12,40 @@ from django.contrib.auth.forms import (
 )
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMultiAlternatives
+from django.http import HttpRequest
 from django.template import loader
 from django.urls import reverse_lazy
 from django.utils.encoding import force_bytes
 
+from apps.todos.forms import OptsUser, OptsUserInstance
 from apps.users.generators import ChangeEmailTokenGenerator, ConfirmEmailTokenGenerator
 from apps.users.models import CustomUser
 
 
-class Login(AuthenticationForm):
+class Login(OptsUser, AuthenticationForm):
+    title = "Login"
     submit = "Login"
+    bottom = "users/login.html"
+    success = settings.LOGIN_REDIRECT_URL
 
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.fields["username"].label = "E-Mail"
+
+    def ok(self):
+        auth_login(self.request, self.get_user())
+        return self.get_user().pk
 
 
 class ChangePassword(PasswordChangeForm):
+    submit = "Change"
+    navs = ["settings"]
+    success = reverse_lazy("change_password_done")
+
+    def __init__(self, user, opts, request: HttpRequest, *args, **kwargs):
+        self.user = user
+        self.opts = opts
+        super().__init__(user, *args, **kwargs)
+
     def send_mail(self, user: CustomUser):
         subject = "Dein Passwort wurde geändert"
         body = loader.render_to_string("users/emails/change_password_3_email.txt", {})
@@ -40,20 +58,28 @@ class ChangePassword(PasswordChangeForm):
         email_message.attach_alternative(html_email, "text/html")
         email_message.send()
 
-    def save(self, commit=True):
-        user = super().save(commit=commit)
+    def ok(self):
+        user = super().save()
         assert isinstance(user, CustomUser)
-        if commit:
-            self.send_mail(user)
-        return user
+        self.send_mail(user)
+        return user.pk
 
 
-class ChangeEmail(forms.ModelForm):
+class ChangeEmail(OptsUserInstance[CustomUser], forms.ModelForm):
+    title = "Change E-Mail"
+    success = reverse_lazy("change_email_done")
+    navs = ["settings"]
+
     class Meta:
         model = CustomUser
         fields = ["new_email"]
 
-    def send_activation_mail(self, request, user):
+    def get_instance(self) -> CustomUser:
+        user = self.request.user
+        assert isinstance(user, CustomUser)
+        return user
+
+    def send_email_change_mail(self, request, user):
         token = ChangeEmailTokenGenerator().make_token(user)
         current_site = get_current_site(request)
         uid = urlsafe_b64encode(force_bytes(user.pk)).decode()
@@ -79,28 +105,28 @@ class ChangeEmail(forms.ModelForm):
 
         email_message.send()
 
-    def save(self, commit=True, request=None):
-        user: CustomUser = super().save(commit=False)
-        if commit:
+    def ok(self):
+        user: CustomUser = super().save()
+        try:
+            self.send_email_change_mail(self.request, user)
+        except Exception as e:
+            user.new_email = None
             user.save()
-            try:
-                self.send_activation_mail(request, user)
-            except Exception as e:
-                user.new_email = None
-                user.save()
-                raise e
-        return user
+            raise e
+        return user.pk
 
 
-class Register(UserCreationForm):
+class Register(OptsUser, UserCreationForm):
     submit = "Register"
+    title = "Register"
+    bottom = "users/register_user_1.html"
+    success = reverse_lazy("register_user_done")
 
     class Meta:
         model = CustomUser
         fields = ("email", "password1", "password2")
 
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
+    def init(self) -> None:
         self.fields["email"].widget.attrs = {"autocomplete": "email"}
 
     def send_activation_mail(self, request, user):
@@ -127,21 +153,31 @@ class Register(UserCreationForm):
         email_message.attach_alternative(html_email, "text/html")
         email_message.send()
 
-    def save(self, commit=True, request=None):
+    def ok(self):
         user: CustomUser = super().save(commit=False)
-        if commit:
-            user.save()
-            try:
-                self.send_activation_mail(request, user)
-            except Exception as e:
-                user.delete()
-                raise e
-        return user
+        user.save()
+        try:
+            self.send_activation_mail(self.request, user)
+        except Exception as e:
+            user.delete()
+            raise e
+        return user.pk
 
 
-class ResetPassword(PasswordResetForm):
+class ResetPassword(OptsUser, PasswordResetForm):
+    title = "Reset Password"
     text = "Please type in your email and we will send a password reset email."
+    success = reverse_lazy("password_reset_done")
+
+    def ok(self):
+        self.save(request=self.request)  # type: ignore
+        return 0
 
 
-class SetPassword(SetPasswordForm):
-    pass
+class SetPassword(OptsUser, SetPasswordForm):
+    title = "Set Password"
+    success = reverse_lazy("password_reset_complete")
+
+    def ok(self):
+        self.save()
+        return 0

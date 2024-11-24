@@ -1,61 +1,26 @@
 import logging
 from base64 import urlsafe_b64decode
 
-from django.conf import settings
-from django.contrib.auth.views import LoginView as DjangoLoginView
 from django.contrib.auth.views import LogoutView as DjangoLogoutView
 from django.contrib.auth.views import (
-    PasswordChangeView,
     PasswordResetCompleteView,
     PasswordResetConfirmView,
     PasswordResetDoneView,
-    PasswordResetView,
 )
-from django.core.exceptions import PermissionDenied, ValidationError
-from django.http import HttpResponseRedirect
-from django.urls import reverse_lazy
-from django.views.generic import FormView, TemplateView
+from django.core.exceptions import ValidationError
+from django.views.generic import TemplateView
 
-from apps.users.forms import ChangeEmail, ChangePassword, Login, Register, ResetPassword
 from apps.users.models import CustomUser
 
 logger = logging.getLogger(__name__)
-
-
-class LoginView(DjangoLoginView):
-    template_name = "users/login.html"
-    redirect_authenticated_user = True
-    redirect_field_name = "next"
-    form_class = Login
 
 
 class LogoutView(DjangoLogoutView):
     pass
 
 
-class ChangePasswordView(PasswordChangeView):
-    form_class = ChangePassword
-    success_url = reverse_lazy("change_password_done")
-    template_name = "users/change_password.html"
-
-
 class ChangePasswordDoneView(TemplateView):
     template_name = "users/change_password_done.html"
-
-
-class ChangeEmailView(FormView):
-    form_class = ChangeEmail
-    template_name = "users/change_email_1_form.html"
-    success_url = reverse_lazy("change_email_done")
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs.update({"instance": self.request.user})
-        return kwargs
-
-    def form_valid(self, form):
-        form.save(request=self.request)
-        return HttpResponseRedirect(self.get_success_url())
 
 
 class ChangeEmailDoneView(TemplateView):
@@ -91,21 +56,6 @@ class ChangeEmailConfirmView(TemplateView):
         return user
 
 
-class CustomRegisterView(FormView):
-    form_class = Register
-    success_url = reverse_lazy("register_user_done")
-    template_name = "users/register_user_1.html"
-
-    def post(self, request, *args, **kwargs):
-        if not settings.CUSTOM_ALLOW_REGISTRATION:
-            raise PermissionDenied()
-        return super().post(request, *args, **kwargs)
-
-    def form_valid(self, form):
-        form.save(request=self.request)
-        return HttpResponseRedirect(self.get_success_url())
-
-
 class CustomRegisterDoneView(TemplateView):
     template_name = "users/register_user_2_done.html"
 
@@ -138,11 +88,6 @@ class CustomRegisterConfirmEmailView(TemplateView):
         ):
             user = None
         return user
-
-
-class CustomPasswordResetView(PasswordResetView):
-    template_name = "users/password_reset_1_form.html"
-    form_class = ResetPassword
 
 
 class CustomPasswordResetDoneView(PasswordResetDoneView):
