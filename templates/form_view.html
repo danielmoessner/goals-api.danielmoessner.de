@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 {% block prose %}
     {% include 'nav.html' %}
-    {% for n in navs %}
-        {% include n %}
-    {% endfor %}
+    {% block navs %}
+        {% for n in navs %}
+            {% include n %}
+        {% endfor %}
+    {% endblock %}
     <div class="p-5">{% include 'form.html' %}</div>
     {{ form.media }}
 {% endblock %}

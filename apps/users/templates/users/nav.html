@@ -1,0 +1,12 @@
+<nav id="todos-nav" class="{% include 'nav.txt' %} bg-slate-600">
+    <ul class="">
+        <li>
+            <a class="{% if request.resolver_match.url_name == 'change_email' %}underline{% endif %}"
+               href="{% url 'change_email' %}">Change E-Mail</a>
+        </li>
+        <li>
+            <a class="{% if request.resolver_match.url_name == 'change_password' %}underline{% endif %}"
+               href="{% url 'change_password' %}">Change Password</a>
+        </li>
+    </ul>
+</nav>

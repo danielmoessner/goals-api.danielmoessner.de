@@ -1,8 +1,10 @@
 {% extends 'users/change_email_base.html' %}
-{% block settings_content %}
+{% block title %}New E-Mail Confirmed{% endblock %}
+{% block inside %}
     {% if validlink %}
-        <p>Deine neue E-Mail wurde bestätigt.</p>
+        <p>Your new email is confirmed.</p>
     {% else %}
-        <p>Der Link ist ungültig, womöglich weil er abgelaufen ist oder bereits benutzt wurde.</p>
+        <p>The link is invalid, maybe because it is out of date or it has been used already.</p>
     {% endif %}
+    <a href="{% url 'todos' %}" class="inline-block a">Back</a>
 {% endblock %}

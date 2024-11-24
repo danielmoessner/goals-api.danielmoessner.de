@@ -1,4 +1,4 @@
-Bitte bestätige deine neue E-Mail.
-Eine Änderung deiner E-Mail wurde angefragt.
+Please confirm your new email.
+An email change was requested.
 
-Bitte bestätige deine neue E-Mail indem du den folgenden Link im Browser öffnest: {{ link }}.
+Please confirm your new email with a click on this link: {{ link }}.

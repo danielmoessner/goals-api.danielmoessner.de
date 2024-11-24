@@ -1,4 +1,6 @@
 {% extends 'users/change_email_base.html' %}
-{% block settings_content %}
-    <p>Es wurde eine Bestätigungsemail versendet. Bitte bestätige deine neue E-Mail.</p>
+{% block title %}E-Mail Change{% endblock %}
+{% block inside %}
+    <p>The confirmation email was sent. Please confirm your new email.</p>
+    <a href="{% url 'todos' %}" class="inline-block a">Back</a>
 {% endblock %}

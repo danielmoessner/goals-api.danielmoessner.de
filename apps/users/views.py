@@ -27,7 +27,6 @@ from apps.users.models import CustomUser
 logger = logging.getLogger(__name__)
 
 
-# login
 class LoginView(DjangoLoginView):
     template_name = "users/login.html"
     redirect_authenticated_user = True
@@ -39,7 +38,6 @@ class LogoutView(DjangoLogoutView):
     pass
 
 
-# change passwort
 class ChangePasswordView(PasswordChangeView):
     form_class = ChangePasswordForm
     success_url = reverse_lazy("change_password_done")
@@ -50,12 +48,10 @@ class ChangePasswordDoneView(TemplateView):
     template_name = "users/change_password_done.html"
 
 
-# change email
 class ChangeEmailView(FormView):
     form_class = ChangeEmailForm
     template_name = "users/change_email_1_form.html"
     success_url = reverse_lazy("change_email_done")
-    template_name = "users/change_email_1_form.html"
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -100,7 +96,6 @@ class ChangeEmailConfirmView(TemplateView):
         return user
 
 
-# register
 class CustomRegisterView(FormView):
     form_class = CustomUserCreationForm
     success_url = reverse_lazy("register_user_done")
@@ -136,7 +131,7 @@ class CustomRegisterConfirmEmailView(TemplateView):
 
     def get_user(self, uidb64):
         try:
-            # urlsafe_base64_decode() decodes to bytestring
+
             uid = urlsafe_b64decode(uidb64).decode()
             user = CustomUser.objects.get(pk=uid)
         except (
@@ -150,10 +145,8 @@ class CustomRegisterConfirmEmailView(TemplateView):
         return user
 
 
-# password forgotten
 class CustomPasswordResetView(PasswordResetView):
     template_name = "users/password_reset_1_form.html"
-    # form_class = CustomPasswordResetForm
 
 
 class CustomPasswordResetDoneView(PasswordResetDoneView):

@@ -13,7 +13,10 @@
         <li class="{% if 'story' in request.get_full_path %}underline{% endif %}">
             <a href="{% url 'story' %}">Story</a>
         </li>
-        <li class="!ml-auto">
+        <li class="!ml-auto {% if 'users' in request.get_full_path %}underline{% endif %}">
+            <a href="{% url 'change_email' %}">Settings</a>
+        </li>
+        <li>
             <form action="{% url 'admin:logout' %}" method="post">
                 {% csrf_token %}
                 <button type="submit">Logout</button>

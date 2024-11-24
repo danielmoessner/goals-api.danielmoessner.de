@@ -67,6 +67,7 @@ NAVS = {
     "achievements": "achievements/nav.html",
     "notes": "notes/nav.html",
     "story": "story/nav.html",
+    "settings": "users/nav.html",
 }
 
 
