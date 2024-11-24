@@ -1,6 +1,8 @@
 {% extends 'users/change_email_base.html' %}
 {% block title %}E-Mail Change{% endblock %}
 {% block inside %}
-    <p>The confirmation email was sent. Please confirm your new email.</p>
+    <p>
+        The email change was requested and a confirmation email was sent. Please confirm your new email by clicking the link in the sent email.
+    </p>
     <a href="{% url 'todos' %}" class="inline-block a">Back</a>
 {% endblock %}

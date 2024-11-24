@@ -134,20 +134,7 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class CustomPasswordResetForm(PasswordResetForm):
-    def getusers(self, email):
-        """Given an email, return matching user(s) who should receive a reset.
-
-        This allows subclasses to more easily customize the default policies
-        that prevent inactive users and users with unusable passwords from
-        resetting their password.
-        """
-        email_field_name = CustomUser.get_email_field_name()
-        activeusers = CustomUser._default_manager.filter(
-            **{
-                "%s__iexact" % email_field_name: email,
-            }
-        )
-        return (u for u in activeusers if u.has_usable_password())
+    text = "Please type in your email and we will send a password reset email."
 
 
 class CustomSetPasswordForm(SetPasswordForm):

@@ -19,6 +19,7 @@ from django.views.generic import FormView, TemplateView
 from apps.users.forms import (
     ChangeEmailForm,
     ChangePasswordForm,
+    CustomPasswordResetForm,
     CustomUserCreationForm,
     LoginForm,
 )
@@ -147,6 +148,7 @@ class CustomRegisterConfirmEmailView(TemplateView):
 
 class CustomPasswordResetView(PasswordResetView):
     template_name = "users/password_reset_1_form.html"
+    form_class = CustomPasswordResetForm
 
 
 class CustomPasswordResetDoneView(PasswordResetDoneView):
