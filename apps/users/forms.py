@@ -19,7 +19,7 @@ from apps.users.generators import ChangeEmailTokenGenerator, ConfirmEmailTokenGe
 from apps.users.models import CustomUser
 
 
-class LoginForm(AuthenticationForm):
+class Login(AuthenticationForm):
     submit = "Login"
 
     def __init__(self, *args, **kwargs) -> None:
@@ -27,7 +27,7 @@ class LoginForm(AuthenticationForm):
         self.fields["username"].label = "E-Mail"
 
 
-class ChangePasswordForm(PasswordChangeForm):
+class ChangePassword(PasswordChangeForm):
     def send_mail(self, user: CustomUser):
         subject = "Dein Passwort wurde geändert"
         body = loader.render_to_string("users/change_password_3_email.txt", {})
@@ -46,7 +46,7 @@ class ChangePasswordForm(PasswordChangeForm):
         return user
 
 
-class ChangeEmailForm(forms.ModelForm):
+class ChangeEmail(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ["new_email"]
@@ -88,7 +88,7 @@ class ChangeEmailForm(forms.ModelForm):
         return user
 
 
-class CustomUserCreationForm(UserCreationForm):
+class Register(UserCreationForm):
     submit = "Register"
 
     class Meta:
@@ -133,9 +133,9 @@ class CustomUserCreationForm(UserCreationForm):
         return user
 
 
-class CustomPasswordResetForm(PasswordResetForm):
+class ResetPassword(PasswordResetForm):
     text = "Please type in your email and we will send a password reset email."
 
 
-class CustomSetPasswordForm(SetPasswordForm):
+class SetPassword(SetPasswordForm):
     pass

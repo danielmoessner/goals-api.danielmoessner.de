@@ -17,11 +17,11 @@ from django.urls import reverse_lazy
 from django.views.generic import FormView, TemplateView
 
 from apps.users.forms import (
-    ChangeEmailForm,
-    ChangePasswordForm,
-    CustomPasswordResetForm,
-    CustomUserCreationForm,
-    LoginForm,
+    ChangeEmail,
+    ChangePassword,
+    ResetPassword,
+    Register,
+    Login,
 )
 from apps.users.models import CustomUser
 
@@ -32,7 +32,7 @@ class LoginView(DjangoLoginView):
     template_name = "users/login.html"
     redirect_authenticated_user = True
     redirect_field_name = "next"
-    form_class = LoginForm
+    form_class = Login
 
 
 class LogoutView(DjangoLogoutView):
@@ -40,7 +40,7 @@ class LogoutView(DjangoLogoutView):
 
 
 class ChangePasswordView(PasswordChangeView):
-    form_class = ChangePasswordForm
+    form_class = ChangePassword
     success_url = reverse_lazy("change_password_done")
     template_name = "users/change_password.html"
 
@@ -50,7 +50,7 @@ class ChangePasswordDoneView(TemplateView):
 
 
 class ChangeEmailView(FormView):
-    form_class = ChangeEmailForm
+    form_class = ChangeEmail
     template_name = "users/change_email_1_form.html"
     success_url = reverse_lazy("change_email_done")
 
@@ -98,7 +98,7 @@ class ChangeEmailConfirmView(TemplateView):
 
 
 class CustomRegisterView(FormView):
-    form_class = CustomUserCreationForm
+    form_class = Register
     success_url = reverse_lazy("register_user_done")
     template_name = "users/register_user_1.html"
 
@@ -148,7 +148,7 @@ class CustomRegisterConfirmEmailView(TemplateView):
 
 class CustomPasswordResetView(PasswordResetView):
     template_name = "users/password_reset_1_form.html"
-    form_class = CustomPasswordResetForm
+    form_class = ResetPassword
 
 
 class CustomPasswordResetDoneView(PasswordResetDoneView):
