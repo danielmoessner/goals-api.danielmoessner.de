@@ -1,0 +1,8 @@
+{% extends 'users/change_email_base.html' %}
+{% block settings_content %}
+    {% if validlink %}
+        <p>Deine neue E-Mail wurde bestätigt.</p>
+    {% else %}
+        <p>Der Link ist ungültig, womöglich weil er abgelaufen ist oder bereits benutzt wurde.</p>
+    {% endif %}
+{% endblock %}

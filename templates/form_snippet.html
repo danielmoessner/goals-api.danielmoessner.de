@@ -1,8 +1,8 @@
 {% for hidden_field in form.hidden_fields %}{{ hidden_field }}{% endfor %}
 {% with errors=form.non_field_errors %}
     {% if errors %}
-        <p class="text-red-700">
-            {% for error in errors %}<span class="form-child--errors">{{ error }}</span>{% endfor %}
+        <p class="!text-red-700">
+            {% for error in errors %}{{ error }}{% endfor %}
         </p>
     {% endif %}
 {% endwith %}
@@ -10,12 +10,13 @@
     <p>
         <label for="id_{{ field.name }}"
                class="{% if field.field.required %}required{% endif %}">
-            {{ field.label }}
-            {% if not field.field.required %}
-                (optional):
-            {% else %}
-                :
-            {% endif %}
+            <span>
+                {% if not field.field.required %}
+                    {{ field.label }} (optional):
+                {% else %}
+                    {{ field.label }}:
+                {% endif %}
+            </span>
         </label>
         {{ field }}
         <div class="text-red-700">{{ field.errors }}</div>

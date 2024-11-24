@@ -1,0 +1,9 @@
+<form method="post"
+      class="django-form"
+      novalidate
+      action="{{ request.get_full_path }}">
+    {% include 'form_snippet.html' %}
+    {% csrf_token %}
+    <p class="">{{ form.text }}</p>
+    <button type="submit">{{ form.submit|default:'Submit' }}</button>
+</form>

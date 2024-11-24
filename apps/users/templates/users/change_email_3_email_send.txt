@@ -1,0 +1,4 @@
+Bitte bestätige deine neue E-Mail.
+Eine Änderung deiner E-Mail wurde angefragt.
+
+Bitte bestätige deine neue E-Mail indem du den folgenden Link im Browser öffnest: {{ link }}.

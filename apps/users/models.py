@@ -5,6 +5,8 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from apps.users.generators import ChangeEmailTokenGenerator, ConfirmEmailTokenGenerator
+
 if TYPE_CHECKING:
     from apps.story.models import Story
 
@@ -38,6 +40,8 @@ class CustomUser(AbstractUser):
     # make email the default login method
     username = None
     email = models.EmailField("E-Mail Address", unique=True)
+    email_confirmed = models.BooleanField(default=False)
+    new_email = models.EmailField("Neue E-Mail", blank=True, null=True)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
     objects = UserManager()  # type: ignore
@@ -52,3 +56,22 @@ class CustomUser(AbstractUser):
     class Meta:
         verbose_name = "User"
         verbose_name_plural = "Users"
+
+    def confirm_email_token(self, token: str):
+        if self.email_confirmed:
+            return
+        if ConfirmEmailTokenGenerator().check_token(self, token):
+            self.email_confirmed = True
+            self.save()
+        else:
+            raise ValueError("token invalid")
+
+    def confirm_new_email_token(self, token: str):
+        if self.new_email is None:
+            return
+        if ChangeEmailTokenGenerator().check_token(self, token):
+            self.email = self.new_email
+            self.new_email = None
+            self.save()
+        else:
+            raise ValueError("token invalid")

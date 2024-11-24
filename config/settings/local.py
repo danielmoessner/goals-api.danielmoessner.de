@@ -20,3 +20,4 @@ CORS_ALLOWED_ORIGINS += [  # noqa: F405
     "http://localhost:8081",
     "http://192.168.1.66:8081",
 ]
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

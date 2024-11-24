@@ -1,0 +1,11 @@
+{% extends 'users/base.html' %}
+{% load static %}
+{% block title %}Register{% endblock %}
+{% block inside %}
+    {% if request.user.is_authenticated %}
+        <p class="text-lg font-medium text-center text-gray-700">You are logged in already.</p>
+    {% else %}
+        {% include 'form.html' %}
+    {% endif %}
+    <a class="inline-block a" href="{% url 'login' %}">Login</a>
+{% endblock %}

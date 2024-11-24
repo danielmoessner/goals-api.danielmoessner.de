@@ -1,0 +1,5 @@
+Please confirm your email
+
+Thank you very much for your registration. After you confirm your email you are able to login:
+
+- Please confirm your email with a click on the following link: {{ link }}.

@@ -1,0 +1,19 @@
+{% extends 'users/register_user_1.html' %}
+{% block title %}E-Mail Confirmed{% endblock %}
+{% block inside %}
+    <div class="{% include 'symbols/prose.class' %}">
+        {% if validlink %}
+            <p>
+                Your email was confirmed. You can login now: <a href="{% url 'login' %}">To the login</a>.
+            </p>
+        {% endif %}
+        {% if not validlink %}
+            <p>Your email could not be confirmed. The following errors are possible:</p>
+            <ul>
+                <li>Your email is already confirmed.</li>
+                <li>The link is out of date.</li>
+                <li>The link is not valid.</li>
+            </ul>
+        {% endif %}
+    </div>
+{% endblock %}

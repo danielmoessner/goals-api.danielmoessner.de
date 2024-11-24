@@ -3,13 +3,10 @@ import os
 
 from django.core.exceptions import ImproperlyConfigured
 
-# Paths
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 APPS_DIR = os.path.join(BASE_DIR, "apps")
 TMP_DIR = os.path.join(BASE_DIR, "tmp")
 
-# Secret settings
 
 with open(os.path.join(TMP_DIR, "secrets.json")) as f:
     secrets_json = json.loads(f.read())
@@ -25,7 +22,6 @@ def get_secret(setting, secrets=secrets_json):
 
 SECRET_KEY = get_secret("SECRET_KEY")
 
-# Application definition
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -78,7 +74,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-# Database
 
 DATABASES = {
     "default": {
@@ -87,12 +82,10 @@ DATABASES = {
     }
 }
 
-# User
 
 LOGIN_URL = "/admin/login/"
 AUTH_USER_MODEL = "users.CustomUser"
 
-# Password validation
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -109,7 +102,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
 
 LANGUAGE_CODE = "en-us"
 
@@ -121,7 +113,6 @@ USE_L10N = True
 
 USE_TZ = False
 
-# Static files (CSS, JavaScript, Images)
 
 STATIC_URL = "/static/"
 
@@ -133,14 +124,15 @@ MEDIA_URL = "/media/"
 
 MEDIA_ROOT = os.path.join(TMP_DIR, "media")
 
-# tinymce config
+LOGIN_URL = "/users/login/"
+LOGIN_REDIRECT_URL = "/todos/todos/"
+LOGOUT_REDIRECT_URL = "/users/login/"
 
 TINYMCE_DEFAULT_CONFIG = {
     "height": 360,
     "cleanup_on_startup": True,
     "custom_undo_redo_levels": 20,
     "selector": "textarea",
-    # 'theme': 'modern',
     "plugins": """
             save link image media preview codesample
             table code lists fullscreen  insertdatetime  nonbreaking
@@ -166,12 +158,10 @@ TINYMCE_DEFAULT_CONFIG = {
     "convert_urls": True,
 }
 
-# filebrowser config
 
 FILEBROWSER_DIRECTORY = "user_content/"
 DIRECTORY = ""
 
-# E-Mail
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = "smtp.strato.de"
@@ -179,7 +169,6 @@ EMAIL_HOST_USER = "projekte@tortuga-webdesign.de"
 EMAIL_HOST_PASSWORD = get_secret("EMAIL_PWD")
 EMAIL_PORT = 587
 
-# Rest Framework
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
@@ -189,7 +178,8 @@ REST_FRAMEWORK = {
     "DATETIME_FORMAT": "%Y-%m-%dT%H:%M",
 }
 
-# CORS Headers, so that we can make API calls from another app
 
 CORS_ALLOWED_ORIGINS = ["https://goals.danielmoessner.de", "http://localhost:3000"]
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+CUSTOM_ALLOW_REGISTRATION = True
