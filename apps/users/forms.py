@@ -30,11 +30,13 @@ class Login(AuthenticationForm):
 class ChangePassword(PasswordChangeForm):
     def send_mail(self, user: CustomUser):
         subject = "Dein Passwort wurde geändert"
-        body = loader.render_to_string("users/change_password_3_email.txt", {})
+        body = loader.render_to_string("users/emails/change_password_3_email.txt", {})
         email_message = EmailMultiAlternatives(
             subject, body, settings.DEFAULT_FROM_EMAIL, [user.email]
         )
-        html_email = loader.render_to_string("users/change_password_3_email.html", {})
+        html_email = loader.render_to_string(
+            "users/emails/change_password_3_email.html", {}
+        )
         email_message.attach_alternative(html_email, "text/html")
         email_message.send()
 
@@ -63,13 +65,15 @@ class ChangeEmail(forms.ModelForm):
         subject = "Bestätige deine neue E-Mail-Adresse"
 
         context = {"link": link}
-        body = loader.render_to_string("users/change_email_3_email_send.txt", context)
+        body = loader.render_to_string(
+            "users/emails/change_email_3_email_send.txt", context
+        )
 
         email_message = EmailMultiAlternatives(
             subject, body, settings.DEFAULT_FROM_EMAIL, [user.new_email]
         )
         html_email = loader.render_to_string(
-            "users/change_email_3_email_send.html", context
+            "users/emails/change_email_3_email_send.html", context
         )
         email_message.attach_alternative(html_email, "text/html")
 
@@ -111,12 +115,14 @@ class Register(UserCreationForm):
         subject = "Bestätige deine E-Mail-Adresse"
 
         context = {"link": link}
-        body = loader.render_to_string("users/register_user_3_email_send.txt", context)
+        body = loader.render_to_string(
+            "users/emails/register_user_3_email_send.txt", context
+        )
         email_message = EmailMultiAlternatives(
             subject, body, settings.DEFAULT_FROM_EMAIL, [user.email]
         )
         html_email = loader.render_to_string(
-            "users/register_user_3_email_send.html", context
+            "users/emails/register_user_3_email_send.html", context
         )
         email_message.attach_alternative(html_email, "text/html")
         email_message.send()

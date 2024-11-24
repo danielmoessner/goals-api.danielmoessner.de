@@ -16,13 +16,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import FormView, TemplateView
 
-from apps.users.forms import (
-    ChangeEmail,
-    ChangePassword,
-    ResetPassword,
-    Register,
-    Login,
-)
+from apps.users.forms import ChangeEmail, ChangePassword, Login, Register, ResetPassword
 from apps.users.models import CustomUser
 
 logger = logging.getLogger(__name__)
