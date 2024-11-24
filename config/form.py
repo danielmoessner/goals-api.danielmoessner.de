@@ -23,14 +23,7 @@ from apps.todos.forms import (
     UpdateNormalTodo,
     UpdateRepetitiveTodo,
 )
-from apps.users.forms import (
-    ChangeEmail,
-    ChangePassword,
-    Login,
-    Register,
-    ResetPassword,
-    SetPassword,
-)
+from apps.users.forms import ChangeEmail, ChangePassword, Login, Register, ResetPassword
 from apps.users.models import CustomUser
 from apps.utils.functional import list_map
 
@@ -70,7 +63,6 @@ FORMS: list[type[FormClass]] = [
     Login,
     Register,
     ResetPassword,
-    SetPassword,
     ChangeEmail,
     ChangePassword,
 ]
@@ -110,6 +102,11 @@ def get_navs(form: FormClass) -> list[str]:
     return list_map(getattr(form, "navs", []), lambda n: NAVS.get(n, ""))
 
 
+def set_request(form: FormClass, request: HttpRequest) -> None:
+    if hasattr(form, "inject_request"):
+        form.inject_request(request)  # type: ignore
+
+
 def form_view(
     request: HttpRequest, form_name: str, template_name="form_view.html"
 ) -> HttpResponse:
@@ -129,7 +126,8 @@ def form_view(
     if request.method == "POST":
         data = request.POST.dict()
 
-    form = form_class(request.user, opts=request.GET.dict(), request=request, data=data)
+    form = form_class(request.user, opts=request.GET.dict(), data=data)
+    set_request(form, request)
     if request.method == "POST" and form.is_valid():
         ret = form.ok()
         success = getattr(form, "success", None)

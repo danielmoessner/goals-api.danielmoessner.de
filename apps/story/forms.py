@@ -1,7 +1,7 @@
 from django import forms
 
 from apps.story.models import Story
-from apps.todos.forms import OptsUserInstance
+from config.mixins import OptsUserInstance
 
 
 class UpdateStory(OptsUserInstance[Story], forms.ModelForm):

@@ -1,9 +1,8 @@
-from typing import Any, Generic, TypeVar
+from typing import Any, TypeVar
 
 from django import forms
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser
 from django.db import models
-from django.http import HttpRequest
 from django.utils import timezone
 
 from apps.todos.models import (
@@ -23,42 +22,11 @@ from apps.todos.utils import (
     setup_duration_field,
 )
 from apps.users.models import CustomUser
+from config.mixins import OptsUserInstance
 
 USER = AbstractBaseUser | AnonymousUser | CustomUser
 OPTS = dict[str, Any]
 T = TypeVar("T", bound=models.Model)
-
-
-class OptsUser:
-    def init(self):
-        pass
-
-    def __init__(self, user: USER, opts: OPTS, request: HttpRequest, *args, **kwargs):
-        self.user = user
-        self.opts = opts
-        super().__init__(*args, **kwargs)  # type: ignore
-        self.request = request
-        self.init()
-
-
-class OptsUserInstance(Generic[T]):
-    instance: T
-
-    def init(self):
-        pass
-
-    def get_instance(self) -> models.Model | None:
-        return None
-
-    def __init__(self, user: USER, opts: OPTS, request: HttpRequest, *args, **kwargs):
-        assert isinstance(user, CustomUser)
-        self.user = user
-        self.opts = opts
-        self.request = request
-        instance = self.get_instance()
-        super().__init__(*args, instance=instance, **kwargs)  # type: ignore
-        self.request = request
-        self.init()
 
 
 class CreateNormalTodo(OptsUserInstance[NormalTodo], forms.ModelForm):

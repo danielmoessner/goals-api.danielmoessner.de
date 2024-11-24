@@ -1,8 +1,8 @@
 from django import forms
 
 from apps.achievements.models import Achievement
-from apps.todos.forms import OptsUserInstance
 from apps.todos.utils import setup_date_field
+from config.mixins import OptsUserInstance
 
 
 class CreateAchievement(OptsUserInstance[Achievement], forms.ModelForm):

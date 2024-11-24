@@ -17,9 +17,9 @@ from django.template import loader
 from django.urls import reverse_lazy
 from django.utils.encoding import force_bytes
 
-from apps.todos.forms import OptsUser, OptsUserInstance
 from apps.users.generators import ChangeEmailTokenGenerator, ConfirmEmailTokenGenerator
 from apps.users.models import CustomUser
+from config.mixins import OptsUser, OptsUserInstance
 
 
 class Login(OptsUser, AuthenticationForm):
@@ -31,6 +31,9 @@ class Login(OptsUser, AuthenticationForm):
     def init(self):
         self.fields["username"].label = "E-Mail"
 
+    def inject_request(self, request: HttpRequest):
+        self.request = request  # type: ignore
+
     def ok(self):
         auth_login(self.request, self.get_user())
         return self.get_user().pk
@@ -41,7 +44,7 @@ class ChangePassword(PasswordChangeForm):
     navs = ["settings"]
     success = reverse_lazy("change_password_done")
 
-    def __init__(self, user, opts, request: HttpRequest, *args, **kwargs):
+    def __init__(self, user, opts, *args, **kwargs):
         self.user = user
         self.opts = opts
         super().__init__(user, *args, **kwargs)
@@ -74,10 +77,12 @@ class ChangeEmail(OptsUserInstance[CustomUser], forms.ModelForm):
         model = CustomUser
         fields = ["new_email"]
 
+    def inject_request(self, request: HttpRequest):
+        self.request = request
+
     def get_instance(self) -> CustomUser:
-        user = self.request.user
-        assert isinstance(user, CustomUser)
-        return user
+        assert isinstance(self.user, CustomUser)
+        return self.user
 
     def send_email_change_mail(self, request, user):
         token = ChangeEmailTokenGenerator().make_token(user)
@@ -129,6 +134,9 @@ class Register(OptsUser, UserCreationForm):
     def init(self) -> None:
         self.fields["email"].widget.attrs = {"autocomplete": "email"}
 
+    def inject_request(self, request: HttpRequest):
+        self.request = request
+
     def send_activation_mail(self, request, user):
         token = ConfirmEmailTokenGenerator().make_token(user)
         current_site = get_current_site(request)
@@ -169,15 +177,14 @@ class ResetPassword(OptsUser, PasswordResetForm):
     text = "Please type in your email and we will send a password reset email."
     success = reverse_lazy("password_reset_done")
 
+    def inject_request(self, request: HttpRequest):
+        self.request = request
+
     def ok(self):
         self.save(request=self.request)  # type: ignore
         return 0
 
 
-class SetPassword(OptsUser, SetPasswordForm):
+class SetPassword(SetPasswordForm):
     title = "Set Password"
     success = reverse_lazy("password_reset_complete")
-
-    def ok(self):
-        self.save()
-        return 0

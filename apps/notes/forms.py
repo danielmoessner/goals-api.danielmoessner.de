@@ -2,7 +2,7 @@ from django import forms
 from tinymce.widgets import TinyMCE
 
 from apps.notes.models import Note
-from apps.todos.forms import OptsUserInstance
+from config.mixins import OptsUserInstance
 
 
 class CreateNote(OptsUserInstance[Note], forms.ModelForm):
