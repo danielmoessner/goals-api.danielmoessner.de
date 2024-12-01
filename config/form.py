@@ -10,6 +10,7 @@ from apps.achievements.forms import (
     DeleteAchievement,
     UpdateAchievement,
 )
+from apps.goals.forms import CreateGoal, DeleteGoal, UpdateGoal
 from apps.notes.forms import CreateNote, DeleteNote, UpdateNote
 from apps.story.forms import UpdateStory
 from apps.todos.forms import (
@@ -65,6 +66,9 @@ FORMS: list[type[FormClass]] = [
     ResetPassword,
     ChangeEmail,
     ChangePassword,
+    CreateGoal,
+    UpdateGoal,
+    DeleteGoal,
 ]
 
 
@@ -75,6 +79,7 @@ NAVS = {
     "notes": "notes/nav.html",
     "story": "story/nav.html",
     "settings": "users/nav.html",
+    "goals": "goals/nav.html",
 }
 
 

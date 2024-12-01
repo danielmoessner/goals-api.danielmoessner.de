@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from django.db import models
 
 from apps.users.models import CustomUser
@@ -18,6 +20,9 @@ class Goal(models.Model):
     is_starred = models.BooleanField(default=False)
     created = models.DateTimeField(auto_created=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
+
+    if TYPE_CHECKING:
+        master_goals: models.QuerySet["Goal"]
 
     # general
     class Meta:

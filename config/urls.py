@@ -34,6 +34,7 @@ urlpatterns = [
     path("notes/", include("apps.notes.urls")),
     path("story/", include("apps.story.urls")),
     path("users/", include("apps.users.urls")),
+    path("goals/", include("apps.goals.urls")),
     path("form/<str:form_name>/", form_view, name="form"),
     path("global-form/<str:form_name>/", global_form_view, name="global_form"),
     path("", include(router.urls)),
