@@ -1,4 +1,4 @@
-from apps._users.models import User
+from apps.users.models import CustomUser
 
 
 def create_user(
@@ -7,8 +7,8 @@ def create_user(
     last_name="Dummy",
     password="pass1234!",
     save=False,
-) -> User:
-    user = User(
+) -> CustomUser:
+    user = CustomUser(
         email=email,
         first_name=first_name,
         last_name=last_name,

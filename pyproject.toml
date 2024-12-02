@@ -1,0 +1,20 @@
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.local"
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+known_local_folder = ["apps", "config"]
+profile = "black"
+
+
+[project]
+name = "goals-api.danielmoessner.de"
+version = "0.0.0"
+description = ""
+authors = [
+    {name = "danielmoessner", email = "code@danielmoessner.de"},
+]
+readme = "README.md"
+license = {text = "NONE"}

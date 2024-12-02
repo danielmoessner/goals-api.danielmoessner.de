@@ -1,9 +1,8 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from apps.users import viewsets
-
 from . import views
+from apps.users import viewsets
 
 router = DefaultRouter()
 router.register(r"users", viewsets.UserViewSet)

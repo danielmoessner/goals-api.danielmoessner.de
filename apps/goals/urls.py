@@ -1,9 +1,8 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from apps.goals import viewsets
-
 from . import views
+from apps.goals import viewsets
 
 router = DefaultRouter()
 router.register(r"goals", viewsets.GoalViewSet)

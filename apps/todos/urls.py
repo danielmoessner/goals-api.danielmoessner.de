@@ -2,9 +2,8 @@ from django.shortcuts import render
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from apps.todos import viewsets
-
 from ..todos import views
+from apps.todos import viewsets
 
 router = DefaultRouter()
 router.register(r"todos", viewsets.ToDoViewSet)

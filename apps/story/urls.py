@@ -1,9 +1,8 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from apps.story import viewsets
-
 from . import views
+from apps.story import viewsets
 
 router = DefaultRouter()
 router.register(r"stories", viewsets.StoryViewSet)

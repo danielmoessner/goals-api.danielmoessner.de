@@ -6,6 +6,7 @@ from django.urls import path
 from rest_framework.authtoken import views
 from rest_framework.routers import DefaultRouter
 
+from .filebrowser import site
 from apps.achievements.urls import router as achievements_router
 from apps.goals.urls import router as goals_router
 from apps.notes.urls import router as notes_router
@@ -13,8 +14,6 @@ from apps.story.urls import router as story_router
 from apps.todos.urls import router as todos_router
 from apps.users.urls import router as users_router
 from config.form import form_view, global_form_view
-
-from .filebrowser import site
 
 router = DefaultRouter()
 router.registry.extend(todos_router.registry)
