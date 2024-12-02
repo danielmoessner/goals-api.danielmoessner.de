@@ -129,7 +129,13 @@ def form_view(
 
     data = None
     if request.method == "POST":
-        data = request.POST.dict()
+        data = {}
+        for key in request.POST.keys():
+            v = request.POST.getlist(key)
+            if len(v) == 1:
+                data[key] = v[0]
+            else:
+                data[key] = v
 
     form = form_class(request.user, opts=request.GET.dict(), data=data)
     set_request(form, request)

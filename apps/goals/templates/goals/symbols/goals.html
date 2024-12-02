@@ -1,0 +1,16 @@
+{% if goals %}
+    <ul class="p-5 space-y-2 list-disc list-inside">
+        {% for g in goals %}
+            <li class=" [&_a]:text-blue-600">
+                <div class="relative inline-flex items-center font-bold">
+                    {{ g.name }}
+                    <a class="inline-block ml-3"
+                       href="{% url 'form' 'UpdateGoal' %}?pk={{ g.pk }}&success={% url 'goals' %}">U</a>
+                    <a class="inline-block ml-2"
+                       href="{% url 'form' 'DeleteGoal' %}?pk={{ g.pk }}&success={% url 'goals' %}">D</a>
+                </div>
+                {% include "goals/symbols/goals.html" with goals=g.sub_goals.all %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}

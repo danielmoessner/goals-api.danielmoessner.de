@@ -2,15 +2,5 @@
 {% block prose %}
     {% include 'nav.html' %}
     {% include 'goals/nav.html' %}
-    <ul class="p-5 space-y-2 list-disc list-inside">
-        {% for g in goals %}
-            <li class="flex relative items-center group font-bold [&_a]:text-blue-600">
-                {{ g.name }}
-                <a class="inline-block ml-3"
-                   href="{% url 'form' 'UpdateGoal' %}?pk={{ g.pk }}&success={% url 'goals' %}">U</a>
-                <a class="inline-block ml-2"
-                   href="{% url 'form' 'DeleteGoal' %}?pk={{ g.pk }}&success={% url 'goals' %}">D</a>
-            </li>
-        {% endfor %}
-    </ul>
+    {% include "goals/symbols/goals.html" %}
 {% endblock %}

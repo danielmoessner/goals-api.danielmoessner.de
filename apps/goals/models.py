@@ -23,6 +23,7 @@ class Goal(models.Model):
 
     if TYPE_CHECKING:
         master_goals: models.QuerySet["Goal"]
+        sub_goals: models.ManyToManyField["Goal", "Goal"]
 
     # general
     class Meta:
@@ -77,7 +78,7 @@ class Goal(models.Model):
         return queryset
 
     def get_all_sub_goals(self):
-        query = self.sub_goals.all()
+        query: models.QuerySet[Goal] = self.sub_goals.all()
         for goal in self.sub_goals.all():
             query = query | goal.get_all_sub_goals()
         return query

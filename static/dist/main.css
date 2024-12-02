@@ -1456,6 +1456,10 @@ b {
   display: flex;
 }
 
+.inline-flex {
+  display: inline-flex;
+}
+
 .hidden {
   display: none;
 }
@@ -1486,6 +1490,10 @@ b {
 
 .list-disc {
   list-style-type: disc;
+}
+
+.list-decimal {
+  list-style-type: decimal;
 }
 
 .items-center {
