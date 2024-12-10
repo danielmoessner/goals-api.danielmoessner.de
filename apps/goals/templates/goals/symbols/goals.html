@@ -3,7 +3,7 @@
         {% for l in leafes %}
             <li class=" [&_a]:text-blue-600">
                 <div class="relative inline-flex items-center font-bold">
-                    {{ l.goal.name }}
+                    {{ l.goal.name }} {{ l.goal.progress_str }}
                     <a class="inline-block ml-3"
                        href="{% url 'form' 'UpdateGoal' %}?pk={{ l.goal.pk }}&success={% url 'goals' %}">U</a>
                     <a class="inline-block ml-2"

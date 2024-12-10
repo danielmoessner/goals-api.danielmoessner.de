@@ -43,7 +43,10 @@ class Goal(models.Model):
         for goal in goals:
             goal.reset()
 
-    # getters
+    @property
+    def progress_str(self):
+        return f"{self.progress}%"
+
     @staticmethod
     def get_goals(goals, include_archived_goals=False):
         if not include_archived_goals:
