@@ -10,7 +10,14 @@ from apps.achievements.forms import (
     DeleteAchievement,
     UpdateAchievement,
 )
-from apps.goals.forms import CreateGoal, DeleteGoal, UpdateGoal
+from apps.goals.forms import (
+    AddMonitor,
+    CreateGoal,
+    DecreaseProgress,
+    DeleteGoal,
+    IncreaseProgress,
+    UpdateGoal,
+)
 from apps.notes.forms import CreateNote, DeleteNote, UpdateNote
 from apps.story.forms import UpdateStory
 from apps.todos.forms import (
@@ -69,6 +76,9 @@ FORMS: list[type[FormClass]] = [
     CreateGoal,
     UpdateGoal,
     DeleteGoal,
+    AddMonitor,
+    IncreaseProgress,
+    DecreaseProgress,
 ]
 
 

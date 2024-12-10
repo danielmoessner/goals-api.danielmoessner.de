@@ -24,6 +24,7 @@ class Goal(models.Model):
     if TYPE_CHECKING:
         master_goals: models.QuerySet["Goal"]
         sub_goals: models.ManyToManyField["Goal", "Goal"]
+        progress_monitors: models.QuerySet["ProgressMonitor"]
 
     # general
     class Meta:
@@ -163,6 +164,10 @@ class ProgressMonitor(models.Model):
             else 100
         )
 
+    @property
+    def progress_str(self):
+        return f"{self.progress}%"
+
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
@@ -225,6 +230,12 @@ class ProgressMonitor(models.Model):
         data["progress"] = self.progress
         data["pk"] = self.pk
         return data
+
+    def increase_progress(self):
+        self.step = min(self.step + 1, self.steps)
+
+    def decrease_progress(self):
+        self.step = max(self.step - 1, 0)
 
 
 class Link(models.Model):

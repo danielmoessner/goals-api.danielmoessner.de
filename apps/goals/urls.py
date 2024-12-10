@@ -10,4 +10,7 @@ router.register(r"strategies", viewsets.StrategyViewSet)
 router.register(r"monitors", viewsets.MonitorViewSet)
 router.register(r"links", viewsets.LinkViewSet)
 
-urlpatterns = [path("goals/", views.goals, name="goals")]
+urlpatterns = [
+    path("goals/", views.goals, name="goals"),
+    path("goal/<int:pk>/", views.goal, name="goal"),
+]
