@@ -4,6 +4,7 @@ from django.db.models.base import Model as Model
 
 from apps.goals.models import Goal, ProgressMonitor
 from apps.todos.utils import setup_datetime_field
+from apps.users.models import CustomUser
 from config.fields import CustomModelMultipleChoiceField
 from config.mixins import OptsUserInstance
 
@@ -109,6 +110,10 @@ class AddMonitor(OptsUserInstance[ProgressMonitor], forms.ModelForm):
         return self.instance.pk
 
 
+def get_monitor(user: CustomUser, pk: int) -> ProgressMonitor:
+    return ProgressMonitor.objects.get(goal__user=user, pk=pk)
+
+
 class IncreaseProgress(OptsUserInstance[ProgressMonitor], forms.ModelForm):
     navs = ["goals"]
     submit = "Increase"
@@ -118,7 +123,7 @@ class IncreaseProgress(OptsUserInstance[ProgressMonitor], forms.ModelForm):
         fields = []
 
     def get_instance(self) -> ProgressMonitor:
-        return ProgressMonitor.objects.get(goal__user=self.user, pk=self.opts["pk"])
+        return get_monitor(self.user, self.opts["pk"])
 
     def ok(self):
         self.instance.increase_progress()
@@ -135,9 +140,25 @@ class DecreaseProgress(OptsUserInstance[ProgressMonitor], forms.ModelForm):
         fields = []
 
     def get_instance(self) -> ProgressMonitor:
-        return ProgressMonitor.objects.get(goal__user=self.user, pk=self.opts["pk"])
+        return get_monitor(self.user, self.opts["pk"])
 
     def ok(self):
         self.instance.decrease_progress()
+        self.instance.save()
+        return self.instance.pk
+
+
+class UpdateMonitor(OptsUserInstance[ProgressMonitor], forms.ModelForm):
+    navs = ["goals"]
+    submit = "Save"
+
+    class Meta:
+        model = ProgressMonitor
+        fields = ["name", "weight", "steps"]
+
+    def get_instance(self) -> ProgressMonitor:
+        return get_monitor(self.user, self.opts["pk"])
+
+    def ok(self):
         self.instance.save()
         return self.instance.pk
