@@ -1,15 +1,15 @@
-{% if goals %}
+{% if leafes %}
     <ul class="p-5 space-y-2 list-disc list-inside">
-        {% for g in goals %}
+        {% for l in leafes %}
             <li class=" [&_a]:text-blue-600">
                 <div class="relative inline-flex items-center font-bold">
-                    {{ g.name }}
+                    {{ l.goal.name }}
                     <a class="inline-block ml-3"
-                       href="{% url 'form' 'UpdateGoal' %}?pk={{ g.pk }}&success={% url 'goals' %}">U</a>
+                       href="{% url 'form' 'UpdateGoal' %}?pk={{ l.goal.pk }}&success={% url 'goals' %}">U</a>
                     <a class="inline-block ml-2"
-                       href="{% url 'form' 'DeleteGoal' %}?pk={{ g.pk }}&success={% url 'goals' %}">D</a>
+                       href="{% url 'form' 'DeleteGoal' %}?pk={{ l.goal.pk }}&success={% url 'goals' %}">D</a>
                 </div>
-                {% include "goals/symbols/goals.html" with goals=g.sub_goals.all %}
+                {% include "goals/symbols/goals.html" with leafes=l.children %}
             </li>
         {% endfor %}
     </ul>
