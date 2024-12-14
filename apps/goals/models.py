@@ -26,7 +26,6 @@ class Goal(models.Model):
         sub_goals: models.ManyToManyField["Goal", "Goal"]
         progress_monitors: models.QuerySet["ProgressMonitor"]
 
-    # general
     class Meta:
         ordering = ("is_archived", "name")
 
@@ -136,7 +135,6 @@ class Goal(models.Model):
 
         return int(round(progress / weight))
 
-    # setters
     def reset(self):
         self.progress = self.get_progress_calc()
         self.save()

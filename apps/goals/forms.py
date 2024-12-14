@@ -162,3 +162,20 @@ class UpdateMonitor(OptsUserInstance[ProgressMonitor], forms.ModelForm):
     def ok(self):
         self.instance.save()
         return self.instance.pk
+
+
+class DeleteMonitor(OptsUserInstance[ProgressMonitor], forms.ModelForm):
+    navs = ["goals"]
+    submit = "Delete"
+    text = "Are you sure you want to delete this monitor?"
+
+    class Meta:
+        model = ProgressMonitor
+        fields = []
+
+    def get_instance(self) -> ProgressMonitor:
+        return get_monitor(self.user, self.opts["pk"])
+
+    def ok(self):
+        self.instance.delete()
+        return self.instance.pk

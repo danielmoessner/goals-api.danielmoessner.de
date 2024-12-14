@@ -15,6 +15,7 @@ from apps.goals.forms import (
     CreateGoal,
     DecreaseProgress,
     DeleteGoal,
+    DeleteMonitor,
     IncreaseProgress,
     UpdateGoal,
     UpdateMonitor,
@@ -81,6 +82,7 @@ FORMS: list[type[FormClass]] = [
     IncreaseProgress,
     DecreaseProgress,
     UpdateMonitor,
+    DeleteMonitor,
 ]
 
 
