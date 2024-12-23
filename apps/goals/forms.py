@@ -179,3 +179,20 @@ class DeleteMonitor(OptsUserInstance[ProgressMonitor], forms.ModelForm):
     def ok(self):
         self.instance.delete()
         return self.instance.pk
+
+
+class UpdateGoalSettings(OptsUserInstance[CustomUser], forms.ModelForm):
+    navs = ["settings"]
+    submit = "Save"
+
+    class Meta:
+        model = CustomUser
+        fields = ["show_archived_objects"]
+
+    def get_instance(self):
+        assert self.user.pk, "unlazy the object"
+        return self.user
+
+    def ok(self):
+        self.instance.delete()
+        return self.instance.pk

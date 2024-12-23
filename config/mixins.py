@@ -31,7 +31,7 @@ class OptsUserInstance(Generic[T]):
         return None
 
     def __init__(self, user: USER, opts: OPTS, *args, **kwargs):
-        assert isinstance(user, CustomUser)
+        assert isinstance(user, CustomUser), type(user)
         self.user = user
         self.opts = opts
         instance = self.get_instance()

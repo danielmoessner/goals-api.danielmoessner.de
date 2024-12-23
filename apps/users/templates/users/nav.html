@@ -8,5 +8,9 @@
             <a class="{% if 'ChangePassword' in request.get_full_path %}underline{% endif %}"
                href="{% url 'form' 'ChangePassword' %}">Change Password</a>
         </li>
+        <li>
+            <a class="{% if 'UpdateGoalSettings' in request.get_full_path %}underline{% endif %}"
+               href="{% url 'form' 'UpdateGoalSettings' %}">Goals Settings</a>
+        </li>
     </ul>
 </nav>

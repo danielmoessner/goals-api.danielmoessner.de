@@ -18,6 +18,7 @@ from apps.goals.forms import (
     DeleteMonitor,
     IncreaseProgress,
     UpdateGoal,
+    UpdateGoalSettings,
     UpdateMonitor,
 )
 from apps.notes.forms import CreateNote, DeleteNote, UpdateNote
@@ -83,6 +84,7 @@ FORMS: list[type[FormClass]] = [
     DecreaseProgress,
     UpdateMonitor,
     DeleteMonitor,
+    UpdateGoalSettings,
 ]
 
 
