@@ -190,9 +190,8 @@ class UpdateGoalSettings(OptsUserInstance[CustomUser], forms.ModelForm):
         fields = ["show_archived_objects"]
 
     def get_instance(self):
-        assert self.user.pk, "unlazy the object"
         return self.user
 
     def ok(self):
-        self.instance.delete()
+        self.instance.save()
         return self.instance.pk

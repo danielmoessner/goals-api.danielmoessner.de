@@ -19,9 +19,11 @@ class Leaf:
 
     @staticmethod
     def build_goals_data(user: CustomUser):
-        goals_qs = Goal.objects.filter(user=user, is_archived=False).prefetch_related(
+        goals_qs = Goal.objects.filter(user=user).prefetch_related(
             "master_goals", "sub_goals"
         )
+        if not user.show_archived_objects:
+            goals_qs = goals_qs.filter(is_archived=False)
         goals_list = list(goals_qs)
         goals_dict = {g.pk: g for g in goals_list}
         return goals_dict, goals_list
