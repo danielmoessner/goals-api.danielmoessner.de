@@ -33,6 +33,7 @@ from apps.todos.forms import (
     UpdateNeverEndingTodo,
     UpdateNormalTodo,
     UpdateRepetitiveTodo,
+    UpdateTodoSettings,
 )
 from apps.users.forms import ChangeEmail, ChangePassword, Login, Register, ResetPassword
 from apps.users.models import CustomUser
@@ -84,6 +85,7 @@ FORMS: list[type[FormClass]] = [
     DecreaseProgress,
     UpdateMonitor,
     DeleteMonitor,
+    UpdateTodoSettings,
     UpdateGoalSettings,
 ]
 

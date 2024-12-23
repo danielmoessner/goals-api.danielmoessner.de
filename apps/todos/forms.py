@@ -195,3 +195,19 @@ class ToggleTodo(OptsUserInstance[Todo], forms.ModelForm):
         self.instance.toggle()
         self.instance.save()
         return self.instance.pk
+
+
+class UpdateTodoSettings(OptsUserInstance[CustomUser], forms.ModelForm):
+    navs = ["settings"]
+    submit = "Save"
+
+    class Meta:
+        model = CustomUser
+        fields = ["show_old_todos"]
+
+    def get_instance(self):
+        return self.user
+
+    def ok(self):
+        self.instance.save()
+        return self.instance.pk

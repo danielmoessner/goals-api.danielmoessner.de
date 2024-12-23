@@ -9,6 +9,10 @@
                href="{% url 'form' 'ChangePassword' %}">Change Password</a>
         </li>
         <li>
+            <a class="{% if 'UpdateTodoSettings' in request.get_full_path %}underline{% endif %}"
+               href="{% url 'form' 'UpdateTodoSettings' %}">Todos Settings</a>
+        </li>
+        <li>
             <a class="{% if 'UpdateGoalSettings' in request.get_full_path %}underline{% endif %}"
                href="{% url 'form' 'UpdateGoalSettings' %}">Goals Settings</a>
         </li>
