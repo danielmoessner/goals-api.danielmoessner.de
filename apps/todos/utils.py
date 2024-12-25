@@ -37,6 +37,16 @@ def get_start_of_week():
     return week_start_with_time
 
 
+def get_start_of_next_week():
+    start = get_start_of_week()
+    return start + timedelta(days=7)
+
+
+def get_end_of_next_week():
+    end = get_end_of_week()
+    return end + timedelta(days=7)
+
+
 def add_week(dt: datetime) -> datetime:
     return dt + timedelta(weeks=1)
 

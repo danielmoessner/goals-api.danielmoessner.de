@@ -5,6 +5,10 @@
                href="{% url 'todos' %}?kind=week">Week</a>
         </li>
         <li>
+            <a class="{% if request.GET.kind == 'next_week' %}underline{% endif %}"
+               href="{% url 'todos' %}?kind=next_week">Next Week</a>
+        </li>
+        <li>
             <a class="{% if request.GET.kind == 'activated' %}underline{% endif %}"
                href="{% url 'todos' %}?kind=activated">Activated</a>
         </li>

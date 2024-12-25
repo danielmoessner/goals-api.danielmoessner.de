@@ -11,7 +11,12 @@ from apps.todos.models import (
     RepetitiveTodo,
     Todo,
 )
-from apps.todos.utils import get_end_of_week, get_start_of_week
+from apps.todos.utils import (
+    get_end_of_next_week,
+    get_end_of_week,
+    get_start_of_next_week,
+    get_start_of_week,
+)
 from apps.utils.functional import list_sort
 
 
@@ -27,6 +32,12 @@ def todos(request: HttpRequest):
             now = timezone.now()
             f = Q(activate__lte=now, status="ACTIVE") | Q(
                 completed__gte=start_of_week, completed__lte=end_of_week
+            )
+        if kind == "next_week":
+            start_of_next_week = get_start_of_next_week()
+            end_of_next_week = get_end_of_next_week()
+            f = Q(activate__lte=start_of_next_week, status="ACTIVE") | Q(
+                completed__gte=start_of_next_week, completed__lte=end_of_next_week
             )
         elif kind == "activated":
             f = Q(activate__lte=timezone.now())
