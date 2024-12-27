@@ -5,7 +5,7 @@ from django.urls import reverse
 from apps.users.tests import helpers
 
 
-def test_register_works_with_mail(db):
+def test_email_change_works(db):
     data = {"new_email": "dummy_new@abc.de"}
 
     # setup
@@ -14,11 +14,11 @@ def test_register_works_with_mail(db):
     c.login(email=user.email, password="pass1234!")
 
     # step1: open the change email page
-    response_1 = c.get(reverse("change_email"))
+    response_1 = c.get(reverse("form", args=["ChangeEmail"]))
     assert 200 == response_1.status_code
 
     # step2: submit and check that the new email is saved
-    response_2 = c.post(reverse("change_email"), data)
+    response_2 = c.post(reverse("form", args=["ChangeEmail"]), data)
     user.refresh_from_db()
     assert user.new_email == data["new_email"]
 

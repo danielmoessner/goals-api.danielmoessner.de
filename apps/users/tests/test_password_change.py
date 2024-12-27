@@ -5,7 +5,7 @@ from django.urls import reverse
 from apps.users.tests import helpers
 
 
-def test_register_works_with_mail(db):
+def test_change_password_works(db):
     data = {
         "old_password": "pass1234!!",
         "new_password1": "test1234!!",
@@ -18,11 +18,11 @@ def test_register_works_with_mail(db):
     c.login(email=user.email, password=data["old_password"])
 
     # step1: open the change email page
-    response_1 = c.get(reverse("change_password"))
+    response_1 = c.get(reverse("form", args=["ChangePassword"]))
     assert 200 == response_1.status_code
 
     # step2: submit and check that the new password is saved and confirmation email sent
-    response_2 = c.post(reverse("change_password"), data)
+    response_2 = c.post(reverse("form", args=["ChangePassword"]), data)
     assert 302 == response_2.status_code
     user.refresh_from_db()
     assert not user.check_password("pass1234!")

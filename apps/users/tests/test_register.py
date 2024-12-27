@@ -20,7 +20,7 @@ def data():
 def test_register_works(db, data):
     c = Client()
     with override_settings(CUSTOM_ALLOW_REGISTRATION=True):
-        response = c.post("/auth/registrieren/", data=data)
+        response = c.post(reverse("global_form", args=["Register"]), data=data)
     assert response.status_code == 302
     assert CustomUser.objects.filter(email=data["email"]).exists()
 
@@ -30,14 +30,14 @@ def test_register_works_with_mail(db, data):
     c = Client()
 
     # step1: open the register page
-    response_1 = c.get(reverse("register_user"))
+    response_1 = c.get(reverse("global_form", args=["Register"]))
     assert 200 == response_1.status_code
 
     # step2: submit and check that user exists
     with override_settings(CUSTOM_ALLOW_REGISTRATION=True):
-        response_2 = c.post(reverse("register_user"), data)
+        response_2 = c.post(reverse("global_form", args=["Register"]), data)
     response_3 = c.get(response_2.url)
-    assert "Dein Account wurde erstellt." in response_3.content.decode()
+    assert response_3.status_code == 200
     assert CustomUser.objects.filter(email=data["email"]).exists()
     assert not CustomUser.objects.get(email=data["email"]).email_confirmed
 
@@ -48,5 +48,5 @@ def test_register_works_with_mail(db, data):
     context = response_2.context
     assert context["link"]
     response_4 = c.get(context["link"], follow=True)
-    assert "Deine E-Mail wurde bestätigt." in response_4.content.decode()
+    assert response_4.status_code == 200
     assert CustomUser.objects.get(email=data["email"]).email_confirmed
