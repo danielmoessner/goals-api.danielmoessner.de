@@ -74,7 +74,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -82,10 +81,8 @@ DATABASES = {
     }
 }
 
-
 LOGIN_URL = "/admin/login/"
 AUTH_USER_MODEL = "users.CustomUser"
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -102,7 +99,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "Europe/Berlin"
@@ -112,7 +108,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = False
-
 
 STATIC_URL = "/static/"
 
@@ -158,17 +153,8 @@ TINYMCE_DEFAULT_CONFIG = {
     "convert_urls": True,
 }
 
-
 FILEBROWSER_DIRECTORY = "user_content/"
 DIRECTORY = ""
-
-
-EMAIL_USE_TLS = True
-EMAIL_HOST = "smtp.strato.de"
-EMAIL_HOST_USER = "projekte@tortuga-webdesign.de"
-EMAIL_HOST_PASSWORD = get_secret("EMAIL_PWD")
-EMAIL_PORT = 587
-
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
@@ -177,7 +163,6 @@ REST_FRAMEWORK = {
     ],
     "DATETIME_FORMAT": "%Y-%m-%dT%H:%M",
 }
-
 
 CORS_ALLOWED_ORIGINS = ["https://goals.danielmoessner.de", "http://localhost:3000"]
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
