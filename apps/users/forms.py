@@ -93,7 +93,7 @@ class ChangeEmail(OptsUserInstance[CustomUser], forms.ModelForm):
         )
         protocol = "https" if request.is_secure() else "http"
         link = f"{protocol}://{current_site}{url}"
-        subject = "Bestätige deine neue E-Mail-Adresse"
+        subject = "Confirm your new email"
 
         context = {"link": link}
         body = loader.render_to_string(
@@ -146,7 +146,7 @@ class Register(OptsUser, UserCreationForm):
         )
         protocol = "https" if request.is_secure() else "http"
         link = f"{protocol}://{current_site}{url}"
-        subject = "Bestätige deine E-Mail-Adresse"
+        subject = "Confirm your email"
 
         context = {"link": link}
         body = loader.render_to_string(
