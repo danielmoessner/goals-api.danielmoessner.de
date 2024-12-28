@@ -33,8 +33,6 @@ INSTALLED_APPS = [
     "filebrowser",
     "tinymce",
     "corsheaders",
-    "rest_framework",
-    "rest_framework.authtoken",
     "apps.users.apps.UsersConfig",
     "apps.goals.apps.GoalsConfig",
     "apps.todos.apps.TodosConfig",
@@ -155,14 +153,6 @@ TINYMCE_DEFAULT_CONFIG = {
 
 FILEBROWSER_DIRECTORY = "user_content/"
 DIRECTORY = ""
-
-REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.TokenAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
-    ],
-    "DATETIME_FORMAT": "%Y-%m-%dT%H:%M",
-}
 
 CORS_ALLOWED_ORIGINS = ["https://goals.danielmoessner.de", "http://localhost:3000"]
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
